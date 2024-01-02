@@ -16,7 +16,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.memtest86.enable = true;
 
-  boot.initrd.luks.devices."luks-69f07c4f-4348-468f-8dd2-caff60fd31fe".device = "luks-69f07c4f-4348-468f-8dd2-caff60fd31fe";
+  boot.initrd.luks.devices."luks-69f07c4f-4348-468f-8dd2-caff60fd31fe".device = "/dev/disk/by-uuid/69f07c4f-4348-468f-8dd2-caff60fd31fe";
   users.users.emanon.shell = pkgs.zsh;
   programs.zsh.enable = true;
   networking.hostName = "nixos"; # Define your hostname.
@@ -31,6 +31,12 @@
     home.file.".ssh/allowed_signers".text =
     "* ${builtins.readFile /home/emanon/.ssh/id_ed25519.pub}";
 
+    programs.atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      flags = [ "--disable-up-arrow" ];
+    };
+
     programs.git = {
      enable = true;
      userName = "Emanon";
@@ -41,7 +47,7 @@
         user.signingkey = "~/.ssh/id_ed25519.pub";
         gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
       };
-};
+  };
 
   # The state version is required and should stay at the version you
   # originally installed.
@@ -69,6 +75,7 @@
   # Enable the KDE Plasma Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
+  programs.hyprland.enable = true;
 
   services.xserver = {
     layout = "fr";
