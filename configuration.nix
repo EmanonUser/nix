@@ -1,11 +1,13 @@
-{ config, pkgs, inputs, ... }:
-
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.default
-    ];
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
+  imports = [
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
@@ -63,7 +65,7 @@
   users.users.emanon = {
     isNormalUser = true;
     description = "emanon";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [
       firefox
       kate
@@ -72,34 +74,35 @@
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
-	  neovim
-	  curl
-	  google-chrome
-	  discord
-	  fd
-	  ripgrep
-	  git
-	  bitwarden
-	  docker
-	  rsync
-	  rclone
-	  ansible
-	  ansible-lint
-	  rustup
-	  zellij
-	  home-manager
-	  alacritty
-	  atuin
-	  zsh
-	  neofetch
-	  vlc
-	  stow
-	  clang
-	  starship
+    neovim
+    curl
+    google-chrome
+    discord
+    fd
+    ripgrep
+    git
+    bitwarden
+    docker
+    rsync
+    rclone
+    ansible
+    ansible-lint
+    rustup
+    zellij
+    home-manager
+    alacritty
+    atuin
+    zsh
+    neofetch
+    vlc
+    stow
+    clang
+    starship
     ntfs3g
+    alejandra
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
   services.openssh.enable = true;
 
   system.stateVersion = "23.11";

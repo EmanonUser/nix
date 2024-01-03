@@ -1,31 +1,31 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "emanon";
   home.homeDirectory = "/home/emanon";
 
-
-  home-manager.users.emanon = { pkgs, ... }: {
-    home.packages = [ pkgs.atuin pkgs.starship ];
+  home-manager.users.emanon = {pkgs, ...}: {
+    home.packages = [pkgs.atuin pkgs.starship];
     programs.starship.enable = true;
     programs.zsh.enable = true;
 
-    home.file.".ssh/allowed_signers".text =
-    "* ${builtins.readFile /home/emanon/.ssh/id_ed25519.pub}";
+    home.file.".ssh/allowed_signers".text = "* ${builtins.readFile /home/emanon/.ssh/id_ed25519.pub}";
 
     programs.atuin = {
       enable = true;
       enableZshIntegration = true;
-      flags = [ "--disable-up-arrow" ];
+      flags = ["--disable-up-arrow"];
     };
 
     programs.git = {
-     enable = true;
-     userName = "Emanon";
-     userEmail = "moemanon@pm.me";
-     extraConfig = {
+      enable = true;
+      userName = "Emanon";
+      userEmail = "moemanon@pm.me";
+      extraConfig = {
         commit.gpgsign = true;
         gpg.format = "ssh";
         user.signingkey = "~/.ssh/id_ed25519.pub";
