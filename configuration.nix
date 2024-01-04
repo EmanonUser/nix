@@ -12,7 +12,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.memtest86.enable = true;
 
   boot.initrd.luks.devices."luks-69f07c4f-4348-468f-8dd2-caff60fd31fe".device = "/dev/disk/by-uuid/69f07c4f-4348-468f-8dd2-caff60fd31fe";
   users.users.emanon.shell = pkgs.zsh;
@@ -37,6 +36,13 @@
     LC_TELEPHONE = "fr_FR.UTF-8";
     LC_TIME = "fr_FR.UTF-8";
   };
+
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    nerdfonts
+  ];
 
   services.xserver.enable = true;
 
