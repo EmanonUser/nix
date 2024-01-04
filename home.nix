@@ -8,46 +8,41 @@
   home.username = "emanon";
   home.homeDirectory = "/home/emanon";
 
-  home-manager.users.emanon = {pkgs, ...}: {
-    home.packages = [pkgs.atuin pkgs.starship];
-    programs.starship.enable = true;
-    programs.zsh.enable = true;
+  programs.starship.enable = true;
+  programs.zsh.enable = true;
 
-    home.file.".ssh/allowed_signers".text = "* ${builtins.readFile /home/emanon/.ssh/id_ed25519.pub}";
-
-    programs.atuin = {
-      enable = true;
-      enableZshIntegration = true;
-      flags = ["--disable-up-arrow"];
-    };
-
-    programs.git = {
-      enable = true;
-      userName = "Emanon";
-      userEmail = "moemanon@pm.me";
-      extraConfig = {
-        commit.gpgsign = true;
-        gpg.format = "ssh";
-        user.signingkey = "~/.ssh/id_ed25519.pub";
-        gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
-      };
-    };
-
-    home.stateVersion = "23.11";
+  programs.atuin = {
+    enable = true;
+    enableZshIntegration = true;
+    flags = ["--disable-up-arrow"];
   };
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
+  programs.neovim = {
+    viAlias = true;
+    vimAlias = true;
+  };
+
+  programs.git = {
+    enable = true;
+    userName = "Emanon";
+    userEmail = "moemanon@pm.me";
+    extraConfig = {
+      commit.gpgsign = true;
+      gpg.format = "ssh";
+      user.signingkey = "~/.ssh/id_ed25519.pub";
+      gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+    };
+  };
+
   home.stateVersion = "23.11"; # Please read the comment before changing.
+  programs.home-manager.enable = true;
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
+    pkgs.atuin
+    pkgs.starship
+    pkgs.htop
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -69,6 +64,7 @@
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
+    ".ssh/allowed_signers".text = "* ${builtins.readFile /home/emanon/.ssh/id_ed25519.pub}";
     # # Building this configuration will create a copy of 'dotfiles/screenrc' in
     # # the Nix store. Activating the configuration will then make '~/.screenrc' a
     # # symlink to the Nix store copy.
@@ -97,9 +93,8 @@
   #  /etc/profiles/per-user/emanon/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "nvim";
   };
 
   # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }

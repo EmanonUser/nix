@@ -51,6 +51,7 @@
   console.keyMap = "fr";
 
   services.printing.enable = true;
+  services.openssh.enable = true;
 
   sound.enable = true;
   hardware.pulseaudio.enable = false;
@@ -70,6 +71,14 @@
       firefox
       kate
     ];
+  };
+
+  home-manager = {
+    # also pass inputs to home-manager modules
+    extraSpecialArgs = {inherit inputs;};
+    users = {
+      "emanon" = import ./home.nix;
+    };
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -103,7 +112,6 @@
   ];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
-  services.openssh.enable = true;
 
   system.stateVersion = "23.11";
 }
