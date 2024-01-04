@@ -3,8 +3,6 @@
   pkgs,
   ...
 }: {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
   home.username = "emanon";
   home.homeDirectory = "/home/emanon";
 
@@ -18,6 +16,7 @@
   };
 
   programs.neovim = {
+    enable = true;
     viAlias = true;
     vimAlias = true;
   };
@@ -95,6 +94,4 @@
   home.sessionVariables = {
     EDITOR = "nvim";
   };
-
-  # Let Home Manager install and manage itself.
 }
