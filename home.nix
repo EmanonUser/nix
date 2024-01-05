@@ -7,7 +7,16 @@
   home.homeDirectory = "/home/emanon";
 
   programs.starship.enable = true;
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+      ls = "ls --color";
+      ll = "ls --color --group-directories-first -lh";
+      la = "ls --color --group-directories-first -Alh --ignore='[^.]*'";
+      ip = "ip --color=auto";
+      grep = "grep --color";
+    };
+  };
 
   programs.atuin = {
     enable = true;
