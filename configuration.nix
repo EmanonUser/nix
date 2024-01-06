@@ -58,6 +58,7 @@
 
   services.printing.enable = true;
   services.openssh.enable = true;
+  services.fwupd.enable = true;
 
   sound.enable = true;
   hardware.pulseaudio.enable = false;
@@ -115,6 +116,9 @@
     starship
     ntfs3g
     alejandra
+    fwupd
+    fwupd-efi
+    rustdesk
   ];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
