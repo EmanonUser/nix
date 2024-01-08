@@ -106,7 +106,6 @@
     rustup
     zellij
     home-manager
-    alacritty
     atuin
     zsh
     neofetch
@@ -119,6 +118,7 @@
     fwupd
     fwupd-efi
     rustdesk
+    cargo-watch
   ];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
