@@ -61,9 +61,12 @@
   };
   console.keyMap = "fr";
 
-  services.printing.enable = true;
-  services.openssh.enable = true;
-  services.fwupd.enable = true;
+  services = {
+    fstrim.enable = true;
+    printing.enable = true;
+    openssh.enable = true;
+    fwupd.enable = true;
+  };
 
   sound.enable = true;
   hardware.pulseaudio.enable = false;
