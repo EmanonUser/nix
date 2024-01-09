@@ -110,13 +110,11 @@
     ansible-lint
     rustup
     zellij
-    home-manager
     zsh
     neofetch
     vlc
     stow
     clang
-    starship
     ntfs3g
     alejandra
     fwupd
