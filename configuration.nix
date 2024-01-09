@@ -111,7 +111,6 @@
     rustup
     zellij
     home-manager
-    atuin
     zsh
     neofetch
     vlc
@@ -124,6 +123,7 @@
     fwupd-efi
     rustdesk
     cargo-watch
+    inputs.atuin.packages."${pkgs.system}".atuin
   ];
 
   system.stateVersion = "23.11";

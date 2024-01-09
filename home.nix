@@ -53,7 +53,6 @@
   # environment.
   home.packages = [
     pkgs.alacritty
-    pkgs.atuin
     pkgs.starship
     pkgs.htop
     # # Adds the 'hello' command to your environment. It prints a friendly
