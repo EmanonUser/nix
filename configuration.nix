@@ -9,6 +9,9 @@
     inputs.home-manager.nixosModules.default
   ];
 
+  nixpkgs.config.allowUnfree = true;
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -19,7 +22,6 @@
     bypassWorkqueues = true;
   };
 
-  users.users.emanon.shell = pkgs.zsh;
   programs.zsh.enable = true;
   programs.ssh.startAgent = true;
 
@@ -27,7 +29,6 @@
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Paris";
-
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -50,7 +51,6 @@
   ];
 
   services.xserver.enable = true;
-
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
   programs.hyprland.enable = true;
@@ -81,22 +81,19 @@
   users.users.emanon = {
     isNormalUser = true;
     description = "emanon";
+    shell = pkgs.zsh;
     extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [
-      firefox
-      kate
     ];
   };
 
   home-manager = {
-    # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
       "emanon" = import ./home.nix;
     };
   };
 
-  nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     neovim
     curl
@@ -128,8 +125,6 @@
     rustdesk
     cargo-watch
   ];
-
-  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   system.stateVersion = "23.11";
 }
