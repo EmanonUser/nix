@@ -54,6 +54,7 @@
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
   programs.hyprland.enable = true;
+  virtualisation.docker.enable = true;
 
   services.xserver = {
     layout = "fr";
@@ -82,7 +83,7 @@
     isNormalUser = true;
     description = "emanon";
     shell = pkgs.zsh;
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = ["networkmanager" "wheel" "docker"];
     packages = with pkgs; [
     ];
   };
