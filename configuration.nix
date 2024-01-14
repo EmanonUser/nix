@@ -122,6 +122,7 @@
     fwupd-efi
     rustdesk
     cargo-watch
+    steam
     inputs.atuin.packages."${pkgs.system}".atuin
   ];
 
