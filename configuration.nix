@@ -96,34 +96,64 @@
   };
 
   environment.systemPackages = with pkgs; [
-    neovim
-    curl
-    google-chrome
-    discord
+    # archives and compression
+    zip
+    xz
+    unzip
+    p7zip
+    zstd
+
+    # utils
     fd
     ripgrep
-    git
-    bitwarden
-    docker
+    fzf
+    ntfs3g
+    tree
+    gnupg
+    which
+    lsof
+    stow
     rsync
     rclone
+
+    # development
+    neovim
+    git
     ansible
     ansible-lint
     rustup
-    zellij
-    zsh
-    neofetch
-    vlc
-    stow
-    clang
-    ntfs3g
     alejandra
-    fwupd
-    fwupd-efi
-    rustdesk
     cargo-watch
-    steam
+    strace
+    ltrace
+    docker
+    clang
+
+    # networking
+    iperf3
+    mtr
+    ethtool
+    tcpdump
+    wireshark
+    whois
+    curl
+    socat
+    nmap
+    dnsutils
+    aria2
+
+    zsh
+    alacritty
+    zellij
     inputs.atuin.packages."${pkgs.system}".atuin
+    google-chrome
+    discord
+    bitwarden
+    vlc
+    mpv
+    rustdesk
+    steam
+
   ];
 
   system.stateVersion = "23.11";
