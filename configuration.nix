@@ -83,7 +83,7 @@
     isNormalUser = true;
     description = "emanon";
     shell = pkgs.zsh;
-    extraGroups = ["networkmanager" "wheel" "docker"];
+    extraGroups = ["networkmanager" "wheel" "docker" "wireshark"];
     packages = with pkgs; [
     ];
   };
@@ -145,7 +145,7 @@
     zsh
     alacritty
     zellij
-    inputs.atuin.packages."${pkgs.system}".atuin
+    atuin
     google-chrome
     discord
     bitwarden
@@ -153,7 +153,6 @@
     mpv
     rustdesk
     steam
-
   ];
 
   system.stateVersion = "23.11";
