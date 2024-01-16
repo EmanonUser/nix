@@ -27,12 +27,6 @@
     flags = ["--disable-up-arrow"];
   };
 
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-  };
-
   programs.git = {
     enable = true;
     userName = "Emanon";

@@ -28,6 +28,7 @@
       modules = [
         ./configuration.nix
         ./system-packages.nix
+        ./neovim.nix
         inputs.home-manager.nixosModules.default
       ];
     };

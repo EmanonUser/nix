@@ -25,7 +25,6 @@
     rclone
 
     # development
-    neovim
     git
     ansible
     ansible-lint
