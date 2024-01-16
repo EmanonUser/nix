@@ -21,13 +21,13 @@
 
     keymaps = [
       {
-        key = "<leader>pv";
-        action = "<cmd>Oil<CR>";
+        key = "<leader>fd";
+        action = "<cmd>lua vim.lsp.buf.format()<CR>";
         mode = "n";
       }
       {
-        key = "<leader>u";
-        action = "<cmd>Telescope undo<CR>";
+        key = "<leader>pv";
+        action = "<cmd>Oil<CR>";
         mode = "n";
       }
       {
@@ -65,8 +65,13 @@
     plugins.lsp = {
       enable = true;
       servers = {
-        nil_ls.enable = true;
+        ansiblels.enable = true;
         lua-ls.enable = true;
+
+        nil_ls = {
+          enable = true;
+          settings.formatting.command = ["alejandra"];
+        };
         rust-analyzer = {
           enable = true;
           installRustc = false;
@@ -104,6 +109,7 @@
       luasnip.enable = true;
       fugitive.enable = true;
       presence-nvim.enable = true;
+      which-key.enable = true;
     };
   };
 }
