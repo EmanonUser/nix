@@ -112,6 +112,7 @@
         "<C-y>" = "cmp.mapping.confirm({ select = true })";
         "<C-e>" = "cmp.mapping.abort()";
       };
+      snippet.expand = "luasnip";
     };
 
     plugins.oil = {
