@@ -67,6 +67,10 @@
       servers = {
         ansiblels.enable = true;
         lua-ls.enable = true;
+        dockerls.enable = true;
+        taplo.enable = true;
+        jsonls.enable = true;
+        html.enable = true;
 
         nil_ls = {
           enable = true;
