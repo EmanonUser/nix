@@ -51,7 +51,6 @@
 
     zsh
     alacritty
-    zellij
     atuin
     google-chrome
     discord

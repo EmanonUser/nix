@@ -48,6 +48,11 @@
     enable = true;
   };
 
+  programs.zellij = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   home.packages = with pkgs; [
     alacritty
     starship
