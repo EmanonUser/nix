@@ -76,6 +76,7 @@
           enable = true;
           settings.formatting.command = ["alejandra"];
         };
+
         rust-analyzer = {
           enable = true;
           installRustc = false;
@@ -134,6 +135,7 @@
       fugitive.enable = true;
       presence-nvim.enable = true;
       which-key.enable = true;
+      lspkind.enable = true;
     };
   };
 }
