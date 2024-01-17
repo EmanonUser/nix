@@ -78,6 +78,18 @@
           installCargo = false;
         };
       };
+
+      keymaps.lspBuf = {
+        gD = "declaration";
+        gd = "definition";
+        K = "hover";
+        gi = "implementation";
+        "<C-k>" = "signature_help";
+        "<space>D" = "type_definition";
+        "<space>rn" = "rename";
+        "<space>ca" = "code_action";
+        "<space>gr" = "references";
+      };
     };
 
     plugins.nvim-cmp = {
@@ -89,6 +101,13 @@
         {name = "buffer";}
         {name = "luasnip";}
       ];
+      mapping = {
+        "<C-l>" = "cmp.mapping.select_next_item()";
+        "<C-m>" = "cmp.mapping.select_prev_item()";
+        "<C-space>" = "cmp.mapping.complete()";
+        "<C-y>" = "cmp.mapping.confirm({ select = true })";
+        "<C-e>" = "cmp.mapping.abort()";
+      };
     };
 
     plugins.oil = {
