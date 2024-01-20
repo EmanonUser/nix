@@ -18,6 +18,21 @@
       expandtab = true;
       softtabstop = 2;
     };
+    autoCmd = [
+      {
+        event = ["BufWritePre"];
+        pattern = ["*"];
+        callback = {
+          __raw = ''
+            function()
+              local cursor = vim.fn.getpos(".")
+              pcall(function() vim.cmd [[%s/\s\+$//e]] end)
+              vim.fn.setpos(".", cursor)
+            end
+          '';
+        };
+      }
+    ];
 
     keymaps = [
       {
