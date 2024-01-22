@@ -33,7 +33,7 @@
   programs.zsh.enable = true;
   programs.ssh.startAgent = true;
 
-  networking.hostName = "nixos";
+  networking.hostName = "sasurai";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Paris";
