@@ -31,6 +31,7 @@
     rustup
     alejandra
     cargo-watch
+    cargo-expand
     strace
     ltrace
     docker
