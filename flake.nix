@@ -23,6 +23,7 @@
   outputs = {
     self,
     nixpkgs,
+    home-manager,
     nixvim,
     hyprland,
     ...
@@ -35,7 +36,7 @@
       modules = [
         ./configuration.nix
         ./system-packages.nix
-        inputs.home-manager.nixosModules.default
+        home-manager.nixosModules.default
       ];
     };
   };
