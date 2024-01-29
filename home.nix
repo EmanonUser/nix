@@ -10,6 +10,7 @@
   programs.home-manager.enable = true;
 
   imports = [
+    ./neovim.nix
     ./hyprland.nix
   ];
 
