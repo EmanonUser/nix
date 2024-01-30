@@ -1,6 +1,8 @@
 {
   config,
+  inputs,
   pkgs,
+  nixvim,
   ...
 }: {
   home.username = "emanon";
@@ -10,8 +12,6 @@
   programs.home-manager.enable = true;
 
   imports = [
-    ./neovim.nix
-    ./hyprland.nix
   ];
 
   programs.zsh = {

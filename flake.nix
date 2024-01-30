@@ -25,19 +25,27 @@
     nixpkgs,
     home-manager,
     nixvim,
-    hyprland,
     ...
   } @ inputs: let
+    inherit (self) outputs;
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
+    lib = nixpkgs.lib;
   in {
-    nixosConfigurations.default = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        ./configuration.nix
-        ./system-packages.nix
-        home-manager.nixosModules.default
-      ];
+    inherit lib;
+    nixosConfigurations = {
+      sasurai = lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          ./hosts/sasurai
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.emanon = import ./home/emanon/sasurai.nix;
+          }
+        ];
+      };
     };
   };
 }

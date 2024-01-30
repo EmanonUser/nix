@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: {
-  imports = [inputs.nixvim.homeManagerModules.nixvim];
+  imports = [inputs.nixvim.nixosModules.nixvim];
   programs.nixvim = {
     enable = true;
     colorschemes.tokyonight.enable = true;
