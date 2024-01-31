@@ -38,7 +38,7 @@
   ];
 
   home.file = {
-    ".ssh/allowed_signers".text = "* ${builtins.readFile /home/emanon/.ssh/id_ed25519.pub}";
+    ".ssh/allowed_signers".text = "* ${builtins.readFile ./id_ed25519.pub}";
   };
 
   home.sessionVariables = {
