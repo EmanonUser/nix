@@ -8,7 +8,6 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ./../../neovim.nix
   ];
 
   nix.gc = {

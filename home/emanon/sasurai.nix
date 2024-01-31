@@ -1,8 +1,7 @@
 {
   config,
-  inputs,
   pkgs,
-  nixvim,
+  inputs,
   ...
 }: {
   home.username = "emanon";
@@ -12,6 +11,8 @@
   programs.home-manager.enable = true;
 
   imports = [
+    inputs.nixvim.homeManagerModules.nixvim
+    ./neovim.nix
   ];
 
   programs.zsh = {

@@ -40,6 +40,7 @@
           ./hosts/sasurai
           home-manager.nixosModules.home-manager
           {
+            home-manager.extraSpecialArgs = {inherit inputs outputs;};
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.emanon = import ./home/emanon/sasurai.nix;

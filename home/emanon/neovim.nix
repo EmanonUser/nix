@@ -1,9 +1,8 @@
 {
-  inputs,
+  config,
   pkgs,
   ...
 }: {
-  imports = [inputs.nixvim.nixosModules.nixvim];
   programs.nixvim = {
     enable = true;
     colorschemes.tokyonight.enable = true;
