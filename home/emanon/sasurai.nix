@@ -15,6 +15,7 @@
     ./neovim.nix
     ./cli/git.nix
     ./cli/zsh.nix
+    ./features/hyprland.nix
   ];
 
   programs.starship = {
