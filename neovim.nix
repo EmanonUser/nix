@@ -151,6 +151,7 @@
       presence-nvim.enable = true;
       which-key.enable = true;
       lspkind.enable = true;
+      gitsigns.enable = true;
     };
 
     extraPlugins = with pkgs.vimPlugins; [
