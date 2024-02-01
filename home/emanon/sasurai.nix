@@ -12,6 +12,7 @@
 
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
+    ./packages.nix
     ./neovim.nix
     ./cli/git.nix
     ./cli/zsh.nix
@@ -30,12 +31,6 @@
     enable = true;
     enableZshIntegration = true;
   };
-
-  home.packages = with pkgs; [
-    alacritty
-    starship
-    htop
-  ];
 
   home.file = {
     ".ssh/allowed_signers".text = "* ${builtins.readFile ./id_ed25519.pub}";
