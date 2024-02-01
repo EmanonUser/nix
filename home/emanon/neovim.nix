@@ -3,6 +3,10 @@
   pkgs,
   ...
 }: {
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
   programs.nixvim = {
     enable = true;
     colorschemes.tokyonight.enable = true;
