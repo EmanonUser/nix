@@ -1,4 +1,9 @@
 {
+  # Sign git commits with  ssh  keys
+  home.file = {
+    ".ssh/allowed_signers".text = "* ${builtins.readFile ../id_ed25519.pub}";
+  };
+
   programs.git = {
     enable = true;
     userName = "Emanon";
