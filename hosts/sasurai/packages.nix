@@ -20,21 +20,12 @@
     gnupg
     which
     lsof
-    stow
     rsync
     rclone
+    htop
 
     # development
     git
-    ansible
-    ansible-lint
-    rustup
-    alejandra
-    cargo-watch
-    cargo-expand
-    strace
-    ltrace
-    docker
     clang
 
     # networking
@@ -49,16 +40,5 @@
     nmap
     dnsutils
     aria2
-
-    zsh
-    alacritty
-    atuin
-    google-chrome
-    discord
-    bitwarden
-    vlc
-    mpv
-    rustdesk
-    steam
   ];
 }
