@@ -13,10 +13,10 @@
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
     ./packages.nix
-    ./neovim.nix
     ./cli/git.nix
     ./cli/zsh.nix
     ./features/hyprland.nix
+    ./features/neovim.nix
   ];
 
   programs.starship = {
