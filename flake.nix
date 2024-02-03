@@ -30,7 +30,7 @@
     inherit (self) outputs;
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
-    lib = nixpkgs.lib;
+    lib = nixpkgs.lib // home-manager.lib;
   in {
     inherit lib;
     nixosConfigurations = {
@@ -38,14 +38,15 @@
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/sasurai
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = {inherit inputs outputs;};
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.emanon = import ./home/emanon/sasurai.nix;
-          }
         ];
+      };
+    };
+
+    homeConfigurations = {
+      emanon = lib.homeManagerConfiguration {
+        extraSpecialArgs = {inherit inputs outputs;};
+        inherit pkgs;
+        modules = [./home/emanon/sasurai.nix];
       };
     };
   };
