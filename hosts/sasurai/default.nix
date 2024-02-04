@@ -56,9 +56,9 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
-  services.xserver = {
+  services.xserver.xkb = {
     layout = "fr";
-    xkbVariant = "azerty";
+    variant = "azerty";
   };
   console.keyMap = "fr";
 
