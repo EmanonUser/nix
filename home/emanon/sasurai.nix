@@ -16,6 +16,7 @@
     ./packages.nix
     ./cli/git.nix
     ./cli/zsh.nix
+    ./cli/atuin.nix
     ./features/hyprland.nix
     ./features/neovim.nix
   ];
