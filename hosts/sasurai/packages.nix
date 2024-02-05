@@ -23,6 +23,8 @@
     rsync
     rclone
     htop
+    lm_sensors
+    amdgpu_top
 
     # development
     git
