@@ -15,10 +15,12 @@
     mpv
     rustdesk
     steam
+    mangohud
 
     # developpement
     ansible
     ansible-lint
+    sshpass # ansible requirement
     rustup
     alejandra
     cargo-watch
