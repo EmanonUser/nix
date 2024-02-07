@@ -9,8 +9,10 @@
 
   programs.nixvim = {
     enable = true;
-    colorschemes.tokyonight.enable = true;
-    colorschemes.tokyonight.style = "night";
+    # colorschemes.tokyonight.enable = true;
+    # colorschemes.tokyonight.style = "night";
+    colorschemes.kanagawa.enable = true;
+    colorschemes.kanagawa.background.dark = "dragon";
     globals.mapleader = " ";
 
     options = {
