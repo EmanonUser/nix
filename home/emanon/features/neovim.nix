@@ -162,6 +162,9 @@
 
     extraPlugins = with pkgs.vimPlugins; [
       nvim-web-devicons
+      nordic-nvim
+      monokai-pro-nvim
+      rose-pine
     ];
   };
 }
