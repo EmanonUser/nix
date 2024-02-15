@@ -16,6 +16,8 @@
     rustdesk
     steam
     mangohud
+    goverlay
+    ferium
 
     # developpement
     ansible
