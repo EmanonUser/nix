@@ -17,6 +17,7 @@
     ./cli/git.nix
     ./cli/zsh.nix
     ./cli/atuin.nix
+    ./cli/zoxide.nix
     ./features/hyprland.nix
     ./features/neovim.nix
   ];
