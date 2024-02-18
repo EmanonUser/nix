@@ -25,6 +25,7 @@
     htop
     lm_sensors
     amdgpu_top
+    pciutils
 
     # development
     git
