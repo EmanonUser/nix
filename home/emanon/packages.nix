@@ -14,10 +14,14 @@
     vlc
     mpv
     rustdesk
+
+    # games and tool
     steam
     mangohud
     goverlay
     ferium
+    minecraft
+    fabric-installer
 
     # developpement
     ansible

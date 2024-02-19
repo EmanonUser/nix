@@ -88,6 +88,7 @@
 
   hardware.opengl.extraPackages = with pkgs; [
     amdvlk
+    libGL
   ];
 
   hardware.opengl.extraPackages32 = with pkgs; [
