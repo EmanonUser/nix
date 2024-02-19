@@ -25,6 +25,19 @@
       "$mod SHIFT, underscore, movetoworkspace, 9"
       "$mod, agrave, workspace, 10"
       "$mod SHIFT, agrave, movetoworkspace, 10"
+
+      "$mod, Q, killactive,"
+      "$mod, M, exit,"
+      "$mod, S, togglefloating,"
+      "$mod, P, pseudo,"
+      "$mod, left, movefocus,l"
+      "$mod, right, movefocus,r"
+      "$mod, up, movefocus,u"
+      "$mod, down, movefocus,d"
+      "$mod, g, togglegroup"
+      "$mod, tab, changegroupactive"
+      "$mod, f, fullscreen"
+      "$mod, c, centerwindow"
     ];
 
     input = {
@@ -32,6 +45,11 @@
       kb_variant = "";
       follow_mouse = 1;
       sensitivity = 0;
+      force_no_accel = 1;
+    };
+
+    misc = {
+      vrr = 1;
     };
   };
 }
