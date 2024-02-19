@@ -14,6 +14,7 @@
     vlc
     mpv
     rustdesk
+    wofi
 
     # games and tool
     steam
