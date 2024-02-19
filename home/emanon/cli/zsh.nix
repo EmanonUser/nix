@@ -4,6 +4,7 @@
     enableCompletion = true;
     enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
+
     shellAliases = {
       vi = "nvim";
       vim = "nvim";
@@ -13,9 +14,13 @@
       ip = "ip --color=auto";
       grep = "grep --color";
     };
+
     initExtra = ''
       bindkey "^[[1;5C" forward-word
       bindkey "^[[1;5D" backward-word
+      autoload edit-command-line
+      zle -N edit-command-line
+      bindkey '^Xe' edit-command-line
     '';
   };
 }
