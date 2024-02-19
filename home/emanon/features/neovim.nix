@@ -24,6 +24,7 @@
       expandtab = true;
       softtabstop = 2;
     };
+
     autoCmd = [
       {
         event = ["BufWritePre"];
