@@ -52,9 +52,9 @@
       "$mod, f, fullscreen"
       "$mod, c, centerwindow"
 
-      "bind=,XF86AudioRaiseVolume,exec,pamixer -i 5"
-      "bind=,XF86AudioLowerVolume,exec,pamixer -d 5"
-      "bind=,XF86AudioMute,exec,pamixer -d 5"
+      ",XF86AudioRaiseVolume,exec,pamixer -i 5"
+      ",XF86AudioLowerVolume,exec,pamixer -d 5"
+      ",XF86AudioMute,exec,pamixer -d 5"
     ];
 
     input = {
