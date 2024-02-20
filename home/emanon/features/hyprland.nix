@@ -1,9 +1,16 @@
-{pkgs, ...}: {
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.plugins = with pkgs; [
-    xdg-desktop-portal-hyprland
+{
+  inputs,
+  pkgs,
+  ...
+}: {
+  home.packages = with pkgs; [
     hyprpaper
+    hyprpicker
+    xdg-desktop-portal-hyprland
   ];
+
+  wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.plugins = [];
 
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
