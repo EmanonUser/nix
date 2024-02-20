@@ -1,10 +1,14 @@
-{
+{pkgs, ...}: {
   wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.plugins = with pkgs; [
+    xdg-desktop-portal-hyprland
+    hyprpaper
+  ];
+
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
-    bind = [
-      "$mod, a, exec, alacritty"
 
+    bind = [
       "$mod, ampersand, workspace, 1"
       "$mod SHIFT, ampersand, movetoworkspace, 1"
       "$mod, eacute, workspace, 2"
@@ -26,10 +30,12 @@
       "$mod, agrave, workspace, 10"
       "$mod SHIFT, agrave, movetoworkspace, 10"
 
-      "$mod, Q, killactive,"
-      "$mod, M, exit,"
-      "$mod, S, togglefloating,"
-      "$mod, P, pseudo,"
+      "$mod, a, exec, alacritty"
+      "$mod, z, exec, wofi --show drun"
+      "$mod, q, killactive,"
+      "$mod, m, exit,"
+      "$mod, s, togglefloating,"
+      "$mod, p, pseudo,"
       "$mod, left, movefocus,l"
       "$mod, right, movefocus,r"
       "$mod, up, movefocus,u"
@@ -38,6 +44,10 @@
       "$mod, tab, changegroupactive"
       "$mod, f, fullscreen"
       "$mod, c, centerwindow"
+
+      "bind=,XF86AudioRaiseVolume,exec,pamixer -i 5"
+      "bind=,XF86AudioLowerVolume,exec,pamixer -d 5"
+      "bind=,XF86AudioMute,exec,pamixer -d 5"
     ];
 
     input = {
