@@ -7,6 +7,8 @@
     hyprpaper
     hyprpicker
     xdg-desktop-portal-hyprland
+    copyq
+    mako
   ];
 
   wayland.windowManager.hyprland.enable = true;
@@ -65,8 +67,18 @@
       force_no_accel = 1;
     };
 
+    monitor = [
+      "DP-2, 1920x1080, 0x0, 1"
+      "DVI-D-1, 1920x1080, 1920x0, 1"
+    ];
+
     misc = {
       vrr = 1;
     };
+
+    exec-once = [
+      "copyq --start-server"
+      "mako"
+    ];
   };
 }
