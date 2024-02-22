@@ -10,6 +10,7 @@
     unzip
     p7zip
     zstd
+    restic
 
     # utils
     fd
