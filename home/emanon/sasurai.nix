@@ -20,6 +20,7 @@
     ./cli/zoxide.nix
     ./features/hyprland.nix
     ./features/neovim.nix
+    ./features/rnnoise.nix
   ];
 
   programs.starship = {
