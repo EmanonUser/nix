@@ -64,6 +64,7 @@
       kb_variant = "";
       follow_mouse = 1;
       sensitivity = 0;
+      mouse_refocus = false;
       force_no_accel = 1;
     };
 
