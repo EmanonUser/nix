@@ -53,10 +53,12 @@
       "$mod, tab, changegroupactive"
       "$mod, f, fullscreen"
       "$mod, c, centerwindow"
+    ];
 
-      ",XF86AudioRaiseVolume,exec,pamixer -i 5"
-      ",XF86AudioLowerVolume,exec,pamixer -d 5"
-      ",XF86AudioMute,exec,pamixer -d 5"
+    bindel = [
+      ",XF86AudioRaiseVolume,exec,wpctl set-volume @DEFAULT_SINK@ 5%+"
+      ",XF86AudioLowerVolume,exec,wpctl set-volume @DEFAULT_SINK@ 5%-"
+      ",XF86AudioMute,exec,wpctl set-mute @DEFAULT_SINK@ toggle "
     ];
 
     input = {
