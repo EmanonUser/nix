@@ -11,6 +11,7 @@
     p7zip
     zstd
     restic
+    yj
 
     # utils
     fd
