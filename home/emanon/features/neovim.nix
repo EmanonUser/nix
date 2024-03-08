@@ -143,13 +143,12 @@
 
     plugins.oil = {
       enable = true;
-      extraOptions = {
-        columns = {
-          icon = true;
-          type = true;
-          permissions = true;
-          size = true;
-        };
+      viewOptions.showHidden = true;
+      columns = {
+        icon.enable = true;
+        type.enable = true;
+        permissions.enable = true;
+        size.enable = true;
       };
     };
 
