@@ -120,23 +120,25 @@
       };
     };
 
-    plugins.nvim-cmp = {
+    plugins.cmp = {
       enable = true;
       autoEnableSources = true;
-      sources = [
-        {name = "nvim_lsp";}
-        {name = "path";}
-        {name = "buffer";}
-        {name = "luasnip";}
-      ];
-      mapping = {
-        "<C-l>" = "cmp.mapping.select_next_item()";
-        "<C-m>" = "cmp.mapping.select_prev_item()";
-        "<C-space>" = "cmp.mapping.complete()";
-        "<C-y>" = "cmp.mapping.confirm({ select = true })";
-        "<C-e>" = "cmp.mapping.abort()";
+      settings = {
+        sources = [
+          {name = "nvim_lsp";}
+          {name = "path";}
+          {name = "buffer";}
+          {name = "luasnip";}
+        ];
+        mapping = {
+          "<C-l>" = "cmp.mapping.select_next_item()";
+          "<C-m>" = "cmp.mapping.select_prev_item()";
+          "<C-space>" = "cmp.mapping.complete()";
+          "<C-y>" = "cmp.mapping.confirm({ select = true })";
+          "<C-e>" = "cmp.mapping.abort()";
+        };
+        snippet.expand = "luasnip";
       };
-      snippet.expand = "luasnip";
     };
 
     plugins.oil = {
