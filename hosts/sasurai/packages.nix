@@ -12,6 +12,7 @@
     zstd
     restic
     yj
+    jq
 
     # utils
     fd
