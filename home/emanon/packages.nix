@@ -32,6 +32,7 @@
     alejandra
     cargo-watch
     cargo-expand
+    sqlx-cli
     strace
     ltrace
     docker
