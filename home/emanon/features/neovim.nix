@@ -124,6 +124,11 @@
       enable = true;
       autoEnableSources = true;
       settings = {
+        snippet.expand = ''
+          function(args)
+            require('luasnip').lsp_expand(args.body)
+          end
+        '';
         sources = [
           {name = "nvim_lsp";}
           {name = "path";}
@@ -137,7 +142,6 @@
           "<C-y>" = "cmp.mapping.confirm({ select = true })";
           "<C-e>" = "cmp.mapping.abort()";
         };
-        snippet.expand = "luasnip";
       };
     };
 
