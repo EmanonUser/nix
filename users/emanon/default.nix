@@ -1,7 +1,6 @@
-{pkgs, ...}: {
-  users.users.emanon = {
+{pkgs, username, ...}: {
+  users.users.${username} = {
     isNormalUser = true;
-    description = "emanon";
     shell = pkgs.zsh;
     extraGroups = ["networkmanager" "wheel" "docker" "wireshark" "libvirtd"];
   };
