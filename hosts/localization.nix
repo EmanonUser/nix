@@ -13,4 +13,10 @@
     LC_TELEPHONE = "fr_FR.UTF-8";
     LC_TIME = "fr_FR.UTF-8";
   };
+
+  services.xserver.xkb = {
+    layout = "fr";
+    variant = "azerty";
+  };
+  console.keyMap = "fr";
 }

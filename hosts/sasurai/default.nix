@@ -18,12 +18,6 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
-  services.xserver.xkb = {
-    layout = "fr";
-    variant = "azerty";
-  };
-  console.keyMap = "fr";
-
   services = {
     fstrim.enable = true;
     printing.enable = true;
