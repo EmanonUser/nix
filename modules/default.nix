@@ -3,6 +3,7 @@
     nixvim.nixosModules.nixvim
     ./core
     ./packages
+    ./hyprland
     ./hardware/audio/pipewire.nix
     ./neovim/neovim.nix
     ./rnnoise/rnnoise.nix
