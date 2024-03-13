@@ -4,11 +4,6 @@
   inputs,
   ...
 }: {
-  home.username = "emanon";
-  home.homeDirectory = "/home/emanon";
-
-  home.stateVersion = "23.11";
-  programs.home-manager.enable = true;
   nixpkgs.config.allowUnfree = true;
 
   imports = [
