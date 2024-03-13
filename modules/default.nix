@@ -5,7 +5,7 @@
     ./packages
     ./hardware
     ./virtualisation
-    ./hyprland/hyprland.nix
+    ./hyprland
     ./neovim/neovim.nix
     ./rnnoise/rnnoise.nix
     ./git/git.nix
