@@ -11,5 +11,8 @@
     ./zsh/zsh.nix
     ./zoxide/zoxide.nix
     ./atuin/atuin.nix
+    ./alacritty/alacritty.nix
+    ./zellij/zellij.nix
+    ./starship/starship.nix
   ];
 }
