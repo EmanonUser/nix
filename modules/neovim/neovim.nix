@@ -8,6 +8,10 @@
     home.sessionVariables = {
       EDITOR = "nvim";
     };
+
+    home.packages = with pkgs; [
+      wl-clipboard
+    ];
   };
 
   programs.nixvim = {
@@ -16,6 +20,7 @@
     # colorschemes.tokyonight.style = "night";
     colorschemes.kanagawa.enable = true;
     colorschemes.kanagawa.background.dark = "dragon";
+    clipboard.providers.wl-copy.enable = true;
     globals.mapleader = " ";
 
     options = {
