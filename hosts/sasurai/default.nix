@@ -11,7 +11,4 @@
 
   networking.hostName = "sasurai";
   networking.networkmanager.enable = true;
-
-  services.xserver.videoDrivers = ["amdgpu"];
-
 }
