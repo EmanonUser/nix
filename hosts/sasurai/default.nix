@@ -5,21 +5,9 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../common
     ./packages.nix
   ];
 
-  system.stateVersion = "23.11";
-
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.initrd.luks.devices."luks-69f07c4f-4348-468f-8dd2-caff60fd31fe" = {
-    device = "/dev/disk/by-uuid/69f07c4f-4348-468f-8dd2-caff60fd31fe";
-    allowDiscards = true;
-    bypassWorkqueues = true;
-  };
 
   programs.zsh.enable = true;
   programs.ssh.startAgent = true;
@@ -65,16 +53,6 @@
     printing.enable = true;
     openssh.enable = true;
     fwupd.enable = true;
-  };
-
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
   };
 
   programs.steam = {
