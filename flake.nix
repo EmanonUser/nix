@@ -28,30 +28,27 @@
   outputs = {
     self,
     nixpkgs,
-    home-manager,
     ...
-  } @ inputs: let
-    inherit (self) outputs;
-    system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.${system};
-    lib = nixpkgs.lib // home-manager.lib;
+  } @ attrs: let
+    supportedSystems = ["x86_64-linux"];
+    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+    nixpkgsFor = forAllSystems (system: import nixpkgs {inherit system;});
   in {
-    inherit lib;
     nixosConfigurations = {
-      sasurai = lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        modules = [
-          ./hosts/sasurai
-        ];
-      };
-    };
-
-    homeConfigurations = {
-      emanon = lib.homeManagerConfiguration {
-        extraSpecialArgs = {inherit inputs outputs;};
-        inherit pkgs;
-        modules = [./home/emanon/sasurai.nix];
-      };
+      sasurai = let
+        system = "x86_64-linux";
+      in
+        nixpkgs.lib.nixosSystem {
+          specialArgs =
+            {
+              username = "emanon";
+              hostName = "sasurai";
+              hyprlandConfig = "desktop";
+              inherit system;
+            }
+            // attrs;
+          modules = [./.];
+        };
     };
   };
 }
