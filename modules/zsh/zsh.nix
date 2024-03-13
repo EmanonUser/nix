@@ -3,6 +3,7 @@
   username,
   ...
 }: {
+  programs.zsh.enable = true;
   home-manager.users.${username} = {
     programs.zsh = {
       enable = true;
