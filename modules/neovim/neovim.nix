@@ -1,9 +1,9 @@
 {
-  config,
   pkgs,
+  home-manager,
   ...
 }: {
-  home.sessionVariables = {
+  home-manager.home.sessionVariables = {
     EDITOR = "nvim";
   };
 

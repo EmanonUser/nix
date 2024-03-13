@@ -1,6 +1,7 @@
 {
-  config,
   pkgs,
+  home-manager,
+  username,
   ...
 }: let
   json = pkgs.formats.json {};
@@ -42,8 +43,10 @@
     ];
   };
 in {
-  home.packages = with pkgs; [rnnoise-plugin];
-  home.file.".config/pipewire/pipewire.conf.d/99-input-denoising.conf" = {
-    source = json.generate "source-rnnoise.conf" pw_rnnoise_config;
+  home-manager.users.${username} = {
+    home-manager.home.packages = with pkgs; [rnnoise-plugin];
+    home-manager.home.file.".config/pipewire/pipewire.conf.d/99-input-denoising.conf" = {
+      source = json.generate "source-rnnoise.conf" pw_rnnoise_config;
+    };
   };
 }
