@@ -2,21 +2,22 @@
   imports = [
     nixvim.nixosModules.nixvim
     ./core
-    ./packages
     ./hardware
-    ./virtualisation
     ./hyprland
+    ./packages
+    ./virtualisation
+
+    ./alacritty/alacritty.nix
+    ./atuin/atuin.nix
+    ./git/git.nix
     ./neovim/neovim.nix
     ./rnnoise/rnnoise.nix
-    ./git/git.nix
-    ./zsh/zsh.nix
-    ./zoxide/zoxide.nix
-    ./atuin/atuin.nix
-    ./alacritty/alacritty.nix
-    ./zellij/zellij.nix
-    ./starship/starship.nix
     ./services/services.nix
-    ./steam/steam.nix
     ./ssh/ssh.nix
+    ./starship/starship.nix
+    ./steam/steam.nix
+    ./zellij/zellij.nix
+    ./zoxide/zoxide.nix
+    ./zsh/zsh.nix
   ];
 }
