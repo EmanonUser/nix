@@ -2,6 +2,7 @@
   imports = [
     nixvim.nixosModules.nixvim
     ./core
+    ./packages
     ./hardware/audio/pipewire.nix
     ./neovim/neovim.nix
     ./rnnoise/rnnoise.nix
