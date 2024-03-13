@@ -17,5 +17,6 @@
     ./starship/starship.nix
     ./services/services.nix
     ./steam/steam.nix
+    ./ssh/ssh.nix
   ];
 }
