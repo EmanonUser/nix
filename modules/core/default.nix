@@ -1,1 +1,7 @@
-{ imports = [./bootloader/bootctl.nix]; }
+{
+  imports = [
+    ./settings.nix
+    ./bootloader.nix
+    ./fonts.nix
+  ];
+}

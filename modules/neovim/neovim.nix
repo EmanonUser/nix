@@ -1,10 +1,13 @@
 {
   pkgs,
   home-manager,
+  username,
   ...
 }: {
-  home-manager.home.sessionVariables = {
-    EDITOR = "nvim";
+  home-manager.users.${username} = {
+    home.sessionVariables = {
+      EDITOR = "nvim";
+    };
   };
 
   programs.nixvim = {

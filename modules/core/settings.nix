@@ -5,6 +5,7 @@
   ...
 }: {
   nixpkgs.config.allowUnfree = true;
+  system.stateVersion = "23.11";
 
   nix.gc = {
     automatic = true;
@@ -18,7 +19,7 @@
   };
 
   home-manager.users.${username} = {
-    system.stateVersion = "23.11";
+    home.stateVersion = "23.11";
     nixpkgs.config.allowUnfree = true;
   };
 }

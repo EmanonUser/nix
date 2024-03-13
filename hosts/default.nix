@@ -1,3 +1,6 @@
 {hostName, ...}: {
-  imports = [./${hostName}];
+  imports = [
+    ./${hostName}
+    ./localization.nix
+  ];
 }
