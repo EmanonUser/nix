@@ -15,6 +15,7 @@
     ./alacritty/alacritty.nix
     ./zellij/zellij.nix
     ./starship/starship.nix
+    ./services/services.nix
     ./steam/steam.nix
   ];
 }

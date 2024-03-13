@@ -15,12 +15,6 @@
 
   services.xserver.videoDrivers = ["amdgpu"];
 
-  services = {
-    fstrim.enable = true;
-    printing.enable = true;
-    openssh.enable = true;
-    fwupd.enable = true;
-  };
   users.users.emanon = {
     isNormalUser = true;
     description = "emanon";
