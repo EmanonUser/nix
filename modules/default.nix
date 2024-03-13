@@ -4,6 +4,7 @@
     ./core
     ./packages
     ./hardware
+    ./virtualisation
     ./hyprland/hyprland.nix
     ./neovim/neovim.nix
     ./rnnoise/rnnoise.nix

@@ -14,9 +14,6 @@
   networking.networkmanager.enable = true;
 
   services.xserver.videoDrivers = ["amdgpu"];
-  virtualisation.docker.enable = true;
-  virtualisation.libvirtd.enable = true;
-  programs.virt-manager.enable = true;
 
   services = {
     fstrim.enable = true;
