@@ -28,6 +28,7 @@
   outputs = {
     self,
     nixpkgs,
+    home-manager,
     ...
   } @ attrs: let
     supportedSystems = ["x86_64-linux"];
@@ -49,6 +50,16 @@
             // attrs;
           modules = [./.];
         };
+    };
+
+    homeConfigurations = let
+      username = "emanon";
+      hostname = "frieren";
+    in {
+      ${username} = home-manager.lib.homeManagerConfiguration {
+        extraSpecialArgs = {inherit username; inherit hostname;};
+        modules = [];
+      };
     };
   };
 }
