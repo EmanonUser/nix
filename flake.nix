@@ -26,15 +26,13 @@
   };
 
   outputs = {
-    self,
     nixpkgs,
     home-manager,
     nixvim,
     ...
   } @ attrs: let
-    supportedSystems = ["x86_64-linux"];
-    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-    nixpkgsFor = forAllSystems (system: import nixpkgs {inherit system;});
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
   in {
     nixosConfigurations = {
       sasurai = let
@@ -53,9 +51,8 @@
     };
 
     homeConfigurations = {
-
       "emanon@frieren" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        inherit pkgs;
         extraSpecialArgs = {
           username = "emanon";
           hostname = "frieren";
@@ -65,7 +62,7 @@
       };
 
       "emanon@sasurai" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        inherit pkgs;
         extraSpecialArgs = {
           username = "emanon";
           hostname = "sasurai";
