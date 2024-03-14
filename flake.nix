@@ -29,6 +29,7 @@
     self,
     nixpkgs,
     home-manager,
+    nixvim,
     ...
   } @ attrs: let
     supportedSystems = ["x86_64-linux"];
@@ -43,22 +44,34 @@
           specialArgs =
             {
               username = "emanon";
-              hostName = "sasurai";
-              hyprlandConfig = "desktop";
+              hostname = "sasurai";
               inherit system;
             }
             // attrs;
-          modules = [./.];
+          modules = [./hosts/sasurai];
         };
     };
 
-    homeConfigurations = let
-      username = "emanon";
-      hostname = "frieren";
-    in {
-      ${username} = home-manager.lib.homeManagerConfiguration {
-        extraSpecialArgs = {inherit username; inherit hostname;};
-        modules = [];
+    homeConfigurations = {
+
+      "emanon@frieren" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {
+          username = "emanon";
+          hostname = "frieren";
+          inherit nixvim;
+        };
+        modules = [./hosts/frieren];
+      };
+
+      "emanon@sasurai" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {
+          username = "emanon";
+          hostname = "sasurai";
+          inherit nixvim;
+        };
+        modules = [./modules/sasurai/home.nix];
       };
     };
   };
