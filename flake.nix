@@ -51,16 +51,6 @@
     };
 
     homeConfigurations = {
-      "emanon@frieren" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = {
-          username = "emanon";
-          hostname = "frieren";
-          inherit nixvim;
-        };
-        modules = [./hosts/frieren];
-      };
-
       "emanon@sasurai" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
@@ -69,6 +59,16 @@
           inherit nixvim;
         };
         modules = [./modules/sasurai/home.nix];
+      };
+
+      "emanon@frieren" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = {
+          username = "emanon";
+          hostname = "frieren";
+          inherit nixvim;
+        };
+        modules = [./modules/frieren/home.nix];
       };
     };
   };
