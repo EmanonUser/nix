@@ -171,6 +171,7 @@
       which-key.enable = true;
       lspkind.enable = true;
       gitsigns.enable = true;
+      trouble.enable = true;
     };
 
     extraPlugins = with pkgs.vimPlugins; [
