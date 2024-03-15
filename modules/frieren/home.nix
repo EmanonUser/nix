@@ -1,7 +1,7 @@
 {nixvim, ...}: {
   imports = [
     nixvim.homeManagerModules.nixvim
-    ./home-packages.nix
+    ./home-packages
     ../home/atuin/atuin.nix
     ../home/git/git.nix
     ../home/neovim/neovim.nix
