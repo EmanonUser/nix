@@ -1,4 +1,8 @@
-{pkgs, hostname, ...}: {
+{
+  pkgs,
+  hostname,
+  ...
+}: {
   home.packages = with pkgs; [
     git
   ];
