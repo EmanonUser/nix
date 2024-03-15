@@ -1,4 +1,8 @@
-{
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    git
+  ];
+
   home.file = {
     ".ssh/allowed_signers".text = "* ${builtins.readFile ../id_ed25519.pub}";
   };
