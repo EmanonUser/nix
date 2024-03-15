@@ -1,10 +1,10 @@
-{pkgs, ...}: {
+{pkgs, hostname, ...}: {
   home.packages = with pkgs; [
     git
   ];
 
   home.file = {
-    ".ssh/allowed_signers".text = "* ${builtins.readFile ../id_ed25519.pub}";
+    ".ssh/allowed_signers".text = "* ${builtins.readFile ../../${hostname}/id_ed25519.pub}";
   };
 
   programs.git = {
