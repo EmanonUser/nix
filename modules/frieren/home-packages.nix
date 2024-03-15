@@ -39,6 +39,5 @@
     socat
     tcpdump
     whois
-    wireshark
   ];
 }
