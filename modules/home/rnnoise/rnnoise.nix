@@ -43,8 +43,8 @@
     ];
   };
 in {
-    home.packages = with pkgs; [rnnoise-plugin];
-    home.file.".config/pipewire/pipewire.conf.d/99-input-denoising.conf" = {
-      source = json.generate "source-rnnoise.conf" pw_rnnoise_config;
-    };
+  home.packages = with pkgs; [rnnoise-plugin];
+  home.file.".config/pipewire/pipewire.conf.d/99-input-denoising.conf" = {
+    source = json.generate "source-rnnoise.conf" pw_rnnoise_config;
+  };
 }
