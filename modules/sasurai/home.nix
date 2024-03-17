@@ -3,9 +3,10 @@
     nixvim.homeManagerModules.nixvim
     ./home-packages
     ../home/alacritty/alacritty.nix
-    ../home/hyprland
     ../home/atuin/atuin.nix
+    ../home/direnv/direnv.nix
     ../home/git/git.nix
+    ../home/hyprland
     ../home/neovim/neovim.nix
     ../home/rnnoise/rnnoise.nix
     ../home/settings/home-manager-settings.nix
