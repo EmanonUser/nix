@@ -49,6 +49,8 @@
       "$mod, tab, changegroupactive"
       "$mod, f, fullscreen"
       "$mod, c, centerwindow"
+      "SUPER_SHIFT, s, exec, grimblast copysave area"
+      ", Print, exec, grimblast copysave active"
     ];
 
     bindel = [
