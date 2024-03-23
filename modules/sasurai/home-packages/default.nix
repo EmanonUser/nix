@@ -9,8 +9,12 @@
     bitwarden
     vlc
     mpv
+    ffmpeg
     rustdesk
     wofi
+    slurp
+    wf-recorder
+    grimblast
 
     # games and tool
     steam
