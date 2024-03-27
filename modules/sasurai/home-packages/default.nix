@@ -19,6 +19,8 @@
     # games and tool
     steam
     mangohud
+    gamemode
+    gamescope
     goverlay
     ferium
     minecraft
