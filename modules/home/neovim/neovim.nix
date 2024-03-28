@@ -17,7 +17,7 @@
     # colorschemes.tokyonight.enable = true;
     # colorschemes.tokyonight.style = "night";
     colorschemes.kanagawa.enable = true;
-    colorschemes.kanagawa.background.dark = "dragon";
+    colorschemes.kanagawa.settings.background.dark = "dragon";
     clipboard.providers.wl-copy.enable = true;
     globals.mapleader = " ";
 
@@ -153,13 +153,13 @@
 
     plugins.oil = {
       enable = true;
-      viewOptions.showHidden = true;
-      columns = {
-        icon.enable = true;
-        type.enable = true;
-        permissions.enable = true;
-        size.enable = true;
-      };
+      settings.show_hidden = true;
+      settings.columns = [
+        "icon"
+        "type"
+        "permissions"
+        "size"
+      ];
     };
 
     plugins = {
