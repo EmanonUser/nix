@@ -21,7 +21,7 @@
     clipboard.providers.wl-copy.enable = true;
     globals.mapleader = " ";
 
-    options = {
+    opts = {
       number = true;
       relativenumber = true;
       smarttab = true;
@@ -151,9 +151,14 @@
       };
     };
 
+    plugins = {
+      alpha.enable = true;
+      alpha.theme = "startify";
+    };
+
     plugins.oil = {
       enable = true;
-      settings.show_hidden = true;
+      settings.view_options.show_hidden = true;
       settings.columns = [
         "icon"
         "type"
