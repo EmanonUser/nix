@@ -11,6 +11,7 @@
     mpv
     ffmpeg
     rustdesk
+    element-desktop
     wofi
     slurp
     wf-recorder
