@@ -14,10 +14,17 @@
 
   programs.nixvim = {
     enable = true;
-    # colorschemes.tokyonight.enable = true;
-    # colorschemes.tokyonight.style = "night";
-    colorschemes.kanagawa.enable = true;
-    colorschemes.kanagawa.settings.background.dark = "dragon";
+    colorschemes.cyberdream.enable = true;
+    colorschemes.tokyonight = {
+      enable = false;
+      settings.style = false;
+    };
+
+    colorschemes.kanagawa = {
+      enable = false;
+      settings.background.dark = "dragon";
+    };
+
     clipboard.providers.wl-copy.enable = true;
     globals.mapleader = " ";
 
