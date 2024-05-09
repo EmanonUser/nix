@@ -117,6 +117,7 @@
       "hyprpaper"
       "copyq --start-server"
       "mako"
+      "waybar"
     ];
   };
 }
