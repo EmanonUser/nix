@@ -5,6 +5,7 @@
     starship
     atuin
     google-chrome
+    firefox
     discord
     bitwarden
     vlc
@@ -32,9 +33,11 @@
     ansible-lint
     sshpass # ansible requirement
     rustup
+    lld
     alejandra
     cargo-watch
     cargo-expand
+    cargo-tarpaulin
     sqlx-cli
     strace
     ltrace
