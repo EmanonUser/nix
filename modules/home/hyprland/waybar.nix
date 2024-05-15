@@ -100,7 +100,7 @@
 
       #workspaces {
       	background-color: #262626;
-      	color: #0d74bd;
+      	color: #ffffff;
       	margin-top: 0px;
       	margin-right: 15px;
       	padding-top: 0px;
@@ -110,7 +110,6 @@
 
       #custom-nix {
       	background-color: #262626;
-      	color: #0a60ab;
       	margin-top: 0px;
       	margin-right: 15px;
       	padding-top: 0px;
@@ -121,17 +120,17 @@
       #custom-nix {
       	font-size: 20px;
       	margin-left: 15px;
-      	color: #0a60ab;
+      	color: #FFFFFF;
       }
 
       #workspaces button {
       	background: #262626;
-      	color: #0d74bd;
+      	color: #FFFFFF;
       }
 
       #pulseaudio, #network, #clock {
       	background-color: #262626;
-      	color: #00ba69;
+      	color: #FFFFFF;
       	margin-top: 0px;
       	padding-left: 10px;
       	padding-right: 10px;
@@ -139,17 +138,17 @@
       }
 
       #network {
-      	color: #10a140;
+      	color: #FFFFFF;
       	padding-left: 5px;
       }
 
       #pulseaudio {
-      	color: #ba23d9;
+      	color: #FFFFFF;
       	padding-left: 5px;
       }
 
       #clock {
-      	color: #00ba69;
+      	color: #FFFFFF;
       }
     '';
   };
