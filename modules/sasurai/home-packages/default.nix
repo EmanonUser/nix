@@ -11,7 +11,6 @@
     vlc
     mpv
     ffmpeg
-    rustdesk
     element-desktop
     wofi
     slurp
@@ -25,7 +24,6 @@
     gamescope
     goverlay
     ferium
-    minecraft
     fabric-installer
 
     # developpement
