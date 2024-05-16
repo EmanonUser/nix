@@ -28,6 +28,7 @@
     tree
     which
     yj
+    hyfetch
 
     # networking
     curl

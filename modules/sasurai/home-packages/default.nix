@@ -16,6 +16,7 @@
     slurp
     wf-recorder
     grimblast
+    hyfetch
 
     # games and tool
     steam
