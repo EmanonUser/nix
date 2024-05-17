@@ -26,6 +26,7 @@
     goverlay
     ferium
     fabric-installer
+    prismlauncher-unwrapped
 
     # developpement
     ansible
