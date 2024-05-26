@@ -6,9 +6,8 @@
       "layer": "top",
       "ouput": "DP-2",
       "height": 15,
-      	"modules-left": ["custom/nix"],
-      	"modules-center": ["hyprland/workspaces"],
-      	"modules-right": [ "pulseaudio", "network", "clock"],
+      	"modules-left": ["hyprland/workspaces"],
+      	"modules-right": [ "pulseaudio", "clock"],
       	"custom/nix": {
       	"format": " ",
       	"tooltip": false,
@@ -61,28 +60,6 @@
       				" "
       			]
       		},
-      		"on-click": "pavucontrol"
-      	},
-
-      	"network": {
-      		"interface": "enp37s0",
-      		"format": "󰱓 {bandwidthTotalBytes}",
-      		"format-disconnected": "{icon} No Internet",
-      		"format-linked": "󰅛 {ifname} (No IP)",
-      		"format-alt": "󰛶 {bandwidthUpBytes} | 󰛴 {bandwidthDownBytes}",
-      		"tooltip-format": "{ifname}: {ipaddr}/{cidr} Gateway: {gwaddr}",
-      		"tooltip-format-wifi": "{icon} {essid} ({signalStrength}%)",
-      		"tooltip-format-ethernet": "{icon} {ipaddr}/{cidr}",
-      		"tooltip-format-disconnected": "{icon} Disconnected",
-      		"format-icons": {
-      			"ethernet": "󰈀",
-      			"disconnected": "⚠",
-      			"wifi": [
-      				"󰖪",
-      				""
-      			]
-      		},
-      		"interval": 2
       	},
       }
     '';
