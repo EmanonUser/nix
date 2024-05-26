@@ -1,6 +1,12 @@
-{nixvim, ...}: {
+{
+  nixvim,
+  stylix,
+  ...
+}: {
   imports = [
     nixvim.homeManagerModules.nixvim
+    stylix.homeManagerModules.stylix
+    ../nixos/stylix/default.nix
     ./home-packages
     ../home/alacritty/alacritty.nix
     ../home/atuin/atuin.nix

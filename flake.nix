@@ -23,12 +23,15 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+
+    stylix.url = "github:danth/stylix";
   };
 
   outputs = {
     nixpkgs,
     home-manager,
     nixvim,
+    stylix,
     ...
   } @ attrs: let
     system = "x86_64-linux";
@@ -57,6 +60,7 @@
           username = "emanon";
           hostname = "sasurai";
           inherit nixvim;
+          inherit stylix;
         };
         modules = [./modules/sasurai/home.nix];
       };
