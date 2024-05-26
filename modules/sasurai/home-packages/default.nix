@@ -27,6 +27,7 @@
     ferium
     fabric-installer
     prismlauncher-unwrapped
+    zulu17
 
     # developpement
     ansible
@@ -42,5 +43,6 @@
     strace
     ltrace
     docker
+    postgresql
   ];
 }
