@@ -40,5 +40,6 @@
     socat
     tcpdump
     whois
+    aria2
   ];
 }
