@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  git-auto-fetch = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/cb86d378f287f1731cc6ad907f6248e35b52dc25/plugins/git-auto-fetch/git-auto-fetch.plugin.zsh";
+    hash = "sha256-RxAF8YeKNny+nRz7aicQi3hEzYUfjMlJ+hmM7nH8YSY=";
+  };
+in {
   home.packages = with pkgs; [
     zsh
   ];
@@ -25,6 +30,7 @@
       autoload edit-command-line
       zle -N edit-command-line
       bindkey '^Xe' edit-command-line
+      source ${git-auto-fetch}
     '';
   };
 }
