@@ -95,11 +95,11 @@
         "smoothBezier, 0.25, 0.1, 0.25, 1.0"
       ];
       animation = [
-        "windows, 1, 7, smoothBezier, slide"
-        "windowsOut, 1, 7, snappyBezier, slide"
-        "border, 1, 10, snappyBezier"
-        "borderangle, 1, 100, smoothBezier, loop"
-        "fade, 1, 7, smoothBezier"
+        "windows, 1, 3, snappyBezier, slide"
+        "windowsOut, 1, 3, snappyBezier, slide"
+        "border, 1, 5, snappyBezier"
+        "borderangle, 1, 50, smoothBezier, loop"
+        "fade, 1, 4, smoothBezier"
       ];
     };
 
