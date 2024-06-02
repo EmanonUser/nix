@@ -113,11 +113,20 @@
       vrr = 1;
     };
 
+    windowrulev2 = [
+      "workspace 1, class:^(alacritty)$"
+      "workspace 2, class:^(firefox)$"
+      "workspace 5, class:^(discord)$"
+    ];
+
     exec-once = [
       "hyprpaper"
       "copyq --start-server"
       "mako"
       "waybar"
+      "alacritty"
+      "firefox"
+      "discord"
     ];
   };
 }
