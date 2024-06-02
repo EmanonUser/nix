@@ -20,8 +20,8 @@
       "$mod, quotedbl, workspace, 3"
       "$mod, apostrophe, workspace, 4"
       "$mod, parenleft, workspace, 5"
-      "$mod, egrave, workspace, 6"
-      "$mod, minus, workspace, 7"
+      "$mod, minus, workspace, 6"
+      "$mod, egrave, workspace, 7"
       "$mod, underscore, workspace, 8"
 
       "$mod SHIFT, ampersand, movetoworkspace, 1"
@@ -29,8 +29,8 @@
       "$mod SHIFT, quotedbl, movetoworkspace, 3"
       "$mod SHIFT, apostrophe, movetoworkspace, 4"
       "$mod SHIFT, parenleft, movetoworkspace, 5"
-      "$mod SHIFT, egrave, movetoworkspace, 6"
-      "$mod SHIFT, minus, movetoworkspace, 7"
+      "$mod SHIFT, minus, movetoworkspace, 6"
+      "$mod SHIFT, egrave, movetoworkspace, 7"
       "$mod SHIFT, underscore, movetoworkspace, 8"
 
       "$mod, a, exec, alacritty"
