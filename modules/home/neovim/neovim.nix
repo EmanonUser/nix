@@ -184,6 +184,7 @@
       lspkind.enable = true;
       gitsigns.enable = true;
       trouble.enable = true;
+      schemastore.enable = true;
     };
 
     extraPlugins = with pkgs.vimPlugins; [
