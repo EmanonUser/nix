@@ -108,7 +108,7 @@
         html.enable = true;
         yamlls.enable = true;
 
-        nil_ls = {
+        nil-ls = {
           enable = true;
           settings.formatting.command = ["alejandra"];
         };
