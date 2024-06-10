@@ -3,7 +3,19 @@
   home-manager,
   username,
   ...
-}: {
+}: let
+  precognition = [
+    (pkgs.vimUtils.buildVimPlugin {
+      name = "precognition";
+      src = pkgs.fetchFromGitHub {
+        owner = "tris203";
+        repo = "precognition.nvim";
+        rev = "5255b72c52b1159e9757f50389bde65e05e3bfb1";
+        hash = "sha256-AqWYV/59ugKyOWALOCdycWVm0bZ7qb981xnuw/mAVzM=";
+      };
+    })
+  ];
+in {
   home.sessionVariables = {
     EDITOR = "nvim";
   };
@@ -187,11 +199,17 @@
       schemastore.enable = true;
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
-      nvim-web-devicons
-      nordic-nvim
-      monokai-pro-nvim
-      rose-pine
-    ];
+    extraPlugins =
+      [
+        pkgs.vimPlugins.nvim-web-devicons
+        pkgs.vimPlugins.nordic-nvim
+        pkgs.vimPlugins.monokai-pro-nvim
+        pkgs.vimPlugins.rose-pine
+      ]
+      ++ precognition;
+
+    extraConfigLua = ''
+      require('precognition').setup({});
+    '';
   };
 }
