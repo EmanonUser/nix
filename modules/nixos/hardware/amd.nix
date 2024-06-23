@@ -1,15 +1,14 @@
 {pkgs, ...}: {
-  hardware.opengl.extraPackages = with pkgs; [
+  hardware.graphics.extraPackages = with pkgs; [
     amdvlk
     libGL
   ];
 
-  hardware.opengl.extraPackages32 = with pkgs; [
+  hardware.graphics.extraPackages32 = with pkgs; [
     # For 32 bit applications
     driversi686Linux.amdvlk
   ];
 
   services.xserver.videoDrivers = ["amdgpu"];
-  hardware.opengl.driSupport = true;
-  hardware.opengl.driSupport32Bit = true; # For 32 bit applications
+  hardware.graphics.enable32Bit = true; # For 32 bit applications
 }
