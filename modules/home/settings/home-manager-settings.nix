@@ -1,7 +1,7 @@
-{
+{username, ...}: {
   programs.home-manager.enable = true;
-  home.username = "emanon";
-  home.homeDirectory = "/home/emanon";
+  home.username = "${username}";
+  home.homeDirectory = "/home/${username}";
   home.stateVersion = "23.11";
   nixpkgs.config.allowUnfree = true;
 }
