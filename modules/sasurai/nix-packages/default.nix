@@ -9,6 +9,7 @@
     restic
     yj
     jq
+    xxd
 
     # utils
     fd
@@ -25,6 +26,7 @@
     lm_sensors
     amdgpu_top
     pciutils
+    smartmontools
 
     # development
     git
