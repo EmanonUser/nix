@@ -59,7 +59,7 @@
     };
 
     homeConfigurations = {
-      "emanon@sasurai" = home-manager.lib.homeManagerConfiguration {
+      sasurai = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
           username = "emanon";
@@ -70,7 +70,7 @@
         modules = [./modules/sasurai/home.nix];
       };
 
-      "emanon@frieren" = home-manager.lib.homeManagerConfiguration {
+      frieren = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
           username = "emanon";
