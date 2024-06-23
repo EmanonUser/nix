@@ -31,6 +31,7 @@ in {
       zle -N edit-command-line
       bindkey '^Xe' edit-command-line
       source ${git-auto-fetch}
+      export LC_CTYPE=en_US.UTF-8
     '';
   };
 }
