@@ -186,6 +186,17 @@ in {
       ];
     };
 
+    plugins.codesnap = {
+      enable = true;
+      settings = {
+        has_breadcrumbs = true;
+        has_line_number = true;
+        show_workspace = true;
+        mac_window_bar = false;
+        watermark = "";
+      };
+    };
+
     plugins = {
       telescope.enable = true;
       treesitter.enable = true;
