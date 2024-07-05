@@ -2,6 +2,7 @@
   imports = [
     ../nixos/core
     ../nixos/services/services.nix
+    ../nixos/ssh-server
     ../nixos/hardware
     ../nixos/virtualisation
     #../nixos/greetd/greetd.nix
