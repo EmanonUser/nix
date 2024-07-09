@@ -145,6 +145,11 @@ in {
       };
     };
 
+    plugins.treesitter = {
+      enable = true;
+      settings.highlight.enable = true;
+    };
+
     plugins.cmp = {
       enable = true;
       autoEnableSources = true;
@@ -199,7 +204,6 @@ in {
 
     plugins = {
       telescope.enable = true;
-      treesitter.enable = true;
       luasnip.enable = true;
       fugitive.enable = true;
       presence-nvim.enable = true;
