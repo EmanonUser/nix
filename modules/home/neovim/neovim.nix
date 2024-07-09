@@ -208,6 +208,7 @@ in {
       gitsigns.enable = true;
       trouble.enable = true;
       schemastore.enable = true;
+      glow.enable = true;
     };
 
     extraPlugins =
