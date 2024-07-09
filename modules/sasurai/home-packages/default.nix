@@ -17,6 +17,7 @@
     wf-recorder
     grimblast
     hyfetch
+    zola
 
     # games and tool
     steam
