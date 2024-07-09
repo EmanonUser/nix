@@ -11,7 +11,7 @@
     enable = true;
 
     settings = {
-      window.opacity = lib.mkForce 0.5;
+      window.opacity = lib.mkForce 1.0;
     };
   };
 }
