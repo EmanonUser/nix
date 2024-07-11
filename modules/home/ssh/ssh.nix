@@ -19,7 +19,7 @@
     Host r1
       User emanon
       Port 22
-      Hostname frieren.home.arpa
+      Hostname r1.home.arpa
       IdentitiesOnly yes
       IdentityFile /home/emanon/.ssh/id_ed25519
       CertificateFile /home/emanon/.ssh/id_ed25519-cert.pub
