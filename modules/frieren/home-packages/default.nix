@@ -11,6 +11,7 @@
     rustup
     sshpass # ansible requirement
     strace
+    zola
 
     # utils
     fd
