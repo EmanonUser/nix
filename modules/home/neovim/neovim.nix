@@ -206,7 +206,7 @@ in {
       telescope.enable = true;
       luasnip.enable = true;
       fugitive.enable = true;
-      presence-nvim.enable = true;
+      presence-nvim.enable = false;
       which-key.enable = true;
       lspkind.enable = true;
       gitsigns.enable = true;
