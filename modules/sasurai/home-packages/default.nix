@@ -7,7 +7,7 @@
     google-chrome
     firefox
     discord
-    bitwarden
+    #bitwarden
     vlc
     mpv
     ffmpeg
