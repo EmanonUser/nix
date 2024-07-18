@@ -64,6 +64,18 @@ in {
           '';
         };
       }
+
+      {
+        event = ["BufWritePre"];
+        pattern = ["*"];
+        callback = {
+          __raw = ''
+            function()
+              vim.lsp.buf.format()
+            end
+          '';
+        };
+      }
     ];
 
     keymaps = [
