@@ -7,7 +7,7 @@
     google-chrome
     firefox
     discord
-    #bitwarden
+    bitwarden
     vlc
     mpv
     ffmpeg
@@ -45,5 +45,6 @@
     ltrace
     docker
     postgresql
+    oha
   ];
 }
