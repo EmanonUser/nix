@@ -91,27 +91,27 @@ in {
       }
       {
         key = "<leader>ff";
-        action = "<cmd>Telescope find_files<CR>";
+        action = "<cmd>Telescope find_files initial_mode=normal<CR>";
         mode = "n";
       }
       {
         key = "<leader>fg";
-        action = "<cmd>Telescope live_grep<CR>";
+        action = "<cmd>Telescope live_grep initial_mode=normal<CR>";
         mode = "n";
       }
       {
         key = "<leader>fb";
-        action = "<cmd>Telescope buffers<CR>";
+        action = "<cmd>Telescope buffers initial_mode=normal<CR>";
         mode = "n";
       }
       {
         key = "<leader>fh";
-        action = "<cmd>Telescope help_tags<CR>";
+        action = "<cmd>Telescope help_tags initial_mode=normal<CR>";
         mode = "n";
       }
       {
         key = "<leader>fi";
-        action = "<cmd>Telescope git_files<CR>";
+        action = "<cmd>Telescope git_files initial_mode=normal<CR>";
         mode = "n";
       }
       {
