@@ -14,6 +14,7 @@
     element-desktop
     wofi
     slurp
+    jellyfin-media-player
     wf-recorder
     grimblast
     hyfetch
