@@ -15,6 +15,17 @@
       };
     })
   ];
+  kulala = [
+    (pkgs.vimUtils.buildVimPlugin {
+      name = "kulala";
+      src = pkgs.fetchFromGitHub {
+        owner = "mistweaverco";
+        repo = "kulala.nvim";
+        rev = "6905f47b2134d2d3f51e1b82821dd0532f7ceb6c";
+        hash = "sha256-xoHoeDU2Vwnx/FOgWSNAbUCdX6T5Mbxf65jYM5cirng=";
+      };
+    })
+  ];
 in {
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -234,10 +245,12 @@ in {
         pkgs.vimPlugins.monokai-pro-nvim
         pkgs.vimPlugins.rose-pine
       ]
-      ++ precognition;
+      ++ precognition
+      ++ kulala;
 
     extraConfigLua = ''
       require('precognition').setup({});
+      require('kulala').setup({});
     '';
   };
 }
