@@ -28,7 +28,6 @@
     goverlay
     ferium
     fabric-installer
-    prismlauncher-unwrapped
     zulu17
 
     # developpement
