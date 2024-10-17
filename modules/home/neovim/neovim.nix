@@ -136,19 +136,19 @@ in {
       enable = true;
       servers = {
         ansiblels.enable = true;
-        lua-ls.enable = true;
+        lua_ls.enable = true;
         dockerls.enable = true;
         taplo.enable = true;
         jsonls.enable = true;
         html.enable = true;
         yamlls.enable = true;
 
-        nil-ls = {
+        nil_ls = {
           enable = true;
           settings.formatting.command = ["alejandra"];
         };
 
-        rust-analyzer = {
+        rust_analyzer = {
           enable = true;
           installRustc = false;
           installCargo = false;
@@ -226,6 +226,7 @@ in {
     };
 
     plugins = {
+      web-devicons.enable = true;
       telescope.enable = true;
       luasnip.enable = true;
       fugitive.enable = true;
