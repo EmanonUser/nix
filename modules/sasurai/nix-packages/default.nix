@@ -27,6 +27,9 @@
     amdgpu_top
     pciutils
     smartmontools
+    qmk-udev-rules
+    qmk-udev-rules
+    via
 
     # development
     git
@@ -37,7 +40,6 @@
     mtr
     ethtool
     tcpdump
-    wireshark
     whois
     curl
     socat

@@ -4,4 +4,7 @@
     printing.enable = true;
     fwupd.enable = true;
   };
+  services.udev.packages = with pkgs; [
+    via
+  ];
 }

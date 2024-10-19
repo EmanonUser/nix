@@ -22,10 +22,10 @@
       Controlpath ~/.ssh/ssh-%r@%h:%p.sock
       ControlPersist 900
 
-    Host vyos
+    Host holo
       User emanon
       Port 22
-      Hostname vyos.home.arpa
+      Hostname holo.home.arpa
       IdentitiesOnly yes
       IdentityFile /home/emanon/.ssh/id_ed25519
       CertificateFile /home/emanon/.ssh/id_ed25519-cert.pub
@@ -47,7 +47,7 @@
       Hostname ubnt.home.arpa
 
     Host ctrlf
-      Hostname ctrl-f.io
+      Hostname ctrl-f.info
       User ctrlf
       Controlmaster auto
       Controlpath ~/.ssh/ssh-%r@%h:%p.sock
