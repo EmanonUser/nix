@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     zsh
     alacritty
+    kitty
     starship
     atuin
     google-chrome
