@@ -30,6 +30,7 @@
     qmk-udev-rules
     qmk-udev-rules
     via
+    ventoy
 
     # development
     git
