@@ -4,6 +4,7 @@
     alacritty
     kitty
     starship
+    ghostty
     atuin
     google-chrome
     firefox
