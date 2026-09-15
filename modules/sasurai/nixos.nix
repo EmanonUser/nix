@@ -6,7 +6,7 @@
   imports = [
     ../nixos/core
     ../nixos/core/impermanence.nix
-    ../nixos/disko/sasurai.nix
+    ../../hosts/sasurai/disko.nix
     ../nixos/services/services.nix
     ../nixos/ssh-server
     ../nixos/hardware

@@ -21,7 +21,12 @@
     hideMounts = true;
 
     directories = [
-      "/home/${username}"
+      {
+        directory = "/home/${username}";
+        user = username;
+        group = "users";
+        mode = "0755";
+      }
       "/etc/NetworkManager/system-connections"
       "/var/lib/bluetooth"
       "/var/lib/docker"

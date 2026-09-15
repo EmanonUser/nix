@@ -41,7 +41,7 @@
     ../../users
     ../../modules/nixos/core
     ../../modules/nixos/core/impermanence.nix
-    ../../modules/nixos/disko/vm.nix
+    ./disko.nix
     ../../modules/nixos/ssh-server
     ../../modules/nixos/services/services.nix
     ../../modules/nixos/hardware/network.nix
