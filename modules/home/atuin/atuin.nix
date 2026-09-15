@@ -1,8 +1,5 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    atuin
-  ];
-
+{
+  # atuin is auto-installed by programs.atuin.enable below.
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;

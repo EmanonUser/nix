@@ -1,24 +1,16 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    zsh
-    alacritty
+    # GUI applications (terminals/shell tools live in modules/home/*)
     kitty
-    starship
-    ghostty
-    atuin
     google-chrome
     firefox
     discord
-    bitwarden
+    bitwarden-desktop
     vlc
     mpv
     ffmpeg
     element-desktop
-    wofi
-    slurp
     jellyfin-media-player
-    wf-recorder
-    grimblast
     hyfetch
     zola
 

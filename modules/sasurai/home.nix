@@ -1,18 +1,11 @@
 {
-  nixvim,
-  stylix,
-  ...
-}: {
   imports = [
-    nixvim.homeManagerModules.nixvim
-    stylix.homeManagerModules.stylix
-    ../nixos/stylix/default.nix
     ./home-packages
     ../home/alacritty/alacritty.nix
     ../home/atuin/atuin.nix
     ../home/direnv/direnv.nix
+    ../home/ghostty/ghostty.nix
     ../home/git/git.nix
-    ../home/hyprland
     ../home/neovim/neovim.nix
     ../home/rnnoise/rnnoise.nix
     ../home/settings/home-manager-settings.nix

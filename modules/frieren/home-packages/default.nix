@@ -19,7 +19,6 @@
     gnupg
     htop
     jq
-    jq
     lm_sensors
     lsof
     pciutils

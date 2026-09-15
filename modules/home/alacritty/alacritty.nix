@@ -1,12 +1,8 @@
 {
-  pkgs,
   lib,
   ...
 }: {
-  home.packages = with pkgs; [
-    alacritty
-  ];
-
+  # alacritty is auto-installed by programs.alacritty.enable below.
   programs.alacritty = {
     enable = true;
 

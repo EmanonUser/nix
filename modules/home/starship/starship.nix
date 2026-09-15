@@ -1,8 +1,5 @@
 {pkgs, ...}: {
-  home.packages = with pkgs; [
-    starship
-  ];
-
+  # starship is auto-installed by programs.starship.enable below.
   programs.starship = {
     enable = true;
   };

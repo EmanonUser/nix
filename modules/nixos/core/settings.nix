@@ -1,6 +1,6 @@
 {
   nixpkgs.config.allowUnfree = true;
-  system.stateVersion = "23.11";
+  system.stateVersion = "25.05";
 
   nix.gc = {
     automatic = true;

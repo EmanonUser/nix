@@ -3,26 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+    impermanence = {
+      url = "github:nix-community/impermanence";
     };
 
-    hyprland = {
-      url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    disko = {
+      url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
     };
 
     stylix = {
@@ -34,7 +27,8 @@
   outputs = {
     nixpkgs,
     home-manager,
-    nixvim,
+    impermanence,
+    disko,
     stylix,
     ...
   } @ attrs: let
@@ -42,40 +36,46 @@
     pkgs = nixpkgs.legacyPackages.${system};
   in {
     formatter.x86_64-linux = pkgs.alejandra;
+
     nixosConfigurations = {
-      sasurai = let
-        system = "x86_64-linux";
-      in
-        nixpkgs.lib.nixosSystem {
-          specialArgs =
-            {
-              username = "emanon";
-              hostname = "sasurai";
-              inherit system;
-            }
-            // attrs;
-          modules = [./hosts/sasurai];
-        };
+      sasurai = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          username = "emanon";
+          hostname = "sasurai";
+          inherit system;
+        } // attrs;
+        modules = [
+          disko.nixosModules.disko
+          home-manager.nixosModules.home-manager
+          impermanence.nixosModules.impermanence
+          ./hosts/sasurai
+        ];
+      };
+
+      nixos-vm = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          username = "emanon";
+          hostname = "nixos-vm";
+          inherit system;
+        } // attrs;
+        modules = [
+          disko.nixosModules.disko
+          home-manager.nixosModules.home-manager
+          impermanence.nixosModules.impermanence
+          ./hosts/nixos-vm
+        ];
+      };
     };
 
     homeConfigurations = {
-      sasurai = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = {
-          username = "emanon";
-          hostname = "sasurai";
-          inherit nixvim;
-          inherit stylix;
-        };
-        modules = [./modules/sasurai/home.nix];
-      };
-
       frieren = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
         extraSpecialArgs = {
           username = "emanon";
           hostname = "frieren";
-          inherit nixvim;
         };
         modules = [./modules/frieren/home.nix];
       };
