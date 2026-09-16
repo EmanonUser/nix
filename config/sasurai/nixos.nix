@@ -22,6 +22,12 @@
     ./nix-packages
   ];
 
+  # Log straight into the desktop as emanon (KDE/SDDM).
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = username;
+  };
+
   # sasurai signs its host key with the emanon user CA (files provisioned out-of-band).
   services.openssh.extraConfig = ''
     TrustedUserCAKeys /etc/ssh/emanon_user_ca.pub
