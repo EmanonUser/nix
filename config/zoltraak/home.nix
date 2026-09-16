@@ -1,4 +1,7 @@
 {
+  # zoltraak's GPUs only reach OpenGL 3.3, below Ghostty's 4.3 requirement.
+  ghostty.softwareRendering = true;
+
   imports = [
     ./home-packages
     ../../modules/alacritty/alacritty.nix
