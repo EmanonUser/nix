@@ -22,6 +22,10 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+    };
   };
 
   outputs = {
@@ -30,6 +34,7 @@
     impermanence,
     disko,
     stylix,
+    agenix,
     ...
   } @ attrs: let
     system = "x86_64-linux";
@@ -39,30 +44,53 @@
 
     nixosConfigurations = {
       sasurai = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          username = "emanon";
-          hostname = "sasurai";
-          inherit system;
-        } // attrs;
+        specialArgs =
+          {
+            username = "emanon";
+            hostname = "sasurai";
+            inherit system;
+          }
+          // attrs;
         modules = [
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
           impermanence.nixosModules.impermanence
+          agenix.nixosModules.default
           ./hosts/sasurai
         ];
       };
 
       nixos-vm = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          username = "emanon";
-          hostname = "nixos-vm";
-          inherit system;
-        } // attrs;
+        specialArgs =
+          {
+            username = "emanon";
+            hostname = "nixos-vm";
+            inherit system;
+          }
+          // attrs;
         modules = [
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
           impermanence.nixosModules.impermanence
+          agenix.nixosModules.default
           ./hosts/nixos-vm
+        ];
+      };
+
+      zoltraak = nixpkgs.lib.nixosSystem {
+        specialArgs =
+          {
+            username = "emanon";
+            hostname = "zoltraak";
+            inherit system;
+          }
+          // attrs;
+        modules = [
+          disko.nixosModules.disko
+          home-manager.nixosModules.home-manager
+          impermanence.nixosModules.impermanence
+          agenix.nixosModules.default
+          ./hosts/zoltraak
         ];
       };
     };
@@ -77,7 +105,7 @@
           username = "emanon";
           hostname = "frieren";
         };
-        modules = [./modules/frieren/home.nix];
+        modules = [./config/frieren/home.nix];
       };
     };
   };

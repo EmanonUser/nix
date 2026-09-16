@@ -59,8 +59,7 @@
 
   # With impermanence /home/emanon starts empty: home-manager refuses to run
   # until its profile directory exists, so create it before every activation.
-  systemd.services."home-manager-${username}".serviceConfig.ExecStartPre =
-    [ "${pkgs.coreutils}/bin/mkdir -p /home/${username}/.local/state/nix/profiles" ];
+  systemd.services."home-manager-${username}".serviceConfig.ExecStartPre = ["${pkgs.coreutils}/bin/mkdir -p /home/${username}/.local/state/nix/profiles"];
 
   virtualisation.incus.agent.enable = true;
 

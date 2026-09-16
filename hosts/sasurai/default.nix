@@ -3,7 +3,7 @@
     ../localization.nix
     ./hardware-configuration.nix
     ./../../users
-    ./../../modules/sasurai/nixos.nix
+    ./../../config/sasurai/nixos.nix
   ];
 
   programs.ssh.startAgent = true;
