@@ -26,6 +26,11 @@
     agenix = {
       url = "github:ryantm/agenix";
     };
+
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -35,6 +40,7 @@
     disko,
     stylix,
     agenix,
+    lanzaboote,
     ...
   } @ attrs: let
     system = "x86_64-linux";
@@ -48,6 +54,7 @@
           {
             username = "emanon";
             hostname = "sasurai";
+            filesystem = "zfs";
             inherit system;
           }
           // attrs;
@@ -56,6 +63,7 @@
           home-manager.nixosModules.home-manager
           impermanence.nixosModules.impermanence
           agenix.nixosModules.default
+          lanzaboote.nixosModules.lanzaboote
           ./hosts/sasurai
         ];
       };
