@@ -65,6 +65,7 @@
           {
             username = "emanon";
             hostname = "nixos-vm";
+            filesystem = "zfs";
             inherit system;
           }
           // attrs;
