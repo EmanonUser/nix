@@ -32,6 +32,12 @@
     "/var/lib/sbctl"
   ];
 
+  # Allow unlocking the LUKS root via a FIDO2 hardware token at boot;
+  # falls back to the passphrase when the token isn't present.
+  boot.initrd.luks.devices."crypt".crypttabExtraOpts = [
+    "fido2-device=auto"
+  ];
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
