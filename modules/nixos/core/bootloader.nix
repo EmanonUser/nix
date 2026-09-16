@@ -1,6 +1,7 @@
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.timeout = 20;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Route /dev/console input to the VGA/display terminal (keyboard on the
