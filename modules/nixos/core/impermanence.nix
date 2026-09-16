@@ -29,9 +29,8 @@
       }
       "/etc/NetworkManager/system-connections"
       "/var/lib/bluetooth"
-      "/var/lib/docker"
       "/var/lib/fwupd"
-      "/var/lib/libvirt"
+      "/var/lib/incus"
       "/var/lib/logrotate"
       "/var/lib/nixos"
       "/var/lib/NetworkManager"

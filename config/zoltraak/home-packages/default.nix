@@ -25,7 +25,6 @@
     sqlx-cli
     strace
     ltrace
-    docker
     postgresql
     oha
   ];
