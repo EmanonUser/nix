@@ -27,6 +27,8 @@
             type = "luks";
             name = "crypt";
             settings.allowDiscards = true;
+            # Passphrase supplied by nixos-anywhere --disk-encryption-keys
+            passwordFile = "/tmp/disk-encryption.key";
             content =
               if filesystem == "zfs"
               then {
