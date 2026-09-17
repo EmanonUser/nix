@@ -82,5 +82,8 @@
 
   # ZFS-specific boot wiring (harmless no-ops on btrfs).
   networking.hostId = lib.mkIf (filesystem == "zfs") "3f7c9e21";
-  boot.zfs.forceImportRoot = lib.mkIf (filesystem == "zfs") false;
+  # Force-import the root pool: after a fresh install (and any unclean
+  # shutdown) the pool is still marked "in use" by the install environment,
+  # so a non-forced `zpool import` in the initrd would refuse and hang boot.
+  boot.zfs.forceImportRoot = lib.mkIf (filesystem == "zfs") true;
 }
