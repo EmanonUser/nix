@@ -55,6 +55,9 @@ binds {
     XF86MonBrightnessUp allow-when-locked=true { spawn-sh "noctalia msg brightness-up"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn-sh "noctalia msg brightness-down"; }
 
+    // Lock the session (Noctalia shell's lock screen)
+    Super+Alt+L { spawn-sh "noctalia msg session lock"; }
+
     // Windows
     Mod+Q repeat=false { close-window; }
     Mod+V { toggle-window-floating; }
