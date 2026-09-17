@@ -13,6 +13,6 @@
     warn-dirty = false;
     # Allow admins to deploy locally-built (unsigned) closures, e.g.
     # `nixos-rebuild --target-host` from a dev machine.
-    trusted-users = ["root" "@wheel"];
+    trusted-users = ["@wheel"];
   };
 }
