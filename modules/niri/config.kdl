@@ -37,7 +37,7 @@ binds {
     Mod+Shift+E { quit; }
 
     // Terminals & apps
-    Mod+Return { spawn "kitty"; }
+    Mod+Return { spawn "ghostty"; }
     Mod+Shift+Return { spawn "ghostty"; }
     Mod+T { spawn "ghostty"; }
     Mod+W { spawn "firefox"; }
