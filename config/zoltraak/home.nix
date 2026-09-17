@@ -10,7 +10,7 @@
     ../../modules/ghostty/ghostty.nix
     ../../modules/git/git.nix
     ../../modules/neovim/neovim.nix
-    ../../modules/niri-config/niri-config.nix
+    ../../modules/niri/niri.nix
     ../../modules/settings/home-manager-settings.nix
     ../../modules/ssh/ssh.nix
     ../../modules/starship/starship.nix
