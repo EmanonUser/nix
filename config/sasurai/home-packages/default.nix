@@ -1,8 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     # GUI applications (terminals/shell tools live in modules/*)
-    kitty
-    google-chrome
     firefox
     discord
     bitwarden-desktop
@@ -10,7 +8,7 @@
     mpv
     ffmpeg
     element-desktop
-    jellyfin-media-player
+    fladder
     hyfetch
     zola
 
@@ -20,9 +18,6 @@
     gamemode
     gamescope
     goverlay
-    ferium
-    fabric-installer
-    zulu17
 
     # developpement
     ansible

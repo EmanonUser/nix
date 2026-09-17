@@ -1,7 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    kitty
-    google-chrome
     firefox
     discord
     bitwarden-desktop
@@ -9,6 +7,7 @@
     mpv
     ffmpeg
     element-desktop
+    fladder
     hyfetch
     zola
 
