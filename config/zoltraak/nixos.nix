@@ -13,7 +13,8 @@
     ../../modules/nixos/ssh-server
     ../../modules/nixos/hardware
     ../../modules/nixos/virtualisation
-    ./desktop.nix
+    ../../modules/nixos/noctalia
+    ../../modules/nixos/niri
     stylix.nixosModules.stylix
     ../../modules/nixos/stylix
     ./nix-packages
