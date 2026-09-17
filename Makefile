@@ -1,8 +1,9 @@
 # NixOS / home-manager maintenance targets.
 #
 #   make help                 list all targets
+#   make deploy-zoltraak      build locally + copy closure + switch zoltraak (no OOM)
+#   make deploy               build locally + switch every NixOS host
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
-#   make rebuild              rebuild + switch every NixOS host (on-machine)
 #   make home-frieren         rebuild + switch frieren (home-manager only)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
 #   make update               update flake lockfile
@@ -25,8 +26,9 @@ ZOLTRAAK_IP ?= 192.168.5.113
 SASURAI_IP  ?= sasurai
 
 # Tools are run via `nix run` since they aren't installed on this machine.
-HOME_MANAGER := nix run nixpkgs\#home-manager --
-ANYWHERE     := nix run github:nix-community/nixos-anywhere --
+HOME_MANAGER   := nix run nixpkgs\#home-manager --
+ANYWHERE       := nix run github:nix-community/nixos-anywhere --
+NIXOS_REBUILD  := nix run nixpkgs\#nixos-rebuild --
 
 ZOLTRAAK := $(USER)@$(ZOLTRAAK_IP)
 SASURAI  := $(USER)@$(SASURAI_IP)
@@ -36,6 +38,7 @@ SASURAI  := $(USER)@$(SASURAI_IP)
 LUKS_KEY ?= /tmp/disk-encryption.key
 
 .PHONY: help install install-zoltraak install-sasurai \
+        deploy deploy-sasurai deploy-zoltraak \
         rebuild rebuild-sasurai rebuild-zoltraak \
         push-sasurai push-zoltraak \
         home home-frieren \
@@ -82,6 +85,22 @@ install-sasurai: ## Full reinstall of sasurai (prompts for user/host, confirmati
 	$(call INSTALL_RECIPE,sasurai)
 
 # ---------------------------------------------------------------------------
+# Local-build deploys: build on THIS machine, copy the closure to the target
+# and switch it over SSH. Use this instead of `rebuild-*` when the target is
+# low on RAM (zoltraak OOMs building Noctalia/Flutter). Needs `@wheel` in
+# nix.settings.trusted-users on the target (see modules/nixos/core/settings.nix)
+# to accept the unsigned locally-built paths.
+# ---------------------------------------------------------------------------
+
+deploy: deploy-sasurai deploy-zoltraak ## Build locally + switch every NixOS host
+
+deploy-sasurai: ## Build locally, copy to sasurai and switch
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#sasurai --target-host $(SASURAI) --use-remote-sudo
+
+deploy-zoltraak: ## Build locally, copy to zoltraak and switch
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#zoltraak --target-host $(ZOLTRAAK) --use-remote-sudo
+
+# ---------------------------------------------------------------------------
 # NixOS rebuild + switch (runs ON the machine itself). The committed flake is
 # synced to ~/nix on the target, then `nixos-rebuild switch` is executed there
 # via passwordless sudo. Commit your changes first - only `HEAD` is pushed.
@@ -120,8 +139,11 @@ home-frieren: ## Rebuild + switch frieren
 HOST_CA_KEY ?= $(HOME)/certs/hosts_certificate_authority
 HOST_CA     := $(subst ~,$(HOME),$(HOST_CA_KEY))
 
-# per-host cert principals: the names/IPs clients use to reach each host
-HOST_PRINCIPALS := zoltraak:zoltraak,192.168.5.113 sasurai:sasurai,sasurai.home.arpa
+# per-host cert principals: the names/IPs clients use to reach each host.
+# The wildcards let clients reach either host through any *.home.arpa /
+# *.emanon.dev name while still validating against the Host CA.
+HOST_PRINCIPALS := zoltraak:zoltraak,zoltraak.home.arpa,192.168.5.113,*.home.arpa,*.emanon.dev \
+                   sasurai:sasurai,sasurai.home.arpa,*.home.arpa,*.emanon.dev
 
 sign-host-certs: ## Re-sign all host certificates with the Host CA (HOST_CA_KEY=...)
 	@test -f "$(HOST_CA)" || { echo "Host CA key not found: $(HOST_CA)"; exit 1; }
