@@ -27,7 +27,6 @@
     shellAliases = {
       vi = "nvim";
       vim = "nvim";
-      cd = "z";
       ls = "ls --color";
       ll = "ls --color --group-directories-first -lh";
       la = "ls --color --group-directories-first -Alh --ignore='[^.]*'";
