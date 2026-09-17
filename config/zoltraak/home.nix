@@ -10,6 +10,7 @@
     ../../modules/ghostty/ghostty.nix
     ../../modules/git/git.nix
     ../../modules/neovim/neovim.nix
+    ../../modules/niri-config/niri-config.nix
     ../../modules/settings/home-manager-settings.nix
     ../../modules/ssh/ssh.nix
     ../../modules/starship/starship.nix
@@ -17,6 +18,4 @@
     ../../modules/zoxide/zoxide.nix
     ../../modules/zsh/zsh.nix
   ];
-
-  home.file.".config/niri/config.kdl".source = ./niri/config.kdl;
 }
