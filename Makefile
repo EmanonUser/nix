@@ -128,7 +128,12 @@ sign-host-certs: ## Re-sign all host certificates with the Host CA (HOST_CA_KEY=
 	  ssh-keygen -s $(HOST_CA_KEY) -I "$$h host cert" -h -n "$$p" \
 	    config/$$h/ssh/ssh_host_ed25519_key.pub; \
 	done
-	@ssh-keygen -y -f $(HOST_CA_KEY) | { read t k; echo "$$t $$k noctalia host CA"; } > modules/ssh/host_ca.pub
+	@if [ -f "$(HOST_CA_KEY).pub" ]; then \
+	  read -r t k _ < "$(HOST_CA_KEY).pub"; \
+	  echo "$$t $$k emanong host CA" > modules/ssh/host_ca.pub; \
+	else \
+	  ssh-keygen -y -f $(HOST_CA_KEY) > modules/ssh/host_ca.pub; \
+	fi
 	@echo "Re-signed host certs for: $(NIXOS_HOSTS)"; \
 	echo "Host CA public key written to modules/ssh/host_ca.pub:"; \
 	echo "  $$(cut -d' ' -f1,2 modules/ssh/host_ca.pub)"
