@@ -28,12 +28,6 @@
     user = username;
   };
 
-  # sasurai signs its host key with the emanon user CA (files provisioned out-of-band).
-  services.openssh.extraConfig = ''
-    TrustedUserCAKeys /etc/ssh/emanon_user_ca.pub
-    HostCertificate /etc/ssh/ssh_host_ed25519_key-cert.pub
-  '';
-
   # Impermanence: keep the Secure Boot PKI (keys live under /var/lib on tmpfs).
   environment.persistence."/persist".directories = [
     "/var/lib/sbctl"
