@@ -19,14 +19,27 @@
     "${config.home-manager.users.${username}.home.profileDirectory}/bin"
   ];
 
-  # Boot straight into niri as `username`.
-  services.greetd = {
+  # Noctalia Greeter: greetd-based login screen, defaults to niri + `username`.
+  services.displayManager.noctalia-greeter = {
     enable = true;
     settings = {
-      default_session = {
-        user = username;
-        command = "${pkgs.niri}/bin/niri-session";
+      session.default = "niri";
+      user.default = username;
+      keyboard = {
+        layout = "fr";
+        numlock = true;
       };
     };
+  };
+
+  # greetd runs the greeter as this dedicated system user.
+  services.greetd.settings.default_session.user = "greeter";
+
+  users.groups.greeter = {};
+
+  users.users.greeter = {
+    isSystemUser = true;
+    group = "greeter";
+    home = "/var/lib/noctalia-greeter";
   };
 }
