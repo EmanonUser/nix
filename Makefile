@@ -115,25 +115,26 @@ home-frieren: ## Rebuild + switch frieren
 # SSH host certificates (static per-host keys live in config/<host>/ssh/)
 # ---------------------------------------------------------------------------
 
-# Private key of the Host CA (distinct from the user CA).
-HOST_CA_KEY ?= $(HOME)/.ssh/emanon_host_ca
+# Private key of the Host CA (distinct from the user CA). Expand a leading ~
+# here because make would otherwise pass it through literally.
+HOST_CA_KEY ?= $(HOME)/certs/hosts_certificate_authority
+HOST_CA     := $(subst ~,$(HOME),$(HOST_CA_KEY))
 
 # per-host cert principals: the names/IPs clients use to reach each host
 HOST_PRINCIPALS := zoltraak:zoltraak,192.168.5.113 sasurai:sasurai,sasurai.home.arpa
 
 sign-host-certs: ## Re-sign all host certificates with the Host CA (HOST_CA_KEY=...)
-	@test -f $(HOST_CA_KEY) || { echo "Host CA key not found: $(HOST_CA_KEY)"; exit 1; }
+	@test -f "$(HOST_CA)" || { echo "Host CA key not found: $(HOST_CA)"; exit 1; }
 	@for hp in $(HOST_PRINCIPALS); do \
 	  h=$${hp%%:*}; p=$${hp#*:}; \
-	  ssh-keygen -s $(HOST_CA_KEY) -I "$$h host cert" -h -n "$$p" \
+	  ssh-keygen -s "$(HOST_CA)" -I "$$h host cert" -h -n "$$p" \
 	    config/$$h/ssh/ssh_host_ed25519_key.pub; \
 	done
-	@if [ -f "$(HOST_CA_KEY).pub" ]; then \
-	  read -r t k _ < "$(HOST_CA_KEY).pub"; \
-	  echo "$$t $$k emanong host CA" > modules/ssh/host_ca.pub; \
+	@if [ -f "$(HOST_CA).pub" ]; then \
+	  read -r t k _ < "$(HOST_CA).pub"; echo "$$t $$k emanon host CA"; \
 	else \
-	  ssh-keygen -y -f $(HOST_CA_KEY) > modules/ssh/host_ca.pub; \
-	fi
+	  ssh-keygen -y -f "$(HOST_CA)" | awk '{ print $$1, $$2, "emanon host CA" }'; \
+	fi > modules/ssh/host_ca.pub
 	@echo "Re-signed host certs for: $(NIXOS_HOSTS)"; \
 	echo "Host CA public key written to modules/ssh/host_ca.pub:"; \
 	echo "  $$(cut -d' ' -f1,2 modules/ssh/host_ca.pub)"
