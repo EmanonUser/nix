@@ -31,6 +31,10 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+    };
   };
 
   outputs = {
@@ -41,6 +45,7 @@
     stylix,
     agenix,
     lanzaboote,
+    noctalia,
     ...
   } @ attrs: let
     system = "x86_64-linux";

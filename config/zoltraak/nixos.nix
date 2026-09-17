@@ -13,17 +13,11 @@
     ../../modules/nixos/ssh-server
     ../../modules/nixos/hardware
     ../../modules/nixos/virtualisation
-    ../../modules/nixos/cosmic
+    ./desktop.nix
     stylix.nixosModules.stylix
     ../../modules/nixos/stylix
     ./nix-packages
   ];
-
-  # Log straight into the desktop as emanon (COSMIC).
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = username;
-  };
 
   # zoltraak signs its host key with the emanon user CA (files provisioned out-of-band).
   services.openssh.extraConfig = ''

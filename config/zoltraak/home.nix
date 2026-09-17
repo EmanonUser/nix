@@ -17,4 +17,6 @@
     ../../modules/zoxide/zoxide.nix
     ../../modules/zsh/zsh.nix
   ];
+
+  home.file.".config/niri/config.kdl".source = ./niri/config.kdl;
 }
