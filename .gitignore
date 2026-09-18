@@ -1,0 +1,37 @@
+# =====================================================================
+# DENY-BY-DEFAULT (allowlist) ignore rules.
+#
+# Everything is ignored unless explicitly re-included with a `!` rule.
+# Tracking a new file therefore requires a visible, deliberate change to
+# this file - a secret dropped into the tree can never be committed
+# silently (it simply won't show up in `git status`).
+# =====================================================================
+
+# ignore everything by default
+*
+
+# ...but always re-include directories, so files inside them can be
+# allowed one by one
+!**/
+
+# repository control files
+!.gitignore
+!Makefile
+!README.md
+!flake.nix
+!flake.lock
+!**/*.md
+!**/*.toml
+
+# Nix sources
+!**/*.nix
+
+# age-encrypted secrets (ciphertext only - safe to version)
+!**/*.age
+
+# public key material and signed certificates (public - safe to version)
+!**/*.pub
+!**/*-cert.pub
+
+# anything else (private keys, .pem, tokens, dotenv, archives, ...)
+# stays ignored until you deliberately whitelist it above.

@@ -28,6 +28,7 @@
         mode = "0755";
       }
       "/etc/NetworkManager/system-connections"
+      "/etc/ssh"
       "/var/lib/bluetooth"
       "/var/lib/fwupd"
       "/var/lib/incus"
