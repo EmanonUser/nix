@@ -1,8 +1,9 @@
-{hostname, ...}: {
+{hostname, lib, ...}: let
   # git is auto-installed by programs.git.enable below.
-
-  home.file = {
-    ".ssh/allowed_signers".text = "* ${builtins.readFile ../../config/${hostname}/id_ed25519.pub}";
+  signingKey = ../../config/${hostname}/id_ed25519.pub;
+in {
+  home.file = lib.optionalAttrs (builtins.pathExists signingKey) {
+    ".ssh/allowed_signers".text = "* ${builtins.readFile signingKey}";
   };
 
   programs.git = {
