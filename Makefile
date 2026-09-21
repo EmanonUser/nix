@@ -39,19 +39,12 @@ SASURAI  := $(USER)@$(SASURAI_IP)
 # deleted afterwards.
 LUKS_KEY ?= /tmp/disk-encryption.key
 
-# Every host that keeps a per-host SSH host key in config/<host>/ssh/. These
-# are the deterministic keys agenix bootstraps from (the single non-agenix
-# secret), so they must be captured for every host.
-HOST_KEY_HOSTS := $(NIXOS_HOSTS) nixos-vm $(HOME_HOSTS)
-
 .PHONY: help install install-zoltraak install-sasurai install-nixos-vm \
         deploy deploy-sasurai deploy-zoltraak \
         rebuild rebuild-sasurai rebuild-zoltraak \
         push-sasurai push-zoltraak \
         home home-frieren \
-        sign-host-certs print-cert-authority \
-        sign-user-certs init-identity \
-        capture-host-key capture-host-keys seed-host-key \
+        print-cert-authority \
         update check fmt
 
 help: ## Show this help
@@ -68,28 +61,23 @@ help: ## Show this help
 # nixos-anywhere on $(1), and always deletes the key file afterwards (also
 # on failure / Ctrl-C).
 #
-# The per-host SSH host key (config/$(1)/ssh/ssh_host_ed25519_key.age) is
-# decrypted ONCE here (passphrase prompt) and seeded into the target's
-# /persist/etc/ssh via --extra-files, so agenix has its bootstrapping
-# identity on the very first boot. Hosts without a captured key are installed
-# without seeding (fresh random host key is generated instead).
+# The static host key (config/$(1)/ssh/ssh_host_ed25519_key.age) is decrypted
+# ONCE here (passphrase prompt) and seeded into the target's /persist/etc/ssh
+# via --extra-files, so agenix has its deterministic bootstrap identity on the
+# very first boot.
 define INSTALL_RECIPE
 	@hostkey_age="config/$(1)/ssh/ssh_host_ed25519_key.age"; \
-	seed=""; \
+	test -f "$$hostkey_age" || { echo "Missing $$hostkey_age - commit a host key for $(1) first." >&2; exit 1; }; \
 	fs=$$(mktemp -d); \
 	trap 'shred -u "$(LUKS_KEY)" 2>/dev/null || rm -f "$(LUKS_KEY)"; rm -rf "$$fs"' EXIT; \
-	if [ -f "$$hostkey_age" ]; then \
-	  echo "Host key found for $(1), seeding into persist (passphrase prompt)..."; \
-	  install -d -m700 "$$fs/persist/etc/ssh"; \
-	  $(AGE) -d -o "$$fs/persist/etc/ssh/ssh_host_ed25519_key" "$$hostkey_age" \
-	    || { echo "Host key decrypt failed." >&2; exit 1; }; \
-	  chmod 600 "$$fs/persist/etc/ssh/ssh_host_ed25519_key"; \
-	  cp "config/$(1)/ssh/ssh_host_ed25519_key.pub" "$$fs/persist/etc/ssh/"; \
-	  chmod 644 "$$fs/persist/etc/ssh/ssh_host_ed25519_key.pub"; \
-	  seed="$$fs"; \
-	else \
-	  echo "No captured host key for $(1), installing without seeding."; \
-	fi; \
+	echo "Seeding $(1) host key into persist for agenix bootstrap (passphrase prompt)..."; \
+	install -d -m700 "$$fs/persist/etc/ssh"; \
+	$(AGE) -d -o "$$fs/persist/etc/ssh/ssh_host_ed25519_key" "$$hostkey_age" \
+	  || { echo "Host key decrypt failed." >&2; exit 1; }; \
+	chmod 600 "$$fs/persist/etc/ssh/ssh_host_ed25519_key"; \
+	cp "config/$(1)/ssh/ssh_host_ed25519_key.pub" "$$fs/persist/etc/ssh/"; \
+	chmod 644 "$$fs/persist/etc/ssh/ssh_host_ed25519_key.pub"; \
+	seed="$$fs"; \
 	read -r -p "SSH username: " ssh_user; \
 	read -r -p "Target host or IP: " target_host; \
 	if [ -z "$$ssh_user" ] || [ -z "$$target_host" ]; then echo "Aborted."; exit 1; fi; \
@@ -168,123 +156,11 @@ home-frieren: ## Rebuild + switch frieren
 	$(HOME_MANAGER) switch --flake $(FLAKE)#frieren
 
 # ---------------------------------------------------------------------------
-# SSH host certificates (static per-host keys live in config/<host>/ssh/)
+# Host CA (client-side known_hosts entry)
 # ---------------------------------------------------------------------------
-
-# Private key of the Host CA (distinct from the user CA). Expand a leading ~
-# here because make would otherwise pass it through literally.
-HOST_CA_KEY ?= $(HOME)/certs/hosts_certificate_authority
-HOST_CA     := $(subst ~,$(HOME),$(HOST_CA_KEY))
-
-# per-host cert principals: the names/IPs clients use to reach each host.
-# The wildcards let clients reach either host through any *.home.arpa /
-# *.emanon.dev name while still validating against the Host CA.
-HOST_PRINCIPALS := zoltraak:zoltraak,zoltraak.home.arpa,192.168.5.113,*.home.arpa,*.emanon.dev \
-                   sasurai:sasurai,sasurai.home.arpa,*.home.arpa,*.emanon.dev
-
-sign-host-certs: ## Re-sign all host certificates with the Host CA (HOST_CA_KEY=...)
-	@test -f "$(HOST_CA)" || { echo "Host CA key not found: $(HOST_CA)"; exit 1; }
-	@for hp in $(HOST_PRINCIPALS); do \
-	  h=$${hp%%:*}; p=$${hp#*:}; \
-	  ssh-keygen -s "$(HOST_CA)" -I "$$h host cert" -h -n "$$p" \
-	    config/$$h/ssh/ssh_host_ed25519_key.pub; \
-	done
-	@if [ -f "$(HOST_CA).pub" ]; then \
-	  read -r t k _ < "$(HOST_CA).pub"; echo "$$t $$k emanon host CA"; \
-	else \
-	  ssh-keygen -y -f "$(HOST_CA)" | awk '{ print $$1, $$2, "emanon host CA" }'; \
-	fi > modules/ssh/host_ca.pub
-	@echo "Re-signed host certs for: $(NIXOS_HOSTS)"; \
-	echo "Host CA public key written to modules/ssh/host_ca.pub:"; \
-	echo "  $$(cut -d' ' -f1,2 modules/ssh/host_ca.pub)"
 
 print-cert-authority: ## Print the @cert-authority line clients need in ~/.ssh/known_hosts
 	@echo "@cert-authority \"*.home.arpa,*.emanon.dev\" $$(cut -d' ' -f1,2 modules/ssh/host_ca.pub)"
-
-# ---------------------------------------------------------------------------
-# User SSH identity (client certs, signed by the *user* CA)
-# ---------------------------------------------------------------------------
-
-# Private key of the User CA. This is the trust root that issues the per-host
-# identity certificates; it lives on this machine only and NEVER in the repo.
-USER_CA_KEY ?= $(HOME)/certs/users_certificate_authority
-USER_CA     := $(subst ~,$(HOME),$(USER_CA_KEY))
-
-# The user identity key for a given host. Defaults to $HOME/.ssh/id_ed25519;
-# pass IDENTITY=... to point at a per-host key (e.g. $HOME/.ssh/<host>/id_ed25519).
-IDENTITY ?= $(HOME)/.ssh/id_ed25519
-
-# Principals the user identity cert is valid for (usernames on the servers).
-USER_PRINCIPALS ?= emanon,root
-
-sign-user-certs: ## Sign one host's user identity cert (HOST=x, USER_CA_KEY=...)
-	@test -n "$(HOST)" || { echo "Usage: make sign-user-certs HOST=sasurai"; exit 1; }
-	@test -f "$(USER_CA)" || { echo "User CA key not found: $(USER_CA)"; exit 1; }
-	@test -f config/$(HOST)/ssh/id_ed25519.pub || { echo "Missing config/$(HOST)/ssh/id_ed25519.pub - run make init-identity HOST=$(HOST) first"; exit 1; }
-	@ssh-keygen -s "$(USER_CA)" -I emanon -n $(USER_PRINCIPALS) \
-	  -V -52w:+52w config/$(HOST)/ssh/id_ed25519.pub
-	@echo "Signed $(HOST)'s user identity cert -> config/$(HOST)/ssh/id_ed25519-cert.pub (principals: $(USER_PRINCIPALS), 1 year validity)"
-
-init-identity: ## Encrypt one host's identity to its own host key + stage pub (HOST=x [IDENTITY=y])
-	@test -n "$(HOST)" || { echo "Usage: make init-identity HOST=sasurai"; exit 1; }
-	@test -f "$(IDENTITY)" || { echo "Identity key not found: $(IDENTITY)"; exit 1; }
-	@mkdir -p config/$(HOST)/ssh
-	@hostkey="config/$(HOST)/ssh/ssh_host_ed25519_key.pub"; \
-	test -f "$$hostkey" || { echo "Missing $$hostkey - run make capture-host-key HOST=$(HOST) first." >&2; exit 1; }; \
-	$(AGE) -e -R "$$hostkey" -o config/$(HOST)/ssh/id_ed25519.age "$(IDENTITY)"
-	@cp "$(IDENTITY).pub" config/$(HOST)/ssh/id_ed25519.pub
-	@chmod 644 config/$(HOST)/ssh/id_ed25519.pub
-	@if [ -f "$(IDENTITY)-cert.pub" ]; then cp "$(IDENTITY)-cert.pub" config/$(HOST)/ssh/id_ed25519-cert.pub; chmod 644 config/$(HOST)/ssh/id_ed25519-cert.pub; \
-	else echo "No $(IDENTITY)-cert.pub - run make sign-user-certs HOST=$(HOST) to mint one."; fi
-	@echo "Identity for $(HOST) staged. Sealed copy: config/$(HOST)/ssh/id_ed25519.age. Public: config/$(HOST)/ssh/id_ed25519.{pub,-cert.pub}"
-
-# ---------------------------------------------------------------------------
-# Per-host SSH host keys (the deterministic agenix bootstrap identity).
-# These are the ONE secret NOT managed by agenix: they are passphrase-encrypted
-# in config/<host>/ssh/ and decrypted (password prompt) only at first install.
-# ---------------------------------------------------------------------------
-
-NIXOS_VM_IP ?= 10.188.165.117
-
-# SSH target per host used by `capture-host-keys` (override as needed).
-SSH_HOST_TARGET_sasurai   ?= sasurai.home.arpa
-SSH_HOST_TARGET_zoltraak  ?= zoltraak.home.arpa
-SSH_HOST_TARGET_frieren   ?= frieren.emanon.dev
-SSH_HOST_TARGET_nixos-vm  ?= $(NIXOS_VM_IP)
-
-capture-host-key: ## Capture one host's SSH host key (HOST=x [SSH_TARGET=y] [SSH_USER=z])
-	@test -n "$(HOST)" || { echo "Usage: make capture-host-key HOST=sasurai"; exit 1; }
-	@target="$(SSH_TARGET)"; [ -n "$$target" ] || target="$(SSH_HOST_TARGET_$(HOST))"; \
-	ssh_user="$(SSH_USER)"; [ -n "$$ssh_user" ] || ssh_user="$(USER)"; \
-	[ -n "$$target" ] || { echo "No SSH target known for $(HOST) - pass SSH_TARGET=..."; exit 1; }; \
-	echo "Capturing /persist/etc/ssh keys of $(HOST) via $${ssh_user}@$$target ..."; \
-	mkdir -p "config/$(HOST)/ssh"; \
-	ssh "$${ssh_user}@$$target" 'sudo -n cat /persist/etc/ssh/ssh_host_ed25519_key' > "config/$(HOST)/ssh/ssh_host_ed25519_key" || exit 1; \
-	ssh "$${ssh_user}@$$target" 'cat /persist/etc/ssh/ssh_host_ed25519_key.pub' > "config/$(HOST)/ssh/ssh_host_ed25519_key.pub" || exit 1; \
-	chmod 600 "config/$(HOST)/ssh/ssh_host_ed25519_key"; \
-	echo "Encrypting host key (passphrase prompt) - save it in your password manager:"; \
-	$(AGE) -p -o "config/$(HOST)/ssh/ssh_host_ed25519_key.age" "config/$(HOST)/ssh/ssh_host_ed25519_key"; \
-	shred -u "config/$(HOST)/ssh/ssh_host_ed25519_key"; \
-	echo "Stored: config/$(HOST)/ssh/ssh_host_ed25519_key{.age,.pub}"
-
-capture-host-keys: ## Capture host keys for every host (loop over HOST_KEY_HOSTS)
-	@for h in $(HOST_KEY_HOSTS); do \
-	  echo "=== $$h ==="; \
-	  $(MAKE) capture-host-key HOST=$$h || echo "!! failed to capture $$h"; \
-	done
-
-seed-host-key: ## Decrypt a host key into a local persist mount (HOST=x [PERSIST_MOUNT=y])
-	@test -n "$(HOST)" || { echo "Usage: make seed-host-key HOST=sasurai"; exit 1; }
-	@mount="$(PERSIST_MOUNT)"; [ -n "$$mount" ] || mount="/persist"; \
-	keyage="config/$(HOST)/ssh/ssh_host_ed25519_key.age"; \
-	test -f "$$keyage" || { echo "Missing $$keyage - run capture-host-key first."; exit 1; }; \
-	mkdir -p "$$mount/etc/ssh"; \
-	echo "Decrypting host key into $$mount/etc/ssh (passphrase prompt):"; \
-	$(AGE) -d -o "$$mount/etc/ssh/ssh_host_ed25519_key" "$$keyage" || exit 1; \
-	cp "config/$(HOST)/ssh/ssh_host_ed25519_key.pub" "$$mount/etc/ssh/"; \
-	chmod 600 "$$mount/etc/ssh/ssh_host_ed25519_key"; \
-	chmod 644 "$$mount/etc/ssh/ssh_host_ed25519_key.pub"; \
-	echo "Seeded $$mount/etc/ssh/ssh_host_ed25519_key{,.pub}"
 
 # ---------------------------------------------------------------------------
 # Flake maintenance

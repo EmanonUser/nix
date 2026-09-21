@@ -8,8 +8,8 @@ let
 
   # Per-host public half of the identity deployed via agenix
   # (config/${hostname}/ssh/id_ed25519.age). `.pub` ships to git's allowed_signers;
-  # `-cert.pub` is the host's user cert minted by sign-user-certs and trusted by
-  # ssh-server via user_ca.pub.
+  # `-cert.pub` is the host's roaming user cert, trusted by ssh-server via
+  # user_ca.pub.
   pub = ../../config + "/${hostname}/ssh/id_ed25519.pub";
   cert = ../../config + "/${hostname}/ssh/id_ed25519-cert.pub";
 in {
