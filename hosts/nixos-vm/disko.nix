@@ -20,28 +20,35 @@
             mountOptions = ["fmask=0077" "dmask=0077"];
           };
         };
-        root = {
+        luks = {
           size = "100%";
-          content =
-            if filesystem == "zfs"
-            then {
-              type = "zfs";
-              pool = "zroot";
-            }
-            else {
-              type = "btrfs";
-              extraArgs = ["-f"];
-              subvolumes = {
-                "/nix" = {
-                  mountpoint = "/nix";
-                  mountOptions = ["compress=zstd" "noatime"];
-                };
-                "/persist" = {
-                  mountpoint = "/persist";
-                  mountOptions = ["compress=zstd" "noatime"];
+          content = {
+            type = "luks";
+            name = "crypt";
+            settings.allowDiscards = true;
+            # Passphrase supplied by nixos-anywhere --disk-encryption-keys
+            passwordFile = "/tmp/disk-encryption.key";
+            content =
+              if filesystem == "zfs"
+              then {
+                type = "zfs";
+                pool = "zroot";
+              }
+              else {
+                type = "btrfs";
+                extraArgs = ["-f"];
+                subvolumes = {
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = ["compress=zstd" "noatime"];
+                  };
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = ["compress=zstd" "noatime"];
+                  };
                 };
               };
-            };
+          };
         };
       };
     };

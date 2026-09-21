@@ -6,7 +6,7 @@
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
 #   make home-frieren         rebuild + switch frieren (home-manager only)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
-#   make install-nixos-vm     full reinstall of the incus VM via nixos-anywhere (no LUKS)
+#   make install-nixos-vm     full reinstall of the incus VM via nixos-anywhere (LUKS)
 #   make update               update flake lockfile
 #
 # Override at the command line, e.g.:
@@ -106,8 +106,8 @@ install-zoltraak: ## Full reinstall of zoltraak (prompts for user/host, confirma
 install-sasurai: ## Full reinstall of sasurai (prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,sasurai,luks)
 
-install-nixos-vm: ## Full reinstall of the incus VM (no LUKS; prompts for user/host and confirmation)
-	$(call INSTALL_RECIPE,nixos-vm,)
+install-nixos-vm: ## Full reinstall of the incus VM (LUKS; prompts for user/host, confirmation and LUKS passphrase)
+	$(call INSTALL_RECIPE,nixos-vm,luks)
 
 # ---------------------------------------------------------------------------
 # Local-build deploys: build on THIS machine, copy the closure to the target
