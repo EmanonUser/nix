@@ -49,85 +49,72 @@
     ...
   } @ attrs: let
     system = "x86_64-linux";
+    username = "emanon";
+    lib = nixpkgs.lib;
     pkgs = nixpkgs.legacyPackages.${system};
+
+    # Build a NixOS system. Setting `vm = true` produces a throwaway Incus-VM
+    # twin of the *same* host config: same identity/hostname, but the
+    # bare-metal-only pieces are skipped in the host config itself
+    # (secureboot/lanzaboote, amdgpu, host incus/podman; see vm overs in the
+    # config/*/nixos.nix files) and hosts/vm/common.nix wires up the virtio
+    # disk, serial console and incus agent.
+    mkSystem = {
+      hostname,
+      vm ? false,
+      filesystem ? null,
+      extraModules ? [],
+    }:
+      lib.nixosSystem {
+        specialArgs =
+          {
+            inherit username system;
+            inherit hostname;
+          }
+          // (lib.optionalAttrs (filesystem != null) { inherit filesystem; })
+          // { inherit vm; }
+          // (lib.optionalAttrs vm { netHostName = hostname + "-vm"; })
+          // attrs;
+        modules =
+          [
+            disko.nixosModules.disko
+            home-manager.nixosModules.home-manager
+            impermanence.nixosModules.impermanence
+            agenix.nixosModules.default
+            ./hosts/${hostname}
+          ]
+          ++ lib.optionals vm [./hosts/vm/common.nix]
+          ++ extraModules;
+      };
   in {
     formatter.x86_64-linux = pkgs.alejandra;
 
     nixosConfigurations = {
-      sasurai = nixpkgs.lib.nixosSystem {
-        specialArgs =
-          {
-            username = "emanon";
-            hostname = "sasurai";
-            filesystem = "zfs";
-            inherit system;
-          }
-          // attrs;
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.home-manager
-          impermanence.nixosModules.impermanence
-          agenix.nixosModules.default
-          lanzaboote.nixosModules.lanzaboote
-          ./hosts/sasurai
-        ];
+      sasurai = mkSystem {
+        hostname = "sasurai";
+        filesystem = "zfs";
+        extraModules = [lanzaboote.nixosModules.lanzaboote];
       };
 
-      nixos-vm = nixpkgs.lib.nixosSystem {
-        specialArgs =
-          {
-            username = "emanon";
-            hostname = "nixos-vm";
-            filesystem = "zfs";
-            inherit system;
-          }
-          // attrs;
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.home-manager
-          impermanence.nixosModules.impermanence
-          agenix.nixosModules.default
-          ./hosts/nixos-vm
-        ];
+      sasurai-vm = mkSystem {
+        hostname = "sasurai";
+        filesystem = "zfs";
+        vm = true;
       };
 
-      zoltraak = nixpkgs.lib.nixosSystem {
-        specialArgs =
-          {
-            username = "emanon";
-            hostname = "zoltraak";
-            inherit system;
-          }
-          // attrs;
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.home-manager
-          impermanence.nixosModules.impermanence
-          agenix.nixosModules.default
-          ./hosts/zoltraak
-        ];
+      zoltraak = mkSystem {
+        hostname = "zoltraak";
+        extraModules = [lanzaboote.nixosModules.lanzaboote];
       };
 
-      # sasurai's desktop stack in a throwaway Incus VM for testing. Reuses the
-      # sasurai identity (hostname = "sasurai" → config/sasurai/ssh) without any
-      # bare-metal baggage (no Secure Boot/lanzaboote/amd GPU).
-      sasurai-vm = nixpkgs.lib.nixosSystem {
-        specialArgs =
-          {
-            username = "emanon";
-            hostname = "sasurai";
-            filesystem = "zfs";
-            inherit system;
-          }
-          // attrs;
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.home-manager
-          impermanence.nixosModules.impermanence
-          agenix.nixosModules.default
-          stylix.nixosModules.stylix
-          ./hosts/sasurai-vm
-        ];
+      zoltraak-vm = mkSystem {
+        hostname = "zoltraak";
+        vm = true;
+      };
+
+      nixos-vm = mkSystem {
+        hostname = "nixos-vm";
+        filesystem = "zfs";
       };
     };
 
@@ -138,7 +125,7 @@
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
-          username = "emanon";
+          inherit username;
           hostname = "frieren";
         };
         modules = [

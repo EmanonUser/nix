@@ -28,6 +28,7 @@ HOME_HOSTS  := frieren
 ZOLTRAAK_IP ?= 192.168.5.113
 SASURAI_IP  ?= sasurai
 SASURAI_VM_IP ?= 192.168.122.2
+ZOLTRAAK_VM_IP ?= 192.168.122.3
 
 # Tools are run via `nix run` since they aren't installed on this machine.
 HOME_MANAGER   := nix run nixpkgs\#home-manager --
@@ -38,15 +39,16 @@ AGE            := nix run nixpkgs\#age --
 ZOLTRAAK := $(USER)@$(ZOLTRAAK_IP)
 SASURAI  := $(USER)@$(SASURAI_IP)
 SASURAI_VM  := $(USER)@$(SASURAI_VM_IP)
+ZOLTRAAK_VM := $(USER)@$(ZOLTRAAK_VM_IP)
 
 # Temporary file the LUKS passphrase is written to during installs and
 # deleted afterwards.
 LUKS_KEY ?= /tmp/disk-encryption.key
 
-.PHONY: help install install-zoltraak install-sasurai install-nixos-vm install-sasurai-vm isasurai-vm \
-        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm \
-        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm \
-        push-sasurai push-zoltraak push-sasurai-vm \
+.PHONY: help install install-zoltraak install-sasurai install-nixos-vm install-sasurai-vm install-zoltraak-vm isasurai-vm \
+        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm \
+        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm \
+        push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm \
         home home-frieren \
         print-cert-authority \
         update check fmt
@@ -120,6 +122,9 @@ install-nixos-vm: ## Full reinstall of the incus VM (LUKS; prompts for user/host
 install-sasurai-vm: ## Full reinstall of the sasurai test VM (LUKS; reuses sasurai's identity; prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,sasurai-vm,luks,sasurai)
 
+install-zoltraak-vm: ## Full reinstall of the zoltraak test VM (LUKS; reuses zoltraak's identity; prompts for user/host, confirmation and LUKS passphrase)
+	$(call INSTALL_RECIPE,zoltraak-vm,luks,zoltraak)
+
 # Shortcut for the common "just reinstall the sasurai VM" case.
 isasurai-vm: install-sasurai-vm ## Shortcut for install-sasurai-vm
 
@@ -141,6 +146,9 @@ deploy-zoltraak: ## Build locally, copy to zoltraak and switch
 
 deploy-sasurai-vm: ## Build locally, copy to the sasurai VM and switch
 	$(NIXOS_REBUILD) switch --flake $(FLAKE)#sasurai-vm --target-host $(SASURAI_VM) --use-remote-sudo
+
+deploy-zoltraak-vm: ## Build locally, copy to the zoltraak VM and switch
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#zoltraak-vm --target-host $(ZOLTRAAK_VM) --use-remote-sudo
 
 # ---------------------------------------------------------------------------
 # NixOS rebuild + switch (runs ON the machine itself). The committed flake is
@@ -167,6 +175,12 @@ push-sasurai-vm: ## Sync the committed flake to the sasurai VM (~/nix)
 
 rebuild-sasurai-vm: push-sasurai-vm ## Rebuild + switch the sasurai VM on the machine itself
 	@ssh $(SASURAI_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#sasurai-vm'
+
+push-zoltraak-vm: ## Sync the committed flake to the zoltraak VM (~/nix)
+	@git archive --format=tar.gz HEAD | ssh $(ZOLTRAAK_VM) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
+
+rebuild-zoltraak-vm: push-zoltraak-vm ## Rebuild + switch the zoltraak VM on the machine itself
+	@ssh $(ZOLTRAAK_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#zoltraak-vm'
 
 # ---------------------------------------------------------------------------
 # Home-manager rebuilds (standalone hosts only; NixOS hosts are covered by

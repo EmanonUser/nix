@@ -1,4 +1,6 @@
 {
+  lib,
+  vm ? false,
   stylix,
   username,
   ...
@@ -11,13 +13,19 @@
     ../../hosts/zoltraak/disko.nix
     ../../modules/nixos/services/services.nix
     ../../modules/nixos/ssh-server
-    ../../modules/nixos/hardware
-    ../../modules/nixos/virtualisation
+    ../../modules/nixos/hardware/pipewire.nix
+    ../../modules/nixos/hardware/network.nix
     ../../modules/nixos/noctalia
     ../../modules/nixos/niri
     stylix.nixosModules.stylix
     ../../modules/nixos/stylix
     ./nix-packages
+  ]
+  # Bare-metal-only pieces (amdgpu, host incus/podman): skipped when running
+  # in a test VM (hosts/vm/common.nix takes over).
+  ++ lib.optionals (!vm) [
+    ../../modules/nixos/hardware/amd.nix
+    ../../modules/nixos/virtualisation
   ];
 
   home-manager = {
