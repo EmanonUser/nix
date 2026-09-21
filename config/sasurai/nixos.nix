@@ -20,6 +20,7 @@
     ../../modules/nixos/steam/steam.nix
     stylix.nixosModules.stylix
     ../../modules/nixos/stylix
+    ../../modules/nixos/niri
     ./nix-packages
   ]
   # Bare-metal-only pieces (Secure Boot/lanzaboote, amdgpu, host incus/podman):
@@ -29,6 +30,9 @@
     ../../modules/nixos/hardware/amd.nix
     ../../modules/nixos/virtualisation
   ];
+
+  # niri as an optional SDDM session; KDE/SDDM stays the default boot target.
+  services.niri.login = "none";
 
   # Log straight into the desktop as emanon (KDE/SDDM).
   services.displayManager.autoLogin = {

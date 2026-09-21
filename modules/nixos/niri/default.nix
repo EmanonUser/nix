@@ -7,13 +7,29 @@
 }: let
   cfg = config.services.niri;
 in {
-  options.services.niri.autologin = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
+  options.services.niri.login = lib.mkOption {
+    type = lib.types.enum ["greetd" "noctalia-greeter" "none"];
+    default = "greetd";
     description = ''
-      Boot straight into niri as `${username}`. When false, show the Noctalia
-      Greeter login screen first instead. Session locking (Noctalia shell's own
-      lock screen) works either way.
+      How niri is started at login:
+
+      - `greetd`: greetd logs straight into `niri-session` as `${username}`.
+      - `noctalia-greeter`: greetd shows the Noctalia Greeter login screen first
+        (defaults to niri and `${username}`). Session locking (Noctalia shell's
+        own lock screen) works either way.
+      - `none`: leave the login manager alone; an external display manager
+        (e.g. SDDM) is used and the niri Wayland session is registered as a
+        session package so it can be picked from the login screen.
+    '';
+  };
+
+  options.services.niri.waylandSessionPackage = lib.mkOption {
+    type = lib.types.nullOr lib.types.package;
+    internal = true;
+    default = null;
+    description = ''
+      Session package registered with the external display manager when
+      `services.niri.login` is set to `none`.
     '';
   };
 
@@ -29,13 +45,17 @@ in {
       # Allow X11 apps (chrome, discord, ...) under niri.
       programs.xwayland.enable = true;
 
+      # niri's GNOME services bring an SSH agent (gcr-ssh-agent), which
+      # conflicts with programs.ssh.startAgent.
+      services.gnome.gcr-ssh-agent.enable = false;
+
       # Make user-profile binaries (kitty, ghostty, ...) available in niri binds.
       environment.sessionVariables.PATH = [
         "${config.home-manager.users.${username}.home.profileDirectory}/bin"
       ];
     }
 
-    (lib.mkIf cfg.autologin {
+    (lib.mkIf (cfg.login == "greetd") {
       services.greetd = {
         enable = true;
         settings.default_session = {
@@ -45,7 +65,7 @@ in {
       };
     })
 
-    (lib.mkIf (!cfg.autologin) {
+    (lib.mkIf (cfg.login == "noctalia-greeter") {
       # Noctalia Greeter: greetd-based login screen, defaults to niri + `username`.
       services.displayManager.noctalia-greeter = {
         enable = true;
@@ -68,6 +88,17 @@ in {
         group = "greeter";
         home = "/var/lib/noctalia-greeter";
       };
+    })
+
+    # External display manager (e.g. SDDM): don't manage login, but announce
+    # niri as a selectable Wayland session. niri ships
+    # share/wayland-sessions/niri.desktop.
+    (lib.mkIf (cfg.login == "none") {
+      services.niri.waylandSessionPackage =
+        pkgs.niri
+        // {
+          providedSessions = ["niri"];
+        };
     })
   ];
 }

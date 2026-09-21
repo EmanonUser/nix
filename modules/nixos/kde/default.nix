@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -21,7 +22,13 @@ in {
   # session file, see plasmaWaylandSessions above).
   services.displayManager.defaultSession = "plasma";
 
-  services.displayManager.sessionPackages = lib.mkForce [plasmaWaylandSessions];
+  # Plasma (Wayland) plus any compositor sessions registered by other modules
+  # (e.g. niri when services.niri.login = "none").
+  services.displayManager.sessionPackages = lib.mkForce (
+    [plasmaWaylandSessions]
+    ++ lib.optional (config.services.niri.waylandSessionPackage or null != null)
+    config.services.niri.waylandSessionPackage
+  );
 
   # No X11 compositor: the Wayland session is the only supported one.
   environment.plasma6.excludePackages = [pkgs.kdePackages.kwin-x11];
