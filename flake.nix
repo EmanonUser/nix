@@ -119,7 +119,10 @@
           username = "emanon";
           hostname = "frieren";
         };
-        modules = [./config/frieren/home.nix];
+        modules = [
+          agenix.homeManagerModules.age
+          ./config/frieren/home.nix
+        ];
       };
     };
   };

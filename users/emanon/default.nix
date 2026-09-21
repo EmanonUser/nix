@@ -12,8 +12,6 @@
   };
 
   programs.zsh.enable = true;
-
-  # Passwordless sudo for the emanon user.
   security.sudo.extraRules = [
     {
       users = [username];
