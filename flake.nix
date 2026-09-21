@@ -107,6 +107,28 @@
           ./hosts/zoltraak
         ];
       };
+
+      # sasurai's desktop stack in a throwaway Incus VM for testing. Reuses the
+      # sasurai identity (hostname = "sasurai" → config/sasurai/ssh) without any
+      # bare-metal baggage (no Secure Boot/lanzaboote/amd GPU).
+      sasurai-vm = nixpkgs.lib.nixosSystem {
+        specialArgs =
+          {
+            username = "emanon";
+            hostname = "sasurai";
+            filesystem = "zfs";
+            inherit system;
+          }
+          // attrs;
+        modules = [
+          disko.nixosModules.disko
+          home-manager.nixosModules.home-manager
+          impermanence.nixosModules.impermanence
+          agenix.nixosModules.default
+          stylix.nixosModules.stylix
+          ./hosts/sasurai-vm
+        ];
+      };
     };
 
     homeConfigurations = {

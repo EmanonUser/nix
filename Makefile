@@ -7,6 +7,8 @@
 #   make home-frieren         rebuild + switch frieren (home-manager only)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
 #   make install-nixos-vm     full reinstall of the incus VM via nixos-anywhere (LUKS)
+#   make install-sasurai-vm   full reinstall of the sasurai test VM via nixos-anywhere (LUKS)
+#   make isasurai-vm          deploy the sasurai VM quickly (shortcut)
 #   make update               update flake lockfile
 #
 # Override at the command line, e.g.:
@@ -25,6 +27,7 @@ HOME_HOSTS  := frieren
 
 ZOLTRAAK_IP ?= 192.168.5.113
 SASURAI_IP  ?= sasurai
+SASURAI_VM_IP ?= 192.168.122.2
 
 # Tools are run via `nix run` since they aren't installed on this machine.
 HOME_MANAGER   := nix run nixpkgs\#home-manager --
@@ -34,15 +37,16 @@ AGE            := nix run nixpkgs\#age --
 
 ZOLTRAAK := $(USER)@$(ZOLTRAAK_IP)
 SASURAI  := $(USER)@$(SASURAI_IP)
+SASURAI_VM  := $(USER)@$(SASURAI_VM_IP)
 
 # Temporary file the LUKS passphrase is written to during installs and
 # deleted afterwards.
 LUKS_KEY ?= /tmp/disk-encryption.key
 
-.PHONY: help install install-zoltraak install-sasurai install-nixos-vm \
-        deploy deploy-sasurai deploy-zoltraak \
-        rebuild rebuild-sasurai rebuild-zoltraak \
-        push-sasurai push-zoltraak \
+.PHONY: help install install-zoltraak install-sasurai install-nixos-vm install-sasurai-vm isasurai-vm \
+        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm \
+        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm \
+        push-sasurai push-zoltraak push-sasurai-vm \
         home home-frieren \
         print-cert-authority \
         update check fmt
@@ -61,21 +65,25 @@ help: ## Show this help
 # nixos-anywhere on $(1), and always deletes the key file afterwards (also
 # on failure / Ctrl-C).
 #
-# The static host key (config/$(1)/ssh/ssh_host_ed25519_key.age) is decrypted
-# ONCE here (passphrase prompt) and seeded into the target's /persist/etc/ssh
-# via --extra-files, so agenix has its deterministic bootstrap identity on the
-# very first boot.
+# $(3) is the identity host whose host key is seeded; it defaults to $(1) but
+# lets VM variants reuse another host's identity (e.g. sasurai-vm -> sasurai).
+#
+# The static host key (config/<identity>/ssh/ssh_host_ed25519_key.age) is
+# decrypted ONCE here (passphrase prompt) and seeded into the target's
+# /persist/etc/ssh via --extra-files, so agenix has its deterministic bootstrap
+# identity on the very first boot.
 define INSTALL_RECIPE
-	@hostkey_age="config/$(1)/ssh/ssh_host_ed25519_key.age"; \
-	test -f "$$hostkey_age" || { echo "Missing $$hostkey_age - commit a host key for $(1) first." >&2; exit 1; }; \
+	@key_host="$(if $(3),$(3),$(1))"; \
+	hostkey_age="config/$${key_host}/ssh/ssh_host_ed25519_key.age"; \
+	test -f "$$hostkey_age" || { echo "Missing $$hostkey_age - commit a host key for $${key_host} first." >&2; exit 1; }; \
 	fs=$$(mktemp -d); \
 	trap 'shred -u "$(LUKS_KEY)" 2>/dev/null || rm -f "$(LUKS_KEY)"; rm -rf "$$fs"' EXIT; \
-	echo "Seeding $(1) host key into persist for agenix bootstrap (passphrase prompt)..."; \
+	echo "Seeding $${key_host} host key into persist for agenix bootstrap (passphrase prompt)..."; \
 	install -d -m700 "$$fs/persist/etc/ssh"; \
 	$(AGE) -d -o "$$fs/persist/etc/ssh/ssh_host_ed25519_key" "$$hostkey_age" \
 	  || { echo "Host key decrypt failed." >&2; exit 1; }; \
 	chmod 600 "$$fs/persist/etc/ssh/ssh_host_ed25519_key"; \
-	cp "config/$(1)/ssh/ssh_host_ed25519_key.pub" "$$fs/persist/etc/ssh/"; \
+	cp "config/$${key_host}/ssh/ssh_host_ed25519_key.pub" "$$fs/persist/etc/ssh/"; \
 	chmod 644 "$$fs/persist/etc/ssh/ssh_host_ed25519_key.pub"; \
 	seed="$$fs"; \
 	read -r -p "SSH username: " ssh_user; \
@@ -109,6 +117,12 @@ install-sasurai: ## Full reinstall of sasurai (prompts for user/host, confirmati
 install-nixos-vm: ## Full reinstall of the incus VM (LUKS; prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,nixos-vm,luks)
 
+install-sasurai-vm: ## Full reinstall of the sasurai test VM (LUKS; reuses sasurai's identity; prompts for user/host, confirmation and LUKS passphrase)
+	$(call INSTALL_RECIPE,sasurai-vm,luks,sasurai)
+
+# Shortcut for the common "just reinstall the sasurai VM" case.
+isasurai-vm: install-sasurai-vm ## Shortcut for install-sasurai-vm
+
 # ---------------------------------------------------------------------------
 # Local-build deploys: build on THIS machine, copy the closure to the target
 # and switch it over SSH. Use this instead of `rebuild-*` when the target is
@@ -124,6 +138,9 @@ deploy-sasurai: ## Build locally, copy to sasurai and switch
 
 deploy-zoltraak: ## Build locally, copy to zoltraak and switch
 	$(NIXOS_REBUILD) switch --flake $(FLAKE)#zoltraak --target-host $(ZOLTRAAK) --use-remote-sudo
+
+deploy-sasurai-vm: ## Build locally, copy to the sasurai VM and switch
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#sasurai-vm --target-host $(SASURAI_VM) --use-remote-sudo
 
 # ---------------------------------------------------------------------------
 # NixOS rebuild + switch (runs ON the machine itself). The committed flake is
@@ -144,6 +161,12 @@ rebuild-sasurai: push-sasurai ## Rebuild + switch sasurai on the machine itself
 
 rebuild-zoltraak: push-zoltraak ## Rebuild + switch zoltraak on the machine itself
 	@ssh $(ZOLTRAAK) 'sudo -n nixos-rebuild switch --flake ~/nix#zoltraak'
+
+push-sasurai-vm: ## Sync the committed flake to the sasurai VM (~/nix)
+	@git archive --format=tar.gz HEAD | ssh $(SASURAI_VM) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
+
+rebuild-sasurai-vm: push-sasurai-vm ## Rebuild + switch the sasurai VM on the machine itself
+	@ssh $(SASURAI_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#sasurai-vm'
 
 # ---------------------------------------------------------------------------
 # Home-manager rebuilds (standalone hosts only; NixOS hosts are covered by
