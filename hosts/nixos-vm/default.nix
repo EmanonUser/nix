@@ -65,7 +65,6 @@
 
   # Temporary convenience access for the VM test box (not for the real host).
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
-  users.users.${username}.initialPassword = "vmtest";
 
   networking.firewall.enable = false;
 }

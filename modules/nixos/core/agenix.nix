@@ -1,4 +1,11 @@
-{pkgs, username, hostname, ...}: {
+{
+  lib,
+  pkgs,
+  username,
+  hostname,
+  vm ? false,
+  ...
+}: {
   # Host keys are persisted via impermanence; make agenix decrypt from the
   # persistent copies so secrets survive reboots. The ed25519 key doubles as
   # the deterministic bootstrap identity (seeded at first install), which is
@@ -19,6 +26,13 @@
     owner = username;
     mode = "0600";
     symlink = false;
+  };
+
+  age.secrets."user-password" = lib.mkIf (!vm) {
+    # User password hash, shared across NixOS hosts (users/emanon/password.age),
+    # encrypted to every host's ed25519 key. Skips the throwaway *-vm twins:
+    # their freshly generated host key can't decrypt it (they use "vmtest").
+    file = ../../../users/emanon/password.age;
   };
 
   # agenix's activation script mkdirs ~/.ssh as root (0755) before any systemd
