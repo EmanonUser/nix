@@ -29,23 +29,23 @@
   };
 
   age.secrets."user-password" = lib.mkIf (!vm) {
-    # User password hash, shared across NixOS hosts (users/emanon/password.age),
+    # User password hash, shared across NixOS hosts (users/<user>/password.age),
     # encrypted to every host's ed25519 key. Skips the throwaway *-vm twins:
     # their freshly generated host key can't decrypt it (they use "vmtest").
-    file = ../../../users/emanon/password.age;
+    file = ../../../users + "/${username}/password.age";
   };
 
-  # Atuin auto-login credentials (users/emanon/atuin-{key,session}.age),
+  # Atuin auto-login credentials (users/<user>/atuin-{key,session}.age),
   # shared by all hosts. Read by the atuin CLI/daemon as the user, so owned by
   # them (0400). VMs skip them: their host key can't decrypt (and they don't
   # need the account).
   age.secrets."atuin-key" = lib.mkIf (!vm) {
-    file = ../../../users/emanon/atuin-key.age;
+    file = ../../../users + "/${username}/atuin-key.age";
     owner = username;
     mode = "0400";
   };
   age.secrets."atuin-session" = lib.mkIf (!vm) {
-    file = ../../../users/emanon/atuin-session.age;
+    file = ../../../users + "/${username}/atuin-session.age";
     owner = username;
     mode = "0400";
   };
