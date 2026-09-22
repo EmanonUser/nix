@@ -12,9 +12,6 @@
         enabled = true;
         autostart = true;
       };
-ai = {
-        enabled = true;
-      };
       # Auto-login: session + key files are managed via age secrets landing at
       # /run/agenix (NixOS-host and home-manager agenix both default there).
       session_path = "/run/agenix/atuin-session";
