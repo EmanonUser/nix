@@ -6,7 +6,15 @@
 
   # Silence kernel/initrd console output so plymouth owns the screen. No
   # console= params here: tty0 splits console paths and breaks the splash.
-  boot.kernelParams = ["quiet"];
+  # loglevel=3 (errors only) + quiet stop warning spam; show_status=false
+  # hides systemd's status bullets in both the initrd and the real root.
+  boot.consoleLogLevel = 3;
+  boot.kernelParams = [
+    "quiet"
+    "splash"
+    "rd.systemd.show_status=false"
+    "systemd.show_status=false"
+  ];
 
   # The initrd needs the input/USB modules to answer the LUKS prompt (and any
   # emergency shell) before the root filesystem is mounted. Bare-metal
