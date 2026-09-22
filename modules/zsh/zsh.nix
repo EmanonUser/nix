@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  hostname,
   ...
 }: {
   # zsh is auto-installed by programs.zsh.enable below.
@@ -32,6 +33,8 @@
       la = "ls --color --group-directories-first -Alh --ignore='[^.]*'";
       ip = "ip --color=auto";
       grep = "grep --color";
+      nrs = "sudo nixos-rebuild switch --flake ~/nix/.#${hostname}";
+      nu = "nix flake update";
     };
 
     # Mirrors the raw ~/.zshenv (cargo + local bin paths, editors)
@@ -64,6 +67,8 @@
       autoload edit-command-line
       zle -N edit-command-line
       bindkey '^Xe' edit-command-line
+
+      nr() { nix run "nixpkgs#$1" -- "''${@:2}"; }
 
       # git auto-fetch (adapted from the dotfiles)
       source ${./git_auto_fetch.zsh}
