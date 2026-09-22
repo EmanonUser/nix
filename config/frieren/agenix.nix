@@ -1,4 +1,4 @@
-{
+{username, ...}: {
   # This host's user SSH identity, sealed to its own host key
   # (config/frieren/ssh/ssh_host_ed25519_key.age).
   #
@@ -8,7 +8,7 @@
   # manually).
   age.secrets."user-ssh-id" = {
     file = ./ssh/id_ed25519.age;
-    path = "/home/emanon/.ssh/id_ed25519";
+    path = "/home/${username}/.ssh/id_ed25519";
     mode = "0600";
     symlink = false;
   };
@@ -16,9 +16,9 @@
   # Atuin auto-login credentials, shared with the NixOS hosts. Decrypted at
   # /run/agenix by default (same paths the atuin module hardcodes).
   age.secrets."atuin-key" = {
-    file = ../emanon/atuin-key.age;
+    file = ../${username}/atuin-key.age;
   };
   age.secrets."atuin-session" = {
-    file = ../emanon/atuin-session.age;
+    file = ../${username}/atuin-session.age;
   };
 }
