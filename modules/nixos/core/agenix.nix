@@ -35,6 +35,21 @@
     file = ../../../users/emanon/password.age;
   };
 
+  # Atuin auto-login credentials (users/emanon/atuin-{key,session}.age),
+  # shared by all hosts. Read by the atuin CLI/daemon as the user, so owned by
+  # them (0400). VMs skip them: their host key can't decrypt (and they don't
+  # need the account).
+  age.secrets."atuin-key" = lib.mkIf (!vm) {
+    file = ../../../users/emanon/atuin-key.age;
+    owner = username;
+    mode = "0400";
+  };
+  age.secrets."atuin-session" = lib.mkIf (!vm) {
+    file = ../../../users/emanon/atuin-session.age;
+    owner = username;
+    mode = "0400";
+  };
+
   # agenix's activation script mkdirs ~/.ssh as root (0755) before any systemd
   # unit runs; home-manager - which runs as the user - then needs to write
   # .ssh/config and the pub keys into it. Hand the directory (and the home dir
