@@ -22,5 +22,6 @@
     fd
     jq
     gnumake
+    clang
   ];
 }
