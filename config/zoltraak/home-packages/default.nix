@@ -12,6 +12,7 @@
     zola
 
     # developpement
+    opencode
     ansible
     ansible-lint
     sshpass # ansible requirement
