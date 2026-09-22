@@ -4,13 +4,9 @@
   boot.loader.timeout = 20;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Route /dev/console input to the VGA/display terminal (keyboard on the
-  # graphics console) while keeping serial available for output/remote debug.
-  # console= order matters: the LAST entry is the interactive input console.
-  boot.kernelParams = [
-    "console=ttyS0,115200n8"
-    "console=tty0"
-  ];
+  # Silence kernel/initrd console output so plymouth owns the screen. No
+  # console= params here: tty0 splits console paths and breaks the splash.
+  boot.kernelParams = ["quiet"];
 
   # The initrd needs the input/USB modules to answer the LUKS prompt (and any
   # emergency shell) before the root filesystem is mounted. Bare-metal
