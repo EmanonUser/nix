@@ -27,6 +27,7 @@
     pciutils
     smartmontools
     qmk-udev-rules
+    solokeys-udev-rules
     via
 
     # development
