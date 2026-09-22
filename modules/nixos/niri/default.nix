@@ -42,6 +42,9 @@ in {
         useNautilus = false; # not needed, avoids pulling nautilus
       };
 
+      # Wayland clipboard (wl-copy / wl-paste) for the whole system.
+      environment.systemPackages = [pkgs.wl-clipboard];
+
       # Allow X11 apps (chrome, discord, ...) under niri.
       programs.xwayland.enable = true;
 

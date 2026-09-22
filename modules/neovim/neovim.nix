@@ -12,7 +12,10 @@
     dockerfile-language-server
     lua-language-server
     ruff
+    systemd-lsp
     taplo
+    tofu-ls
+    tree-sitter
     vscode-langservers-extracted
     yaml-language-server
 

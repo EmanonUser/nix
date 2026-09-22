@@ -4,7 +4,6 @@
 
   imports = [
     ./home-packages
-    ../../modules/alacritty/alacritty.nix
     ../../modules/atuin/atuin.nix
     ../../modules/direnv/direnv.nix
     ../../modules/ghostty/ghostty.nix
