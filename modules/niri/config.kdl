@@ -63,8 +63,9 @@ binds {
     Mod+V { toggle-window-floating; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
     Mod+F { maximize-column; }
-    Print { screenshot; }
-    Ctrl+Print { screenshot-screen; }
+    // Screenshots: grabit (region editor) / fullscreen; window shots via niri.
+    Print { spawn-sh "grabit"; }
+    Ctrl+Print { spawn-sh "grabit --fullscreen"; }
     Alt+Print { screenshot-window; }
 
     // Columns & windows

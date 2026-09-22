@@ -5,6 +5,7 @@
     ../../modules/direnv/direnv.nix
     ../../modules/ghostty/ghostty.nix
     ../../modules/git/git.nix
+    ../../modules/grabit/grabit.nix
     ../../modules/neovim/neovim.nix
     ../../modules/niri/niri.nix
     ../../modules/rnnoise/rnnoise.nix
