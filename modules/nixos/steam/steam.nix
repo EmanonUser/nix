@@ -9,6 +9,7 @@
       extraPkgs = pkgs:
         with pkgs; [
           gamemode
+          mangohud
         ];
     };
     extraCompatPackages = [

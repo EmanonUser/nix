@@ -2,6 +2,9 @@
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "25.05";
 
+  # Enable redistributable firmware (AMD/Intel CPU microcode, GPU firmware).
+  hardware.enableRedistributableFirmware = true;
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
