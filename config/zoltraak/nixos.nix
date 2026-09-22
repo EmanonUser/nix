@@ -28,6 +28,10 @@
     ../../modules/nixos/virtualisation
   ];
 
+  # Boot text splash: the closed NVIDIA driver can't drive a graphical
+  # plymouth from the initrd (no KMS), so render on the text console instead.
+  boot.plymouth.theme = "text";
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

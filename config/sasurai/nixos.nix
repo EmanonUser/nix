@@ -34,6 +34,10 @@
   # niri as an optional SDDM session; KDE/SDDM stays the default boot target.
   services.niri.login = "none";
 
+  # Graphic plymouth splash: needs the KMS driver in the initrd.
+  boot.initrd.availableKernelModules = ["amdgpu"];
+  boot.plymouth.theme = "spinner";
+
   # Log straight into the desktop as emanon (KDE/SDDM).
   services.displayManager.autoLogin = {
     enable = true;
