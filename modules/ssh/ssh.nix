@@ -1,4 +1,4 @@
-{ lib, hostname, ... }:
+{ lib, pkgs, hostname, ... }:
 let
   hostCa = builtins.readFile ./host_ca.pub;
   certAuthority =
@@ -18,10 +18,21 @@ in {
     force = true;
   };
 
-  home.file.".ssh/known_hosts" = {
-    text = certAuthority;
-    force = true;
-  };
+  # known_hosts must stay a REAL, writable file: ssh appends freshly-verified
+  # host keys (TOFU) to it, which a managed nix-store symlink forbids. We only
+  # seed the cert-authority trust anchor and leave the rest alone.
+  home.activation.seedKnownHosts = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    f="$HOME/.ssh/known_hosts"
+    ${pkgs.coreutils}/bin/install -d -m 700 "$HOME/.ssh"
+    if [ -L "$f" ]; then
+      rm -f "$f"
+    fi
+    ${pkgs.coreutils}/bin/touch "$f"
+    if ! ${pkgs.gnugrep}/bin/grep -qF '@cert-authority' "$f"; then
+      ${pkgs.coreutils}/bin/printf '%s' "${lib.escapeShellArg certAuthority}" >> "$f"
+    fi
+    ${pkgs.coreutils}/bin/chmod 600 "$f"
+  '';
 
   home.file.".ssh/id_ed25519.pub" = {
     source = pub;
