@@ -6,7 +6,7 @@
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
 #   make home-frieren         rebuild + switch frieren (home-manager only)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
-#   make install-nixos-vm     full reinstall of the incus VM via nixos-anywhere (LUKS)
+#   make install-nixos-vm     full reinstall of the incus VM via nixos-anywhere (unencrypted, no LUKS)
 #   make install-sasurai-vm   full reinstall of the sasurai test VM via nixos-anywhere (LUKS)
 #   make isasurai-vm          deploy the sasurai VM quickly (shortcut)
 #   make update               update flake lockfile
@@ -116,8 +116,8 @@ install-zoltraak: ## Full reinstall of zoltraak (prompts for user/host, confirma
 install-sasurai: ## Full reinstall of sasurai (prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,sasurai,luks)
 
-install-nixos-vm: ## Full reinstall of the incus VM (LUKS; prompts for user/host, confirmation and LUKS passphrase)
-	$(call INSTALL_RECIPE,nixos-vm,luks)
+install-nixos-vm: ## Full reinstall of the incus VM (unencrypted, no LUKS passphrase; prompts for user/host and confirmation)
+	$(call INSTALL_RECIPE,nixos-vm,)
 
 install-sasurai-vm: ## Full reinstall of the sasurai test VM (LUKS; reuses sasurai's identity; prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,sasurai-vm,luks,sasurai)

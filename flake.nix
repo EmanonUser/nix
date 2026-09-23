@@ -63,6 +63,7 @@
       hostname,
       vm ? false,
       filesystem ? null,
+      luks ? true,
       extraModules ? [],
     }:
       lib.nixosSystem {
@@ -71,9 +72,9 @@
             inherit username system;
             inherit hostname;
           }
-          // (lib.optionalAttrs (filesystem != null) { inherit filesystem; })
-          // { inherit vm; }
-          // (lib.optionalAttrs vm { netHostName = hostname + "-vm"; })
+          // (lib.optionalAttrs (filesystem != null) {inherit filesystem;})
+          // {inherit vm luks;}
+          // (lib.optionalAttrs vm {netHostName = hostname + "-vm";})
           // attrs;
         modules =
           [
@@ -115,6 +116,7 @@
       nixos-vm = mkSystem {
         hostname = "nixos-vm";
         filesystem = "zfs";
+        luks = false;
       };
     };
 
