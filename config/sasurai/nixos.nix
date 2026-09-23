@@ -54,6 +54,7 @@
   # falls back to the passphrase when the token isn't present.
   boot.initrd.luks.devices."crypt".crypttabExtraOpts = lib.mkIf (!vm) [
     "fido2-device=auto"
+    "token-timeout=15"
   ];
 
   home-manager = {
