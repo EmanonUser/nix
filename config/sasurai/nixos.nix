@@ -20,7 +20,6 @@
       #../../modules/nixos/greetd/greetd.nix
       ../../modules/nixos/steam/steam.nix
       ../../modules/nixos/gaming
-      stylix.nixosModules.stylix
       ../../modules/nixos/stylix
       ../../modules/nixos/niri
       ./nix-packages

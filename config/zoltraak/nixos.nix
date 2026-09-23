@@ -17,7 +17,6 @@
     ../../modules/nixos/hardware/network.nix
     ../../modules/nixos/noctalia
     ../../modules/nixos/niri
-    stylix.nixosModules.stylix
     ../../modules/nixos/stylix
     ./nix-packages
   ]

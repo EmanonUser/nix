@@ -1,8 +1,13 @@
 {
   pkgs,
   username,
+  stylix,
   ...
 }: {
+  imports = [
+    stylix.nixosModules.stylix
+  ];
+
   stylix.image = /home/${username}/Pictures/wallpaper.jpg;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/ayu-dark.yaml";
 
