@@ -37,7 +37,7 @@
 
   # Graphic plymouth splash: needs the KMS driver in the initrd.
   boot.initrd.availableKernelModules = ["amdgpu"];
-  boot.plymouth.theme = "spinner";
+  # Theme comes from the shared modules/nixos/boot/plymouth.nix default.
 
   # Log straight into the desktop as emanon (KDE/SDDM).
   services.displayManager.autoLogin = {
