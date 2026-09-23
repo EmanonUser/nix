@@ -12,13 +12,4 @@
     mode = "0600";
     symlink = false;
   };
-
-  # Atuin auto-login credentials, shared with the NixOS hosts. Decrypted at
-  # /run/agenix by default (same paths the atuin module hardcodes).
-  age.secrets."atuin-key" = {
-    file = ../${username}/atuin-key.age;
-  };
-  age.secrets."atuin-session" = {
-    file = ../${username}/atuin-session.age;
-  };
 }
