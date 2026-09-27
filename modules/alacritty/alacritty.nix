@@ -1,5 +1,4 @@
 {lib, ...}: {
-  # alacritty is auto-installed by programs.alacritty.enable below.
   programs.alacritty = {
     enable = true;
 

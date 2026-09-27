@@ -64,10 +64,8 @@
   # until its profile directory exists, so create it before every activation.
   systemd.services."home-manager-${username}".serviceConfig.ExecStartPre = ["${pkgs.coreutils}/bin/mkdir -p /home/${username}/.local/state/nix/profiles"];
 
-  virtualisation.incus.agent.enable = true;
-
-  # Temporary convenience access for the VM test box (not for the real host).
+  # Temporary convenience access for the VM test box
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
-
+  virtualisation.incus.agent.enable = true;
   networking.firewall.enable = false;
 }

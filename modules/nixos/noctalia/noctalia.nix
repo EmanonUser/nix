@@ -12,7 +12,5 @@
     recommendedServices.enable = true;
   };
 
-  # Noctalia's GNOME services bring an SSH agent (gcr-ssh-agent), which
-  # conflicts with programs.ssh.startAgent.
   services.gnome.gcr-ssh-agent.enable = false;
 }

@@ -4,7 +4,6 @@
   hostname,
   ...
 }: {
-  # zsh is auto-installed by programs.zsh.enable below.
   home.sessionPath = [
     "$HOME/.local/bin"
     "$HOME/.cargo/bin"
@@ -37,7 +36,6 @@
       nu = "nix flake update";
     };
 
-    # Mirrors the raw ~/.zshenv (cargo + local bin paths, editors)
     envExtra = ''
       export PATH=$PATH:"$HOME/.local/bin"
       export PATH=$PATH:"$HOME/.cargo/bin"

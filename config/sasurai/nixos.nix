@@ -36,14 +36,9 @@
       ../../modules/nixos/virtualisation/podman.nix
     ];
 
-  # niri as an optional SDDM session; KDE/SDDM stays the default boot target.
-  services.niri.login = "none";
-
-  # Graphic plymouth splash: needs the KMS driver in the initrd.
   boot.initrd.availableKernelModules = ["amdgpu"];
-  # Theme comes from the shared modules/nixos/boot/plymouth.nix default.
 
-  # Log straight into the desktop as emanon (KDE/SDDM).
+  services.niri.login = "none";
   services.displayManager.autoLogin = {
     enable = true;
     user = username;
@@ -54,8 +49,6 @@
     "/var/lib/sbctl"
   ];
 
-  # Allow unlocking the LUKS root via a FIDO2 hardware token at boot;
-  # falls back to the passphrase when the token isn't present.
   boot.initrd.luks.devices."crypt".crypttabExtraOpts = lib.mkIf (!vm) [
     "fido2-device=auto"
     "token-timeout=15"

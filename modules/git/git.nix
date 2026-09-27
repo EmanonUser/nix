@@ -1,5 +1,4 @@
 {lib, hostname, ...}: let
-  # git is auto-installed by programs.git.enable below. The pub half of the
   # host's identity deployed via agenix (config/${hostname}/ssh/id_ed25519.age) is
   # the canonical signing key on every host.
   signingKey = ../../config + "/${hostname}/ssh/id_ed25519.pub";

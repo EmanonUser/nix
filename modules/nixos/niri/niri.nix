@@ -35,24 +35,16 @@ in {
 
   config = lib.mkMerge [
     {
-      # niri, the scrollable-tiling Wayland compositor.
-      # https://github.com/YaLTeR/niri
       programs.niri = {
         enable = true;
-        useNautilus = false; # not needed, avoids pulling nautilus
+        useNautilus = false;
       };
 
-      # Wayland clipboard (wl-copy / wl-paste) for the whole system.
       environment.systemPackages = [pkgs.wl-clipboard];
-
-      # Allow X11 apps (chrome, discord, ...) under niri.
       programs.xwayland.enable = true;
-
-      # niri's GNOME services bring an SSH agent (gcr-ssh-agent), which
-      # conflicts with programs.ssh.startAgent.
       services.gnome.gcr-ssh-agent.enable = false;
 
-      # Make user-profile binaries (kitty, ghostty, ...) available in niri binds.
+      # Make user-profile binaries available in niri binds.
       environment.sessionVariables.PATH = [
         "${config.home-manager.users.${username}.home.profileDirectory}/bin"
       ];
@@ -69,7 +61,6 @@ in {
     })
 
     (lib.mkIf (cfg.login == "noctalia-greeter") {
-      # Noctalia Greeter: greetd-based login screen, defaults to niri + `username`.
       services.displayManager.noctalia-greeter = {
         enable = true;
         settings = {
@@ -82,7 +73,6 @@ in {
         };
       };
 
-      # greetd runs the greeter as this dedicated system user.
       services.greetd.settings.default_session.user = "greeter";
       users.groups.greeter = {};
 
