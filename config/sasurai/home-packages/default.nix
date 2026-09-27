@@ -18,6 +18,7 @@
     gamemode
     gamescope
     goverlay
+    satisfactorymodmanager
 
     # developpement
     opencode
