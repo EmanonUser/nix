@@ -1,8 +1,8 @@
-{
+{username, ...}: {
   imports = [
     ../localization.nix
     ./hardware-configuration.nix
-    ./../../users
+    ./../../users/${username}/${username}.nix
     ./../../config/sasurai/nixos.nix
   ];
 

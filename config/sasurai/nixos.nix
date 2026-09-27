@@ -7,7 +7,10 @@
 }: {
   imports =
     [
-      ../../modules/nixos/core
+      ../../modules/nixos/core/settings.nix
+      ../../modules/nixos/core/fonts.nix
+      ../../modules/nixos/core/agenix.nix
+      ../../modules/nixos/boot/bootloader.nix
       ../../modules/nixos/core/impermanence.nix
       ../../modules/nixos/boot/plymouth.nix
       ../../modules/nixos/boot/memtest86.nix
@@ -29,7 +32,8 @@
     ++ lib.optionals (!vm) [
       ../../modules/nixos/boot/secureboot.nix
       ../../modules/nixos/hardware/amd.nix
-      ../../modules/nixos/virtualisation
+      ../../modules/nixos/virtualisation/incus.nix
+      ../../modules/nixos/virtualisation/podman.nix
     ];
 
   # niri as an optional SDDM session; KDE/SDDM stays the default boot target.

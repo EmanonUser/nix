@@ -38,8 +38,11 @@
 
   imports = [
     ../localization.nix
-    ../../users
-    ../../modules/nixos/core
+    ../../users/${username}/${username}.nix
+    ../../modules/nixos/core/settings.nix
+    ../../modules/nixos/core/fonts.nix
+    ../../modules/nixos/core/agenix.nix
+    ../../modules/nixos/boot/bootloader.nix
     ../../modules/nixos/core/impermanence.nix
     ./disko.nix
     ../../modules/nixos/ssh-server
