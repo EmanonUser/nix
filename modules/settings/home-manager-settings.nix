@@ -11,6 +11,7 @@
 
   xdg.userDirs = {
     enable = true;
+    setSessionVariables = false;
     music = null;
     pictures = null;
     videos = null;
