@@ -36,5 +36,6 @@
     ltrace
     postgresql
     oha
+    sshfs
   ];
 }
