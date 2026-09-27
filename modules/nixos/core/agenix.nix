@@ -35,6 +35,15 @@
     file = ../../../users + "/${username}/password.age";
   };
 
+  age.secrets.home-assistant = lib.mkIf (!vm) {
+    # Home Assistant long-lived token, shared across hosts
+    # (users/<user>/home-assistant.age), sealed to every host's ed25519 key -
+    # same scheme as user-password. Lands at /run/agenix/home-assistant
+    # (root-only, re-decrypted on each activation) until a consumer dictates a
+    # persistent path.
+    file = ../../../users + "/${username}/home-assistant.age";
+  };
+
   # agenix's activation script mkdirs ~/.ssh as root (0755) before any systemd
   # unit runs; home-manager - which runs as the user - then needs to write
   # .ssh/config and the pub keys into it. Hand the directory (and the home dir
