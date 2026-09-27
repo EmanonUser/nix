@@ -45,7 +45,7 @@
     ../../modules/nixos/boot/bootloader.nix
     ../../modules/nixos/core/impermanence.nix
     ./disko.nix
-    ../../modules/nixos/ssh-server
+    ../../modules/nixos/ssh-server/ssh-server.nix
     ../../modules/nixos/services/services.nix
     ../../modules/nixos/hardware/network.nix
   ];

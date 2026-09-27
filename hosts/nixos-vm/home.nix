@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../config/frieren/home-packages
+    ../../config/frieren/home-packages/home-packages.nix
     ../../modules/atuin/atuin.nix
     ../../modules/direnv/direnv.nix
     ../../modules/git/git.nix

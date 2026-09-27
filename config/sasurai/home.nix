@@ -1,6 +1,6 @@
 {
   imports = [
-    ./home-packages
+    ./home-packages/home-packages.nix
     ../../modules/atuin/atuin.nix
     ../../modules/direnv/direnv.nix
     ../../modules/ghostty/ghostty.nix

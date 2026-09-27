@@ -16,13 +16,13 @@
       ../../modules/nixos/boot/memtest86.nix
       ../../hosts/zoltraak/disko.nix
       ../../modules/nixos/services/services.nix
-      ../../modules/nixos/ssh-server
+      ../../modules/nixos/ssh-server/ssh-server.nix
       ../../modules/nixos/hardware/pipewire.nix
       ../../modules/nixos/hardware/network.nix
-      ../../modules/nixos/noctalia
-      ../../modules/nixos/niri
-      ../../modules/nixos/stylix
-      ./nix-packages
+      ../../modules/nixos/noctalia/noctalia.nix
+      ../../modules/nixos/niri/niri.nix
+      ../../modules/nixos/stylix/stylix.nix
+      ./nix-packages/nix-packages.nix
     ]
     # Bare-metal-only pieces (amdgpu, host incus/podman): skipped when running
     # in a test VM (hosts/vm/common.nix takes over).
