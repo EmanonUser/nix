@@ -82,7 +82,7 @@
             home-manager.nixosModules.home-manager
             impermanence.nixosModules.impermanence
             agenix.nixosModules.default
-            ./hosts/${hostname}
+            ./hosts/${hostname}/${hostname}.nix
           ]
           ++ lib.optionals vm [./hosts/vm/common.nix]
           ++ extraModules;
