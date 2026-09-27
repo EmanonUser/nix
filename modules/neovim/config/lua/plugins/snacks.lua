@@ -12,6 +12,7 @@ return {
     explorer = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
+    markdown = { enabled = true },
     picker = { enabled = true },
     notifier = { enabled = true },
     quickfile = { enabled = true },
@@ -19,5 +20,19 @@ return {
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
     words = { enabled = true },
+  },
+  keys = {
+    {
+      "<leader>mp",
+      function() Snacks.markdown.preview() end,
+      desc = "[M]arkdown [P]review",
+      mode = { "n", "x" },
+    },
+    {
+      "<leader>mt",
+      function() Snacks.markdown.toc() end,
+      desc = "Markdown [T]able of contents",
+      mode = { "n" },
+    },
   },
 }
