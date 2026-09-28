@@ -4,7 +4,7 @@
 #   make deploy-zoltraak      build locally + copy closure + switch zoltraak (no OOM)
 #   make deploy               build locally + switch every NixOS host
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
-#   make home-frieren         rebuild + switch frieren (home-manager only)
+#   make home-fern            rebuild + switch fern (home-manager only)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
 #   make install-nixos-vm     full reinstall of the incus VM via nixos-anywhere (unencrypted, no LUKS)
 #   make install-sasurai-vm   full reinstall of the sasurai test VM via nixos-anywhere (LUKS)
@@ -23,7 +23,7 @@ FLAKE       := .
 # Hosts with full NixOS deployments.
 NIXOS_HOSTS := sasurai zoltraak
 # Standalone home-manager hosts (no NixOS system).
-HOME_HOSTS  := frieren
+HOME_HOSTS  := fern
 
 ZOLTRAAK_IP ?= 192.168.5.113
 SASURAI_IP  ?= sasurai
@@ -49,7 +49,7 @@ LUKS_KEY ?= /tmp/disk-encryption.key
         deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm \
         rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm \
         push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm \
-        home home-frieren \
+        home home-fern \
         print-cert-authority \
         update check fmt
 
@@ -187,10 +187,10 @@ rebuild-zoltraak-vm: push-zoltraak-vm ## Rebuild + switch the zoltraak VM on the
 # the `rebuild-*` targets above via home-manager.nixosModule)
 # ---------------------------------------------------------------------------
 
-home: home-frieren ## Rebuild + switch every home-manager-only host
+home: home-fern ## Rebuild + switch every home-manager-only host
 
-home-frieren: ## Rebuild + switch frieren
-	$(HOME_MANAGER) switch --flake $(FLAKE)#frieren
+home-fern: ## Rebuild + switch fern
+	$(HOME_MANAGER) switch --flake $(FLAKE)#fern
 
 # ---------------------------------------------------------------------------
 # Host CA (client-side known_hosts entry)

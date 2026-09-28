@@ -121,18 +121,18 @@
     };
 
     homeConfigurations = {
-      frieren = home-manager.lib.homeManagerConfiguration {
+      fern = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           inherit system;
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
           inherit username;
-          hostname = "frieren";
+          hostname = "fern";
         };
         modules = [
           agenix.homeManagerModules.age
-          ./configs/frieren/home.nix
+          ./configs/fern/home.nix
         ];
       };
     };
