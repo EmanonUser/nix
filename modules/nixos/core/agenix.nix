@@ -15,13 +15,13 @@
   ];
 
   # This host's user SSH identity, sealed to its own host key
-  # (config/${hostname}/ssh/ssh_host_ed25519_key.age).
+  # (configs/${hostname}/ssh/ssh_host_ed25519_key.age).
   # Written to /persist directly so it survives the initrd activation (agenix
   # runs before impermanence bind-mounts /persist/home/<user> onto /home/<user>).
   # A real file (symlink = false), so sshd/git never see a dangling /run/agenix
   # link during early boot.
   age.secrets."user-ssh-id" = {
-    file = ../../../config + "/${hostname}/ssh/id_ed25519.age";
+    file = ../../../configs + "/${hostname}/ssh/id_ed25519.age";
     path = "/persist/home/${username}/.ssh/id_ed25519";
     owner = username;
     mode = "0600";

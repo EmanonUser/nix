@@ -70,13 +70,13 @@ help: ## Show this help
 # $(3) is the identity host whose host key is seeded; it defaults to $(1) but
 # lets VM variants reuse another host's identity (e.g. sasurai-vm -> sasurai).
 #
-# The static host key (config/<identity>/ssh/ssh_host_ed25519_key.age) is
+# The static host key (configs/<identity>/ssh/ssh_host_ed25519_key.age) is
 # decrypted ONCE here (passphrase prompt) and seeded into the target's
 # /persist/etc/ssh via --extra-files, so agenix has its deterministic bootstrap
 # identity on the very first boot.
 define INSTALL_RECIPE
 	@key_host="$(if $(3),$(3),$(1))"; \
-	hostkey_age="config/$${key_host}/ssh/ssh_host_ed25519_key.age"; \
+	hostkey_age="configs/$${key_host}/ssh/ssh_host_ed25519_key.age"; \
 	test -f "$$hostkey_age" || { echo "Missing $$hostkey_age - commit a host key for $${key_host} first." >&2; exit 1; }; \
 	fs=$$(mktemp -d); \
 	trap 'shred -u "$(LUKS_KEY)" 2>/dev/null || rm -f "$(LUKS_KEY)"; rm -rf "$$fs"' EXIT; \
@@ -85,7 +85,7 @@ define INSTALL_RECIPE
 	$(AGE) -d -o "$$fs/persist/etc/ssh/ssh_host_ed25519_key" "$$hostkey_age" \
 	  || { echo "Host key decrypt failed." >&2; exit 1; }; \
 	chmod 600 "$$fs/persist/etc/ssh/ssh_host_ed25519_key"; \
-	cp "config/$${key_host}/ssh/ssh_host_ed25519_key.pub" "$$fs/persist/etc/ssh/"; \
+	cp "configs/$${key_host}/ssh/ssh_host_ed25519_key.pub" "$$fs/persist/etc/ssh/"; \
 	chmod 644 "$$fs/persist/etc/ssh/ssh_host_ed25519_key.pub"; \
 	seed="$$fs"; \
 	read -r -p "SSH username: " ssh_user; \

@@ -57,7 +57,7 @@
     # twin of the *same* host config: same identity/hostname, but the
     # bare-metal-only pieces are skipped in the host config itself
     # (secureboot/lanzaboote, amdgpu, host incus/podman; see vm overs in the
-    # config/*/nixos.nix files) and hosts/vm/common.nix wires up the virtio
+    # configs/*/nixos.nix files) and hosts/vm/common.nix wires up the virtio
     # disk, serial console and incus agent.
     mkSystem = {
       hostname,
@@ -132,7 +132,7 @@
         };
         modules = [
           agenix.homeManagerModules.age
-          ./config/frieren/home.nix
+          ./configs/frieren/home.nix
         ];
       };
     };

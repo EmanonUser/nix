@@ -1,7 +1,7 @@
 {lib, hostname, ...}: let
-  # host's identity deployed via agenix (config/${hostname}/ssh/id_ed25519.age) is
+  # host's identity deployed via agenix (configs/${hostname}/ssh/id_ed25519.age) is
   # the canonical signing key on every host.
-  signingKey = ../../config + "/${hostname}/ssh/id_ed25519.pub";
+  signingKey = ../../configs + "/${hostname}/ssh/id_ed25519.pub";
 in {
   home.file = lib.optionalAttrs (builtins.pathExists signingKey) {
     ".ssh/allowed_signers".text = "* ${builtins.readFile signingKey}";

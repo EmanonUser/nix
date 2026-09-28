@@ -3,7 +3,7 @@
     ../localization.nix
     ./hardware-configuration.nix
     ./../../users/${username}/${username}.nix
-    ./../../config/zoltraak/nixos.nix
+    ./../../configs/zoltraak/nixos.nix
   ];
 
   programs.ssh.startAgent = true;

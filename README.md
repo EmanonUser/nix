@@ -38,13 +38,13 @@ flake.lock             # pinned inputs
 Makefile               # install / deploy / rebuild / home / update targets
 README.md              # this file
 hosts/                 # LAYER 1 — what this *machine* is
-  <host>/default.nix           # entry point pulled in by the flake
+  <host>/<host>.nix             # entry point pulled in by the flake
   <host>/hardware-configuration.nix
   <host>/disko.nix             # disks, LUKS, filesystems, pools
-  <host>/home.nix              # home config of hosts that don't live in config/
+  <host>/home.nix              # home config of hosts that don't live in configs/
   vm/common.nix                # adaptations shared by every *-vm twin
   localization.nix             # timezone, locale, keyboard (shared)
-config/                # LAYER 2 — what this host *runs*
+configs/                # LAYER 2 — what this host *runs*
   <host>/nixos.nix             # host's module list + home-manager wiring
   <host>/home.nix              # which home-manager modules it imports
   <host>/home-packages/        # per-user GUI/dev packages
@@ -57,9 +57,9 @@ modules/               # LAYER 3 — reusable, host-agnostic modules
   zsh, neovim, ssh, git, …    # user-level modules
   */config, */*.kdl, */*.lua   # static config shipped by the module above it
 users/                 # user accounts (parameterised by `username`)
-  default.nix                  # imports ./${username}
-  <user>/default.nix           # account, groups, sudo
+  <user>/<user>.nix            # account, groups, sudo
   <user>/password.age          # shared password hash (sealed to all host keys)
+  <user>/home-assistant.age    # shared Home Assistant token (sealed to all host keys)
 ```
 
 ### The layering logic
@@ -69,7 +69,7 @@ Three layers, evaluated in this order, each with a single responsibility:
 | Layer | Question it answers | Contains | Never contains |
 | --- | --- | --- | --- |
 | `hosts/<name>` | *Which physical/virtual machine is this?* | hardware, disks, import entry point, VM overrides | user choices, package lists |
-| `config/<name>` | *What does this machine do?* | module imports, DE, services, package lists, home-manager wiring | machine-specific hardware |
+| `configs/<name>` | *What does this machine do?* | module imports, DE, services, package lists, home-manager wiring | machine-specific hardware |
 | `modules/` | *How is a capability implemented?* | one concern per file, reusable by any host | host names, disk layouts |
 
 `flake.nix` only names a host and a few flags; it never lists modules itself.
@@ -84,19 +84,19 @@ arg, so adding a user means adding a directory, not editing every host.
 ### How NixOS and Home Manager fit together
 
 - NixOS hosts declare `home-manager.users.${username}` in their
-  `config/<host>/nixos.nix`, importing `config/<host>/home.nix` with
+  `configs/<host>/nixos.nix`, importing `configs/<host>/home.nix` with
   `useGlobalPkgs = true`. One `nixos-rebuild` therefore updates system *and*
   user environment.
 - The standalone Home Manager host is declared as a
-  `homeConfigurations.<name>` in the flake, importing `config/<name>/home.nix`
+  `homeConfigurations.<name>` in the flake, importing `configs/<name>/home.nix`
   directly — the same file layout, without a NixOS system around it.
-- `config/<host>/home.nix` is always just a list of `modules/*` imports plus
+- `configs/<host>/home.nix` is always just a list of `modules/*` imports plus
   `home-packages`; the two are interchangeable between the two models.
 
 ### Modules at a glance
 
-System (`modules/nixos/`): `core` (settings, bootloader, fonts, agenix,
-impermanence), `boot` (plymouth, memtest86+, secureboot/lanzaboote),
+System (`modules/nixos/`): `core` (settings, fonts, agenix, impermanence),
+`boot` (bootloader, plymouth, memtest86+, secureboot/lanzaboote),
 `hardware` (amd, network, pipewire), DEs (`kde`, `niri`, `noctalia`, `cosmic`),
 `ssh-server`, `services`, `steam`, `gaming`, `virtualisation` (incus, podman),
 `greetd`, `stylix`.
@@ -149,30 +149,28 @@ flake.nix
 └── hosts/<host>                              (mkSystem, specialArgs)
     ├── hosts/localization.nix
     ├── hosts/<host>/hardware-configuration.nix        [bare metal only]
-    ├── users/default.nix
-    │   └── users/<user>/default.nix
-    └── config/<host>/nixos.nix
-        ├── modules/nixos/core/default.nix
-        │   ├── …/core/settings.nix
-        │   ├── …/core/bootloader.nix
-        │   ├── …/core/fonts.nix
-        │   └── …/core/agenix.nix
+    ├── users/<user>/<user>.nix
+    └── configs/<host>/nixos.nix
+        ├── modules/nixos/core/settings.nix
+        ├── modules/nixos/core/fonts.nix
+        ├── modules/nixos/core/agenix.nix
+        ├── modules/nixos/boot/bootloader.nix
         ├── modules/nixos/core/impermanence.nix
         ├── modules/nixos/boot/plymouth.nix
         ├── modules/nixos/boot/memtest86.nix
         ├── hosts/<host>/disko.nix
         ├── modules/nixos/services/services.nix
-        ├── modules/nixos/ssh-server/default.nix
+        ├── modules/nixos/ssh-server/ssh-server.nix
         ├── modules/nixos/hardware/{pipewire,network}.nix
         ├── modules/nixos/<desktop>/…                 (kde | niri | noctalia)
         ├── modules/nixos/steam/steam.nix
-        ├── modules/nixos/gaming/default.nix
-        ├── modules/nixos/stylix/default.nix
-        ├── modules/nixos/niri/default.nix
-        ├── config/<host>/nix-packages/default.nix
+        ├── modules/nixos/gaming/gaming.nix
+        ├── modules/nixos/stylix/stylix.nix
+        ├── modules/nixos/niri/niri.nix
+        ├── configs/<host>/nix-packages/nix-packages.nix
         ├── …                        (if !vm: secureboot, amd, virtualisation)
-        └── config/<host>/home.nix
-            ├── config/<host>/home-packages/default.nix
+        └── configs/<host>/home.nix
+            ├── configs/<host>/home-packages/home-packages.nix
             ├── modules/atuin, direnv, ghostty, git, grabit, neovim,
             │   niri, rnnoise, settings, ssh, starship, zellij, zoxide
             └── modules/zsh/zsh.nix          ← terminal Nix module
@@ -186,6 +184,6 @@ modules/zsh/git_auto_fetch.zsh
 ```
 
 reached as
-`flake.nix` → `hosts/<host>/default.nix` → `config/<host>/nixos.nix` →
-`config/<host>/home.nix` → `modules/zsh/zsh.nix` (zsh.nix:74) →
+`flake.nix` → `hosts/<host>/<host>.nix` → `configs/<host>/nixos.nix` →
+`configs/<host>/home.nix` → `modules/zsh/zsh.nix` (zsh.nix:72) →
 `modules/zsh/git_auto_fetch.zsh`.

@@ -6,7 +6,7 @@
   vm ? false,
   ...
 }: {
-  # Password comes from the shared age secret (config/password.age). Users are
+  # Password comes from the shared age secret (users/${username}/password.age). Users are
   # immutable so the hash is enforced on every activation; change the password
   # by re-encrypting the age file, not with `passwd`. Throwaway *-vm twins stay
   # mutable and keep their "vmtest" initial password (their VM host key can't
