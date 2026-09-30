@@ -28,10 +28,20 @@ HOME_HOSTS  := fern
 
 ZOLTRAAK_IP ?= 192.168.5.113
 SASURAI_IP  ?= sasurai
+
+# sasurai-vm and zoltraak-vm live on another hypervisor, which hands out
+# 192.168.122.0/24, so these are fixed there.
 SASURAI_VM_IP ?= 192.168.122.2
 ZOLTRAAK_VM_IP ?= 192.168.122.3
-NIXOS_TESTS_IP ?= 192.168.122.5
-NIXOS_VM_IP ?= 192.168.122.4
+
+# nixos-vm and nixos-tests live on this Incus host instead: nixos-vm on the
+# l2 bridge (real LAN, DHCP lease) and nixos-tests on the NAT bridge
+# (10.188.165.0/24, DHCP lease). Neither has a fixed address, so look the
+# lease up and pass it in, e.g.
+#   make rebuild-nixos-vm NIXOS_VM_IP=192.168.5.13
+#   make rebuild-nixos-tests NIXOS_TESTS_IP=10.188.165.42
+NIXOS_TESTS_IP ?= 10.188.165.1
+NIXOS_VM_IP ?= 192.168.5.1
 
 # Tools are run via `nix run` since they aren't installed on this machine.
 HOME_MANAGER   := nix run nixpkgs\#home-manager --
