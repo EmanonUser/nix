@@ -44,10 +44,6 @@
   # No host GPU: modesetting + llvmpipe software rendering is enough to test.
   services.xserver.videoDrivers = lib.mkForce ["modesetting"];
 
-  # The bare-metal stylix image (host ~/Pictures/wallpaper.jpg) doesn't exist
-  # on a throwaway VM, so theme from a bundled wallpaper instead.
-  stylix.image = lib.mkForce pkgs.nixos-artwork.wallpapers.nineish-dark-gray;
-
   # Incus agent so the VM host can run commands/exec inside the instance.
   virtualisation.incus.agent.enable = true;
 
@@ -60,3 +56,8 @@
   # run until its profile directory exists, so create it before activation.
   systemd.services."home-manager-${username}".serviceConfig.ExecStartPre = ["${pkgs.coreutils}/bin/mkdir -p /home/${username}/.local/state/nix/profiles"];
 }
+# No stylix override here: `stylix` is only an option on hosts that import
+# modules/nixos/stylix, so defining it breaks every headless VM. It cannot be
+# guarded on the option existing either - probing `config` here is
+# self-referential, and an mkIf'd definition still trips the unmatched-option
+# check. modules/nixos/stylix branches on `vm` itself instead.
