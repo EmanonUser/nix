@@ -5,6 +5,7 @@
 #   make deploy               build locally + switch every NixOS host
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
 #   make home-fern            rebuild + switch fern (home-manager only)
+#   make decrypt-identity     decrypt a host's SSH identity (needed once before install)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
 #   make install-nixos-vm     full reinstall of the nixos-vm dev VM via nixos-anywhere
 #   make install-nixos-tests  full reinstall of the nixos-tests VM via nixos-anywhere
@@ -64,6 +65,7 @@ LUKS_KEY ?= /tmp/disk-encryption.key
         deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-nixos-tests \
         rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-nixos-tests \
         push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-nixos-tests \
+        decrypt-identity \
         home home-fern \
         print-cert-authority \
         update check fmt
@@ -85,6 +87,11 @@ help: ## Show this help
 # $(3) is the identity host whose host key is seeded; it defaults to $(1) but
 # lets VM variants reuse another host's identity (e.g. sasurai-vm -> sasurai).
 #
+# nixos-anywhere is also passed -i <configs/<key_host>/ssh/id_ed25519> when that
+# file has been decrypted, so it logs in with the committed identity instead of
+# generating a throwaway key and then demanding a password. `make
+# decrypt-identity <host>` produces it; IDENTITY= overrides the path.
+#
 # The static host key (configs/<identity>/ssh/ssh_host_ed25519_key.age) is
 # decrypted ONCE here (passphrase prompt) and seeded into the target's
 # /persist/etc/ssh via --extra-files, so agenix has its deterministic bootstrap
@@ -93,6 +100,16 @@ define INSTALL_RECIPE
 	@key_host="$(if $(3),$(3),$(1))"; \
 	hostkey_age="configs/$${key_host}/ssh/ssh_host_ed25519_key.age"; \
 	test -f "$$hostkey_age" || { echo "Missing $$hostkey_age - commit a host key for $${key_host} first." >&2; exit 1; }; \
+	identity="$${IDENTITY:-configs/$${key_host}/ssh/id_ed25519}"; \
+	if [ -f "$$identity" ]; then \
+	  idflag="-i $$identity"; \
+	else \
+	  echo "WARNING: no plaintext identity at $$identity." >&2; \
+	  echo "  nixos-anywhere will generate a throwaway key and then ask for a" >&2; \
+	  echo "  password, which these hosts do not have. Decrypt it first:" >&2; \
+	  echo "    make decrypt-identity $${key_host}" >&2; \
+	  idflag=""; \
+	fi; \
 	fs=$$(mktemp -d); \
 	trap 'shred -u "$(LUKS_KEY)" 2>/dev/null || rm -f "$(LUKS_KEY)"; rm -rf "$$fs"' EXIT; \
 	echo "Seeding $${key_host} host key into persist for agenix bootstrap (passphrase prompt)..."; \
@@ -118,6 +135,7 @@ define INSTALL_RECIPE
 	  umask 077; printf '%s\n' "$$key1" > "$(LUKS_KEY)"; \
 	fi; \
 	$(ANYWHERE) --flake $(FLAKE)#$(1) \
+	  $${idflag:+$$idflag} \
 	  $(if $(filter luks,$(2)),--disk-encryption-keys /tmp/disk-encryption.key "$(LUKS_KEY)" ,) \
 	  $${seed:+--extra-files $$seed} \
 	  "$$ssh_user@$$target_host"
@@ -142,6 +160,21 @@ install-sasurai-vm: ## Full reinstall of the sasurai test VM (LUKS; reuses sasur
 
 install-zoltraak-vm: ## Full reinstall of the zoltraak test VM (LUKS; reuses zoltraak's identity; prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,zoltraak-vm,luks,zoltraak)
+
+# nixos-anywhere logs in with this key, and with -i it reuses it for the whole
+# install instead of generating a temporary one. Only the .age half is committed,
+# so this has to be run once per host (passphrase prompt) before `make install-*`.
+decrypt-identity: ## Decrypt a host's SSH identity to plaintext: make decrypt-identity nixos-vm
+	@host="$(1)"; \
+	src="configs/$${host}/ssh/id_ed25519.age"; \
+	dst="configs/$${host}/ssh/id_ed25519"; \
+	test -n "$$host" || { echo "Usage: make decrypt-identity <host>" >&2; exit 1; }; \
+	test -f "$$src" || { echo "Missing $$src" >&2; exit 1; }; \
+	if [ -f "$$dst" ]; then echo "$$dst already exists - delete it to re-decrypt."; exit 0; fi; \
+	umask 077; \
+	$(AGE) -d -o "$$dst" "$$src" || { rm -f "$$dst"; echo "Decrypt failed." >&2; exit 1; }; \
+	chmod 600 "$$dst"; \
+	echo "Wrote $$dst (gitignored)"
 
 # Shortcut for the common "just reinstall the sasurai VM" case.
 isasurai-vm: install-sasurai-vm ## Shortcut for install-sasurai-vm
