@@ -30,6 +30,27 @@ config reads as a short, explicit list of imports.
 - **Make-driven operations** — the `Makefile` is the supported entry point for
   installing, deploying, rebuilding and formatting.
 
+## Hosts
+
+| Flake output | Where it runs | Role |
+| --- | --- | --- |
+| `sasurai` | bare metal | Plasma/niri desktop, ZFS on LUKS |
+| `zoltraak` | bare metal | Noctalia/niri desktop, btrfs on LUKS |
+| `sasurai-vm` | Incus VM | throwaway twin of `sasurai` (`vm = true`) |
+| `zoltraak-vm` | Incus VM | throwaway twin of `zoltraak` (`vm = true`) |
+| `nixos-vm` | Incus VM | **headless dev environment** — SSH in, edit, build |
+| `nixos-tests` | Incus VM | **headless smoke-test box** — `vm = true`, `vmtest` password |
+| `fern` | workstation | standalone Home Manager profile |
+
+The two `nixos-*` hosts are the ones you drive day to day. `nixos-vm` carries
+the toolchains (gcc/clang, cmake, ninja, go, rustup, python, nodejs, gdb,
+valgrind, nix tooling) in `configs/nixos-vm/nix-packages`, and reuses fern's
+home profile. `nixos-tests` stays deliberately lean — no desktop, no
+toolchains, barely a home profile — because its only job is to answer "does
+this config activate?", which keeps the smoke test fast. The twins
+(`sasurai-vm`, `zoltraak-vm`) are separate: they run the *real* desktop
+config, so they catch DE regressions that a headless box cannot.
+
 ## Repository layout
 
 ```
@@ -41,8 +62,8 @@ hosts/                 # LAYER 1 — what this *machine* is
   <host>/<host>.nix             # entry point pulled in by the flake
   <host>/hardware-configuration.nix
   <host>/disko.nix             # disks, LUKS, filesystems, pools
-  <host>/home.nix              # home config of hosts that don't live in configs/
   vm/common.nix                # adaptations shared by every *-vm twin
+  vm/disko.nix                 # virtio disk layout shared by the Incus VMs
   localization.nix             # timezone, locale, keyboard (shared)
 configs/                # LAYER 2 — what this host *runs*
   <host>/nixos.nix             # host's module list + home-manager wiring
@@ -115,7 +136,10 @@ User (`modules/`): `zsh`, `starship`, `atuin`, `zoxide`, `direnv`, `neovim`,
 - **VM twins** — `sasurai-vm`, `zoltraak-vm` reuse the *same* host config with
   `vm = true` plus `hosts/vm/common.nix`; they skip bare-metal-only modules,
   get virtio storage, a serial console, a bundled wallpaper and a throwaway
-  password.
+  password. `nixos-tests` reuses that same `vm = true` machinery as a
+  standalone host, so it also gets the throwaway password and skips the shared
+  `password.age` — which is why it carries its own key material under
+  `configs/nixos-tests/ssh/` and needs no passphrase to install.
 - **Secrets hygiene** — `.gitignore` is an allowlist (ignore everything, then
   re-include `*.nix`, `*.age`, `*.pub`, …), so a new file can never be
   committed by accident.
