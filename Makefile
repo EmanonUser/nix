@@ -6,7 +6,7 @@
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
 #   make home-fern            rebuild + switch fern (home-manager only)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
-#   make install-nixos-vm     full reinstall of the incus VM via nixos-anywhere (unencrypted, no LUKS)
+#   make install-nixos-vm     full reinstall of the nixos-vm dev VM via nixos-anywhere
 #   make install-nixos-tests  full reinstall of the nixos-tests VM via nixos-anywhere
 #   make install-sasurai-vm   full reinstall of the sasurai test VM via nixos-anywhere (LUKS)
 #   make isasurai-vm          deploy the sasurai VM quickly (shortcut)
@@ -31,6 +31,7 @@ SASURAI_IP  ?= sasurai
 SASURAI_VM_IP ?= 192.168.122.2
 ZOLTRAAK_VM_IP ?= 192.168.122.3
 NIXOS_TESTS_IP ?= 192.168.122.5
+NIXOS_VM_IP ?= 192.168.122.4
 
 # Tools are run via `nix run` since they aren't installed on this machine.
 HOME_MANAGER   := nix run nixpkgs\#home-manager --
@@ -43,15 +44,16 @@ SASURAI  := $(USER)@$(SASURAI_IP)
 SASURAI_VM  := $(USER)@$(SASURAI_VM_IP)
 ZOLTRAAK_VM := $(USER)@$(ZOLTRAAK_VM_IP)
 NIXOS_TESTS := $(USER)@$(NIXOS_TESTS_IP)
+NIXOS_VM := $(USER)@$(NIXOS_VM_IP)
 
 # Temporary file the LUKS passphrase is written to during installs and
 # deleted afterwards.
 LUKS_KEY ?= /tmp/disk-encryption.key
 
 .PHONY: help install install-zoltraak install-sasurai install-nixos-vm install-nixos-tests install-sasurai-vm install-zoltraak-vm isasurai-vm \
-        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-tests \
-        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-tests \
-        push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-tests \
+        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-nixos-tests \
+        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-nixos-tests \
+        push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-nixos-tests \
         home home-fern \
         print-cert-authority \
         update check fmt
@@ -119,7 +121,7 @@ install-zoltraak: ## Full reinstall of zoltraak (prompts for user/host, confirma
 install-sasurai: ## Full reinstall of sasurai (prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,sasurai,luks)
 
-install-nixos-vm: ## Full reinstall of the incus VM (unencrypted, no LUKS passphrase; prompts for user/host and confirmation)
+install-nixos-vm: ## Full reinstall of the nixos-vm dev VM (unencrypted, no LUKS passphrase; prompts for user/host and confirmation)
 	$(call INSTALL_RECIPE,nixos-vm,)
 
 install-nixos-tests: ## Full reinstall of the nixos-tests VM (unencrypted, no LUKS passphrase; prompts for user/host and confirmation)
@@ -156,6 +158,9 @@ deploy-sasurai-vm: ## Build locally, copy to the sasurai VM and switch
 deploy-zoltraak-vm: ## Build locally, copy to the zoltraak VM and switch
 	$(NIXOS_REBUILD) switch --flake $(FLAKE)#zoltraak-vm --target-host $(ZOLTRAAK_VM) --use-remote-sudo
 
+deploy-nixos-vm: ## Build locally, copy to the nixos-vm dev VM and switch
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#nixos-vm --target-host $(NIXOS_VM) --use-remote-sudo
+
 deploy-nixos-tests: ## Build locally, copy to the nixos-tests VM and switch
 	$(NIXOS_REBUILD) switch --flake $(FLAKE)#nixos-tests --target-host $(NIXOS_TESTS) --use-remote-sudo
 
@@ -190,6 +195,12 @@ push-zoltraak-vm: ## Sync the committed flake to the zoltraak VM (~/nix)
 
 rebuild-zoltraak-vm: push-zoltraak-vm ## Rebuild + switch the zoltraak VM on the machine itself
 	@ssh $(ZOLTRAAK_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#zoltraak-vm'
+
+push-nixos-vm: ## Sync the committed flake to the nixos-vm dev VM (~/nix)
+	@git archive --format=tar.gz HEAD | ssh $(NIXOS_VM) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
+
+rebuild-nixos-vm: push-nixos-vm ## Rebuild + switch the nixos-vm dev VM on the machine itself
+	@ssh $(NIXOS_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#nixos-vm'
 
 push-nixos-tests: ## Sync the committed flake to the nixos-tests VM (~/nix)
 	@git archive --format=tar.gz HEAD | ssh $(NIXOS_TESTS) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'

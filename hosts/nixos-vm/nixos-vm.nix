@@ -1,15 +1,17 @@
+# Headless Incus VM used as the development environment: SSH in, edit, build.
+# Layer 1 only - what this machine is. What it runs lives in
+# configs/nixos-vm/nixos.nix, and the disk layout in hosts/vm/disko.nix.
 {
   username,
   lib,
-  pkgs,
   ...
 }: {
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "nixos-vm";
 
-  # Headless test box: expose a serial console (getty auto-spawns on it).
-  # Incus's own console chardev is wired via -device (not -serial), so our
-  # raw.qemu "-serial chardev:ts1" becomes serial0=ttyS0 in the guest.
+  # Headless box: expose a serial console (getty auto-spawns on it). Incus's own
+  # console chardev is wired via -device (not -serial), so our raw.qemu
+  # "-serial chardev:ts1" becomes serial0=ttyS0 in the guest.
   boot.kernelParams = [
     "console=ttyS0"
     "console=tty1"
@@ -39,32 +41,12 @@
   imports = [
     ../localization.nix
     ../../users/${username}/${username}.nix
-    ../../modules/nixos/core/settings.nix
-    ../../modules/nixos/core/fonts.nix
-    ../../modules/nixos/core/agenix.nix
-    ../../modules/nixos/boot/bootloader.nix
-    ../../modules/nixos/core/impermanence.nix
-    ../vm/disko.nix
-    ../../modules/nixos/ssh-server/ssh-server.nix
-    ../../modules/nixos/services/services.nix
-    ../../modules/nixos/hardware/network.nix
+    ../../configs/nixos-vm/nixos.nix
   ];
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = {
-      inherit username;
-      hostname = "nixos-vm";
-    };
-    users.${username} = import ./home.nix;
-  };
-
-  # With impermanence /home/emanon starts empty: home-manager refuses to run
-  # until its profile directory exists, so create it before every activation.
-  systemd.services."home-manager-${username}".serviceConfig.ExecStartPre = ["${pkgs.coreutils}/bin/mkdir -p /home/${username}/.local/state/nix/profiles"];
-
-  # Temporary convenience access for the VM test box
+  # Convenience access for the dev VM: the real password (sealed in
+  # users/emanon/password.age) is also the SSH one, so a fresh install is
+  # reachable before any key is in place.
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
   virtualisation.incus.agent.enable = true;
   networking.firewall.enable = false;
