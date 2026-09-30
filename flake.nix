@@ -113,10 +113,22 @@
         vm = true;
       };
 
+      # Headless dev environment: SSH in, edit, build. Unencrypted - it holds
+      # nothing but a checkout, and a throwaway passphrase beats a FIDO2 prompt.
       nixos-vm = mkSystem {
         hostname = "nixos-vm";
         filesystem = "zfs";
         luks = false;
+      };
+
+      # Second throwaway VM: smoke-test config changes before they reach
+      # sasurai or zoltraak. vm = true, so it gets the throwaway credentials and
+      # the virtio adaptations from hosts/vm/.
+      nixos-tests = mkSystem {
+        hostname = "nixos-tests";
+        filesystem = "zfs";
+        luks = false;
+        vm = true;
       };
     };
 
