@@ -97,6 +97,7 @@
       p.html
       p.markdown
       p.markdown_inline
+      p.yaml
     ]))
 
     # not in nixpkgs;
