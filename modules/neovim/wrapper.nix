@@ -48,12 +48,7 @@
       ];
   };
 
-  # The existing lua/ tree is used as-is; init.lua no longer bootstraps lazy.
   config.settings.config_directory = ./config;
-
-  # Language servers live on the neovim wrapper's PATH (previously
-  # home.packages in modules/neovim/neovim.nix). lua/config/lsp.lua enables
-  # them all via vim.lsp.enable().
   config.runtimePkgs = with systemPkgs; [
     ansible-language-server
     dockerfile-language-server
@@ -67,7 +62,6 @@
     yaml-language-server
   ];
 
-  # No `specs.lazy`: with no lazy loading there is nothing to defer.
   config.specs.general = with systemPkgs.vimPlugins; [
     # UI / navigation
     nvim-web-devicons
@@ -83,19 +77,15 @@
     luasnip
     vim-fugitive
 
-    # colorschemes (only cyberdream is actually applied; see lua/plugins/scheme.lua)
+    # colorschemes
     cyberdream-nvim
     kanagawa-nvim
     everforest
 
-    # misc. No mason.nvim: it is a runtime package installer and its setup()
-    # prepends ~/.local/share/nvim/mason/bin to PATH, which would shadow the
-    # Nix-provided language servers. Nix installs them now.
     presence-nvim
     tardis-nvim
     opencode-nvim
 
-    # treesitter + only the grammars lua/plugins/treesitter.lua enables
     (nvim-treesitter.withPlugins (p: [
       p.c
       p.lua
@@ -108,7 +98,7 @@
       p.markdown_inline
     ]))
 
-    # not in nixpkgs; built from the plugins-* inputs in flake.nix
+    # not in nixpkgs;
     config.nvim-lib.neovimPlugins.volt
     config.nvim-lib.neovimPlugins.typr
   ];
