@@ -77,7 +77,6 @@
     trouble-nvim
     lualine-nvim
     which-key-nvim
-    snacks-nvim
 
     # editing / completion
     blink-cmp
