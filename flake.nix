@@ -35,6 +35,23 @@
     noctalia = {
       url = "github:noctalia-dev/noctalia";
     };
+
+    # Neovim wrapper framework (successor to nixCats). nixpkgs owns the plugin
+    # packages; see modules/neovim/wrapper.nix.
+    wrappers = {
+      url = "github:nix-community/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Neovim plugins not in nixpkgs, built by nvim-lib.mkPlugin.
+    plugins-typr = {
+      url = "github:nvzone/typr";
+      flake = false;
+    };
+    plugins-volt = {
+      url = "github:nvzone/volt";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -46,12 +63,29 @@
     agenix,
     lanzaboote,
     noctalia,
+    wrappers,
     ...
   } @ attrs: let
     system = "x86_64-linux";
     username = "emanon";
     lib = nixpkgs.lib;
-    pkgs = nixpkgs.legacyPackages.${system};
+    # allowUnfree mirrors modules/nixos/core/settings.nix; needed here because
+    # the wrapped neovim is evaluated in this flake and presence.nvim is unfree.
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
+
+    # Neovim from nix-wrapper-modules. `attrs` gives the wrapper module the
+    # plugin-* flake inputs; systemPkgs supplies pkgs.vimPlugins.
+    neovimPkg = wrappers.lib.evalPackage (lib.modules.importApply ./modules/neovim/wrapper.nix {
+      inherit attrs;
+      systemPkgs = pkgs;
+    });
+
+    # Overlay so every `pkgs.neovim` is the wrapped one: NixOS hosts get it via
+    # mkSystem, the standalone fern home-manager profile via its own pkgs below.
+    neovimOverlay = _final: _prev: {neovim = neovimPkg;};
 
     # Build a NixOS system. Setting `vm = true` produces a throwaway Incus-VM
     # twin of the *same* host config: same identity/hostname, but the
@@ -82,6 +116,7 @@
             home-manager.nixosModules.home-manager
             impermanence.nixosModules.impermanence
             agenix.nixosModules.default
+            {nixpkgs.overlays = [neovimOverlay];}
             ./hosts/${hostname}/${hostname}.nix
           ]
           ++ lib.optionals vm [./hosts/vm/common.nix]
@@ -89,6 +124,8 @@
       };
   in {
     formatter.x86_64-linux = pkgs.alejandra;
+
+    packages.x86_64-linux.neovim = neovimPkg;
 
     nixosConfigurations = {
       sasurai = mkSystem {
@@ -137,6 +174,7 @@
         pkgs = import nixpkgs {
           inherit system;
           config.allowUnfree = true;
+          overlays = [neovimOverlay];
         };
         extraSpecialArgs = {
           inherit username;

@@ -1,30 +1,19 @@
 {pkgs, ...}: {
-  home.file.".config/nvim" = {
-    source = ./config;
-    recursive = true;
-  };
-
+  # No home.file.".config/nvim": the neovim package is built by
+  # nix-wrapper-modules (modules/neovim/wrapper.nix) with the lua tree as its
+  # in-store config_directory, so nothing lands in ~/.config/nvim. `neovim`
+  # here is the wrapped package, via the overlay in flake.nix. The language
+  # servers are on that wrapper's PATH via its runtimePkgs.
   home.packages = with pkgs; [
     neovim
 
-    # language servers required by the LSP config
-    ansible-language-server
-    dockerfile-language-server
-    lua-language-server
-    ruff
-    systemd-lsp
-    taplo
-    tofu-ls
-    tree-sitter
-    vscode-langservers-extracted
-    yaml-language-server
-
-    # runtime deps used by plugins
+    # runtime deps used by plugins (kept system-wide: useful outside neovim too)
     git
     ripgrep
     fd
     jq
     gnumake
     clang
+    tree-sitter
   ];
 }

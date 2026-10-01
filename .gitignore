@@ -26,6 +26,9 @@
 # Nix sources
 !**/*.nix
 
+# Lua (the neovim config tree). Reviewed to hold no secrets.
+!**/*.lua
+
 # age-encrypted secrets (ciphertext only - safe to version)
 !**/*.age
 

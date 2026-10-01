@@ -442,6 +442,38 @@
         "type": "github"
       }
     },
+    "plugins-typr": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1762650716,
+        "narHash": "sha256-PNkoz91RmlZnRrdStAz5b7pGaWv27UOQU/9abYNP/5E=",
+        "owner": "nvzone",
+        "repo": "typr",
+        "rev": "584e4ef34dea25a4035627794322f315b22d1253",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvzone",
+        "repo": "typr",
+        "type": "github"
+      }
+    },
+    "plugins-volt": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1757754135,
+        "narHash": "sha256-5Xao1+QXZOvqwCXL6zWpckJPO1LDb8I7wtikMRFQ3Jk=",
+        "owner": "nvzone",
+        "repo": "volt",
+        "rev": "620de1321f275ec9d80028c68d1b88b409c0c8b1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvzone",
+        "repo": "volt",
+        "type": "github"
+      }
+    },
     "pre-commit": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -473,7 +505,10 @@
         "lanzaboote": "lanzaboote",
         "nixpkgs": "nixpkgs_3",
         "noctalia": "noctalia",
-        "stylix": "stylix"
+        "plugins-typr": "plugins-typr",
+        "plugins-volt": "plugins-volt",
+        "stylix": "stylix",
+        "wrappers": "wrappers"
       }
     },
     "rust-overlay": {
@@ -607,6 +642,26 @@
       "original": {
         "owner": "tinted-theming",
         "repo": "base16-zed",
+        "type": "github"
+      }
+    },
+    "wrappers": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788981141,
+        "narHash": "sha256-7xWS16u13YGlRNKWaAPzRbEyh4OLOXJe31k7h4AnXNU=",
+        "owner": "nix-community",
+        "repo": "nix-wrapper-modules",
+        "rev": "1db3c116a6aa61823f8d8f3c47c306846428fc54",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-wrapper-modules",
         "type": "github"
       }
     }
