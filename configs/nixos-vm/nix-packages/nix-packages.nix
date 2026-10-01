@@ -64,6 +64,7 @@
     fd
     tree
     ncdu
+    opencode
   ];
 
   # nix-ld lets foreign/32-bit dynamically linked binaries run, so a musl or
