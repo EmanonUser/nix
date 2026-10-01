@@ -53,6 +53,7 @@
     ansible-language-server
     dockerfile-language-server
     lua-language-server
+    opencode
     ruff
     rust-analyzer
     systemd-lsp
@@ -84,7 +85,7 @@
 
     presence-nvim
     tardis-nvim
-    opencode-nvim
+    codecompanion-nvim
 
     (nvim-treesitter.withPlugins (p: [
       p.c
