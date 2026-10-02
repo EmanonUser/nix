@@ -6,6 +6,7 @@
   # modules/ssh/ssh.nix is skipped on purpose: it ships the host's roaming user
   # certificate, which only the CA can sign, and a throwaway identity has none.
   imports = [
+    ../../modules/opencode/opencode.nix
     ../../modules/settings/home-manager-settings.nix
     ../../modules/starship/starship.nix
     ../../modules/zoxide/zoxide.nix

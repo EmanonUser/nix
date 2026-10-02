@@ -10,6 +10,7 @@
     ../../modules/git/git.nix
     ../../modules/grabit/grabit.nix
     ../../modules/neovim/neovim.nix
+    ../../modules/opencode/opencode.nix
     ../../modules/niri/niri.nix
     ../../modules/settings/home-manager-settings.nix
     ../../modules/ssh/ssh.nix

@@ -5,6 +5,7 @@
     ../../modules/direnv/direnv.nix
     ../../modules/git/git.nix
     ../../modules/neovim/neovim.nix
+    ../../modules/opencode/opencode.nix
     ../../modules/settings/home-manager-settings.nix
     ../../modules/ssh/ssh.nix
     ../../modules/starship/starship.nix

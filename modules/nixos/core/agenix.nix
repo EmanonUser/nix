@@ -44,6 +44,14 @@
     file = ../../../users + "/${username}/home-assistant.age";
   };
 
+  # opencode API key, shared across hosts. Readable by the user so the
+  # home-manager activation can write it into opencode's auth.json.
+  age.secrets.opencode-api-key = lib.mkIf (!vm) {
+    file = ../../../users + "/${username}/opencode-api-key.age";
+    owner = username;
+    mode = "0400";
+  };
+
   # agenix's activation script mkdirs ~/.ssh as root (0755) before any systemd
   # unit runs; home-manager - which runs as the user - then needs to write
   # .ssh/config and the pub keys into it. Hand the directory (and the home dir
