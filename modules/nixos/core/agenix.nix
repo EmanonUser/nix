@@ -29,23 +29,13 @@
   };
 
   age.secrets."user-password" = lib.mkIf (!vm) {
-    # User password hash, shared across NixOS hosts (users/<user>/password.age),
-    # encrypted to every host's ed25519 key. Skips the throwaway *-vm twins:
-    # their freshly generated host key can't decrypt it (they use "vmtest").
     file = ../../../users + "/${username}/password.age";
   };
 
   age.secrets.home-assistant = lib.mkIf (!vm) {
-    # Home Assistant long-lived token, shared across hosts
-    # (users/<user>/home-assistant.age), sealed to every host's ed25519 key -
-    # same scheme as user-password. Lands at /run/agenix/home-assistant
-    # (root-only, re-decrypted on each activation) until a consumer dictates a
-    # persistent path.
     file = ../../../users + "/${username}/home-assistant.age";
   };
 
-  # opencode API key, shared across hosts. Readable by the user so the
-  # home-manager activation can write it into opencode's auth.json.
   age.secrets.opencode-api-key = lib.mkIf (!vm) {
     file = ../../../users + "/${username}/opencode-api-key.age";
     owner = username;
