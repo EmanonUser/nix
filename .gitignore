@@ -29,6 +29,10 @@
 # Lua (the neovim config tree). Reviewed to hold no secrets.
 !**/*.lua
 
+# KDL configs (backupd.kdl and friends). Reviewed to hold no secrets - the
+# credential-bearing values are age secrets read at runtime.
+!**/*.kdl
+
 # age-encrypted secrets (ciphertext only - safe to version)
 !**/*.age
 

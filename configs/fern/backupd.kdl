@@ -1,0 +1,52 @@
+// backupd configuration for fern.
+//
+// No credentials live here. The repository URL and credentials arrive through
+// the environment from agenix secrets (configs/fern/backup.nix); backupd gives
+// the environment precedence over this file, so the `restic` node is left
+// blank on purpose. The target lists below are transcribed from the live
+// ~/.config/backupd.kdl on the Debian host.
+restic repo="" aws_access_key_id="" aws_secret_access_key="" password_file=""
+
+incus storage_pool="default"
+
+volumes {
+    vol "bazarr-config" tag="incus" tag="bazarr"
+    vol "bitwarden-data" tag="incus" tag="bitwarden"
+    vol "cleanuparr-config" tag="incus" tag="cleanuparr"
+    vol "hass-config" tag="incus" tag="hass"
+    vol "organizer-config" tag="incus" tag="organizer"
+    vol "jelly-config" tag="incus" tag="jelly"
+    vol "jellyfin-config" tag="incus" tag="jellyfin"
+    vol "mosquitto-config" tag="incus" tag="mosquitto"
+    vol "mosquitto-data" tag="incus" tag="mosquitto"
+    vol "mosquitto-log" tag="incus" tag="mosquitto"
+    vol "profilarr-config" tag="incus" tag="profilarr"
+    vol "prowlarr-config" tag="incus" tag="prowlarr"
+    vol "qbittorrent-config" tag="incus" tag="qbittorrent"
+    vol "qui-config" tag="incus" tag="qui"
+    vol "radarr-config" tag="incus" tag="radarr"
+    vol "seerr-config" tag="incus" tag="seerr"
+    vol "sonarr-config" tag="incus" tag="sonarr"
+    vol "torrent-config" tag="incus" tag="torrent"
+    vol "immich-config" tag="incus" tag="immich"
+    vol "immich-postgres-data" tag="incus" tag="immich"
+    vol "immich-upload" tag="incus" tag="immich"
+}
+
+// A running VM is paused for the export and resumed afterwards; one that was
+// already stopped is left stopped.
+vms {
+    vm "qbittorrent-vm" tag="incus" tag="qbittorrent" tag="vm"
+    vm "torrents-vm" tag="incus" tag="torrents" tag="vm"
+    vm "caddy-vm" tag="incus" tag="caddy" tag="vm"
+}
+
+dirs {
+    dir "/fern/containers/" tag="data" tag="containers"
+    dir "/fern/emanon/" tag="data" tag="emanon"
+    dir "/fern/emanonlab/" tag="data" tag="emanonlab"
+}
+
+postgres {
+    pg "immich-postgres" db="immich" user="postgres" tag="incus" tag="immich"
+}

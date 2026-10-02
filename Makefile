@@ -60,10 +60,10 @@ NIXOS_VM := $(USER)@$(NIXOS_VM_IP)
 # deleted afterwards.
 LUKS_KEY ?= /tmp/disk-encryption.key
 
-.PHONY: help install install-zoltraak install-sasurai install-nixos-vm install-nixos-tests install-sasurai-vm install-zoltraak-vm isasurai-vm \
-        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-nixos-tests \
-        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-nixos-tests \
-        push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-nixos-tests \
+.PHONY: help install install-zoltraak install-sasurai install-nixos-vm install-nixos-tests install-sasurai-vm install-zoltraak-vm install-fern-vm isasurai-vm \
+        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-nixos-tests deploy-fern-vm \
+        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-nixos-tests rebuild-fern-vm \
+        push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-nixos-tests push-fern-vm \
         home home-fern \
         print-cert-authority \
         update check fmt
@@ -172,6 +172,9 @@ install-sasurai-vm: ## Full reinstall of the sasurai test VM (LUKS; reuses sasur
 install-zoltraak-vm: ## Full reinstall of the zoltraak test VM (LUKS; reuses zoltraak's identity; prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,zoltraak-vm,luks,zoltraak)
 
+install-fern-vm: ## Full reinstall of the fern test VM (unencrypted; reuses fern's identity; prompts for user/host and confirmation)
+	$(call INSTALL_RECIPE,fern-vm,,fern)
+
 # Shortcut for the common "just reinstall the sasurai VM" case.
 isasurai-vm: install-sasurai-vm ## Shortcut for install-sasurai-vm
 
@@ -202,6 +205,10 @@ deploy-nixos-vm: ## Build locally, copy to the nixos-vm dev VM and switch
 
 deploy-nixos-tests: ## Build locally, copy to the nixos-tests VM and switch
 	$(NIXOS_REBUILD) switch --flake $(FLAKE)#nixos-tests --target-host $(NIXOS_TESTS) --use-remote-sudo
+
+deploy-fern-vm: ## Build locally, copy to the fern VM and switch (prompts for the VM IP)
+	@read -r -p "fern-vm IP: " ip; \
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#fern-vm --target-host $(USER)@$$ip --use-remote-sudo
 
 # ---------------------------------------------------------------------------
 # NixOS rebuild + switch (runs ON the machine itself). The committed flake is
@@ -246,6 +253,15 @@ push-nixos-tests: ## Sync the committed flake to the nixos-tests VM (~/nix)
 
 rebuild-nixos-tests: push-nixos-tests ## Rebuild + switch the nixos-tests VM on the machine itself
 	@ssh $(NIXOS_TESTS) 'sudo -n nixos-rebuild switch --flake ~/nix#nixos-tests'
+
+push-fern-vm: ## Sync the committed flake to the fern VM (~/nix) (prompts for the VM IP)
+	@read -r -p "fern-vm IP: " ip; \
+	git archive --format=tar.gz HEAD | ssh $(USER)@$$ip 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
+
+rebuild-fern-vm: ## Rebuild + switch the fern VM on the machine itself (prompts for the VM IP)
+	@read -r -p "fern-vm IP: " ip; \
+	git archive --format=tar.gz HEAD | ssh $(USER)@$$ip 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'; \
+	ssh $(USER)@$$ip 'sudo -n nixos-rebuild switch --flake ~/nix#fern-vm'
 
 # ---------------------------------------------------------------------------
 # Home-manager rebuilds (standalone hosts only; NixOS hosts are covered by

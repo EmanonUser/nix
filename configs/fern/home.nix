@@ -1,6 +1,5 @@
 {
   imports = [
-    ./agenix.nix
     ./home-packages/home-packages.nix
     ../../modules/atuin/atuin.nix
     ../../modules/direnv/direnv.nix
