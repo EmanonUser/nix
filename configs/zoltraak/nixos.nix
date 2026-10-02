@@ -19,6 +19,7 @@
       ../../modules/nixos/ssh-server/ssh-server.nix
       ../../modules/nixos/hardware/pipewire.nix
       ../../modules/nixos/hardware/network.nix
+      ../../modules/nixos/samba-client/samba-client.nix
       ../../modules/nixos/noctalia/noctalia.nix
       ../../modules/nixos/niri/niri.nix
       ../../modules/nixos/stylix/stylix.nix

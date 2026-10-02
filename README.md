@@ -119,8 +119,8 @@ arg, so adding a user means adding a directory, not editing every host.
 System (`modules/nixos/`): `core` (settings, fonts, agenix, impermanence),
 `boot` (bootloader, plymouth, memtest86+, secureboot/lanzaboote),
 `hardware` (amd, network, pipewire), DEs (`kde`, `niri`, `noctalia`, `cosmic`),
-`ssh-server`, `services`, `steam`, `gaming`, `virtualisation` (incus, podman),
-`greetd`, `stylix`.
+`ssh-server`, `samba-client` (fern NAS cifs automount), `services`, `steam`,
+`gaming`, `virtualisation` (incus, podman), `greetd`, `stylix`.
 
 User (`modules/`): `zsh`, `starship`, `atuin`, `zoxide`, `direnv`, `neovim`,
 `ghostty`, `alacritty`, `niri`, `zellij`, `ssh`, `git`, `grabit`, `rnnoise`,

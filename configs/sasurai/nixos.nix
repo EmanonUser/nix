@@ -19,6 +19,7 @@
       ../../modules/nixos/ssh-server/ssh-server.nix
       ../../modules/nixos/hardware/pipewire.nix
       ../../modules/nixos/hardware/network.nix
+      ../../modules/nixos/samba-client/samba-client.nix
       ../../modules/nixos/kde/kde.nix
       #../../modules/nixos/greetd/greetd.nix
       ../../modules/nixos/steam/steam.nix
