@@ -36,8 +36,6 @@
       url = "github:noctalia-dev/noctalia";
     };
 
-    # Neovim wrapper framework (successor to nixCats). nixpkgs owns the plugin
-    # packages; see modules/neovim/wrapper.nix.
     wrappers = {
       url = "github:nix-community/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -76,15 +74,11 @@
       config.allowUnfree = true;
     };
 
-    # Neovim from nix-wrapper-modules. `attrs` gives the wrapper module the
-    # plugin-* flake inputs; systemPkgs supplies pkgs.vimPlugins.
     neovimPkg = wrappers.lib.evalPackage (lib.modules.importApply ./modules/neovim/wrapper.nix {
       inherit attrs;
       systemPkgs = pkgs;
     });
 
-    # Overlay so every `pkgs.neovim` is the wrapped one: NixOS hosts get it via
-    # mkSystem, the standalone fern home-manager profile via its own pkgs below.
     neovimOverlay = _final: _prev: {neovim = neovimPkg;};
 
     # Build a NixOS system. Setting `vm = true` produces a throwaway Incus-VM
@@ -150,17 +144,12 @@
         vm = true;
       };
 
-      # Headless dev environment: SSH in, edit, build. Unencrypted - it holds
-      # nothing but a checkout, and a throwaway passphrase beats a FIDO2 prompt.
       nixos-vm = mkSystem {
         hostname = "nixos-vm";
         filesystem = "zfs";
         luks = false;
       };
 
-      # Second throwaway VM: smoke-test config changes before they reach
-      # sasurai or zoltraak. vm = true, so it gets the throwaway credentials and
-      # the virtio adaptations from hosts/vm/.
       nixos-tests = mkSystem {
         hostname = "nixos-tests";
         filesystem = "zfs";
