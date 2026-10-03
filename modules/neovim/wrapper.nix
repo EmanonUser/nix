@@ -7,46 +7,13 @@
 #
 # `attrs` is the flake's input set (see flake.nix importApply) and `systemPkgs`
 # is the target pkgs; both are bound by the caller.
-{
-  attrs,
-  systemPkgs,
-}: {
+{systemPkgs}: {
   config,
   wlib,
-  lib,
   ...
 }: {
   config.pkgs = systemPkgs;
   imports = [wlib.wrapperModules.neovim];
-
-  # Plugins not in nixpkgs, auto-built from `plugins-*` flake inputs
-  # (currently plugins-typr and plugins-volt).
-  options.nvim-lib.neovimPlugins = lib.mkOption {
-    readOnly = true;
-    type = lib.types.attrsOf wlib.types.stringable;
-    default = config.nvim-lib.pluginsFromPrefix "plugins-" attrs;
-  };
-
-  # Helper from the upstream template: turn every `plugins-<name>` input into
-  # `config.nvim-lib.neovimPlugins.<name>` via the wrapper's mkPlugin.
-  options.nvim-lib.pluginsFromPrefix = lib.mkOption {
-    type = lib.types.raw;
-    readOnly = true;
-    default = prefix: inputs:
-      lib.pipe inputs [
-        builtins.attrNames
-        (builtins.filter (s: lib.hasPrefix prefix s))
-        (map (
-          input: let
-            name = lib.removePrefix prefix input;
-          in {
-            inherit name;
-            value = config.nvim-lib.mkPlugin name inputs.${input};
-          }
-        ))
-        builtins.listToAttrs
-      ];
-  };
 
   config.settings.config_directory = ./config;
   config.runtimePkgs = with systemPkgs; [
@@ -100,8 +67,6 @@
       p.yaml
     ]))
 
-    # not in nixpkgs;
-    config.nvim-lib.neovimPlugins.volt
-    config.nvim-lib.neovimPlugins.typr
+    nvzone-typr
   ];
 }

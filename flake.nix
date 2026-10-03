@@ -40,16 +40,6 @@
       url = "github:nix-community/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Neovim plugins not in nixpkgs, built by nvim-lib.mkPlugin.
-    plugins-typr = {
-      url = "github:nvzone/typr";
-      flake = false;
-    };
-    plugins-volt = {
-      url = "github:nvzone/volt";
-      flake = false;
-    };
   };
 
   outputs = {
@@ -75,7 +65,6 @@
     };
 
     neovimPkg = wrappers.lib.evalPackage (lib.modules.importApply ./modules/neovim/wrapper.nix {
-      inherit attrs;
       systemPkgs = pkgs;
     });
 
