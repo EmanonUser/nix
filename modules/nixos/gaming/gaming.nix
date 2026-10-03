@@ -1,9 +1,10 @@
-{pkgs, ...}: {
+{pkgs, lib, ...}: {
   # CachyOS-like desktop/gaming tuning.
   #
   # Mirrors CachyOS's `cachyos-settings` package (sysctls, zram, blacklists):
   #   https://github.com/CachyOS/CachyOS-Settings/blob/master/usr/lib/sysctl.d/70-cachyos-settings.conf
   powerManagement.cpuFreqGovernor = "performance";
+  services.power-profiles-daemon.enable = lib.mkForce false;
 
   boot.kernel.sysctl = {
     "vm.swappiness" = 100;
