@@ -33,6 +33,7 @@
       ip = "ip --color=auto";
       grep = "grep --color";
       nrs = "sudo nixos-rebuild switch --flake ~/nix/.#${hostname}";
+      nrb = "sudo nixos-rebuild build --flake ~/nix/.#${hostname}";
       nu = "nix flake update";
     };
 
