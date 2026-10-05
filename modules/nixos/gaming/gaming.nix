@@ -1,6 +1,4 @@
 {pkgs, lib, ...}: {
-  # CachyOS-like desktop/gaming tuning.
-  #
   # Mirrors CachyOS's `cachyos-settings` package (sysctls, zram, blacklists):
   #   https://github.com/CachyOS/CachyOS-Settings/blob/master/usr/lib/sysctl.d/70-cachyos-settings.conf
   powerManagement.cpuFreqGovernor = "performance";
@@ -26,6 +24,15 @@
     algorithm = "zstd";
     memoryPercent = 50;
   };
+
+  boot.kernelModules = ["ntsync"];
+  services.udev.packages = [
+    (pkgs.writeTextFile {
+      name = "ntsync-udev-rules";
+      text = ''KERNEL=="ntsync", MODE="0660", TAG+="uaccess"'';
+      destination = "/etc/udev/rules.d/70-ntsync.rules";
+    })
+  ];
 
   boot.blacklistedKernelModules = ["iTCO_wdt" "sp5100_tco"];
 }
