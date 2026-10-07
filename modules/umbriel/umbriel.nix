@@ -17,6 +17,9 @@
     variant = "azerty"
     numlock_toggle = true
 
+    [layout.scrolling]
+    default_extent_fraction = 0.5
+
     [appearance]
     prefer_no_csd = true
     border_width = 2
@@ -56,19 +59,19 @@
     "Mod+Escape" = "session-quit"
     "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
 
-    "Mod+Left" = "window-focus-left"
-    "Mod+Down" = "window-focus-down"
+    "Mod+Left" = "workspace-previous"
+    "Mod+Right" = "workspace-next"
     "Mod+Up" = "window-focus-up"
-    "Mod+Right" = "window-focus-right"
+    "Mod+Down" = "window-focus-down"
     "Mod+H" = "window-focus-left"
     "Mod+J" = "window-focus-down"
     "Mod+K" = "window-focus-up"
     "Mod+L" = "window-focus-right"
     "Mod+F1" = "window-focus-next"
-    "Mod+Shift+Left" = "column-move-left"
-    "Mod+Shift+Down" = "window-move-down"
+    "Mod+Shift+Left" = "window-move-to-workspace-previous"
+    "Mod+Shift+Right" = "window-move-to-workspace-next"
     "Mod+Shift+Up" = "window-move-up"
-    "Mod+Shift+Right" = "column-move-right"
+    "Mod+Shift+Down" = "window-move-down"
 
     "Mod+T" = { action = "window-toggle-floating", repeat = false }
     "Mod+Shift+T" = { action = "window-focus-switch-floating", repeat = false }
@@ -86,6 +89,9 @@
     "Mod+WheelUp" = "window-focus-left"
     "Mod+WheelDown" = "window-focus-right"
     "Mod+O" = { action = "overview-toggle", repeat = false }
+
+    "Alt+Tab" = "workspace-next"
+    "Alt+Shift+Tab" = "workspace-previous"
 
     "Mod+1" = "workspace-switch:1"
     "Mod+2" = "workspace-switch:2"
@@ -111,8 +117,8 @@
     "Mod+Ctrl+Space" = { action = "window-restore-from-scratchpad", repeat = false }
     "Mod+Tab" = "scratchpad-focus-next"
 
-    "Print" = "spawn:grabit"
-    "Ctrl+Print" = "spawn:grabit --fullscreen"
+    "Alt+Shift+S" = "spawn:grabit"
+    "Alt+Ctrl+Shift+S" = "spawn:grabit --fullscreen"
     "XF86AudioRaiseVolume" = "spawn:noctalia msg volume-up"
     "XF86AudioLowerVolume" = "spawn:noctalia msg volume-down"
     "XF86AudioMute" = "spawn:noctalia msg volume-mute"
