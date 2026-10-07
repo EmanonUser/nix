@@ -90,8 +90,7 @@
     "Mod+WheelDown" = "window-focus-right"
     "Mod+O" = { action = "overview-toggle", repeat = false }
 
-    "Alt+Tab" = "workspace-next"
-    "Alt+Shift+Tab" = "workspace-previous"
+    "Alt+Tab" = "spawn:noctalia msg window-switcher"
 
     "Mod+1" = "workspace-switch:1"
     "Mod+2" = "workspace-switch:2"
