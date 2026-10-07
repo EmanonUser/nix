@@ -11,7 +11,6 @@
     mode = "1920x1080@165"
     position = [1920, 0]
     vrr = "always"
-    focus_at_startup = true
 
     [input.keyboard]
     layout = "fr"
@@ -33,9 +32,6 @@
     contrast = 0.9
     saturation = 1.1
 
-    [shell]
-    umbriel_overview_type_to_launch_enabled = true
-
     [[window_rule]]
     blur = true
     blur_optimized = true
@@ -43,12 +39,13 @@
     [[window_rule]]
     match.app_id = "^dev.noctalia.Noctalia$"
     default_floating = true
-    default_size = [1020, 900]
+    default_floating_size_px = { width = 1020, height = 900 }
 
     [[layer_rule]]
-    match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"
+    match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd|desktop-widget-[^\"]*)$"
     blur = true
     blur_ignore_alpha = 0.5
+    blur_popups = true
     blur_optimized = false
 
     [keybinds]
