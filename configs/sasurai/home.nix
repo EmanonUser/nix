@@ -9,7 +9,9 @@
     ../../modules/neovim/neovim.nix
     ../../modules/opencode/opencode.nix
     ../../modules/niri/niri.nix
+    ../../modules/noctalia/noctalia.nix
     ../../modules/rnnoise/rnnoise.nix
+    ../../modules/umbriel/umbriel.nix
     ../../modules/settings/home-manager-settings.nix
     ../../modules/ssh/ssh.nix
     ../../modules/starship/starship.nix

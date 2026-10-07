@@ -11,7 +11,6 @@
     providedSessions = ["plasma"];
   };
 in {
-  # Wayland-only: no Xorg server. XWayland is enabled by the Plasma 6 module.
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.wayland.enable = true;
   services.desktopManager.plasma6.enable = true;
@@ -22,6 +21,8 @@ in {
     [plasmaWaylandSessions]
     ++ lib.optional (config.services.niri.waylandSessionPackage or null != null)
     config.services.niri.waylandSessionPackage
+    ++ lib.optional (config.programs.umbriel.enable or false)
+    config.programs.umbriel.package
   );
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     kwin-x11
@@ -31,7 +32,7 @@ in {
     okular
     konsole
     elisa
-    kate # also ships kwrite
+    kate
     qrca
   ];
 }

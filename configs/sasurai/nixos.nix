@@ -26,6 +26,7 @@
       ../../modules/nixos/gaming/gaming.nix
       ../../modules/nixos/stylix/stylix.nix
       ../../modules/nixos/niri/niri.nix
+      ../../modules/nixos/noctalia-desktop/noctalia-desktop.nix
       ./nix-packages/nix-packages.nix
     ]
     # Bare-metal-only pieces (Secure Boot/lanzaboote, amdgpu, host incus/podman):
@@ -40,10 +41,6 @@
   boot.initrd.availableKernelModules = ["amdgpu"];
 
   services.niri.login = "none";
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = username;
-  };
 
   # Impermanence: keep the Secure Boot PKI (keys live under /var/lib on tmpfs).
   environment.persistence."/persist".directories = [
