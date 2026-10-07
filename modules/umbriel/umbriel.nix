@@ -18,7 +18,7 @@
     numlock_toggle = true
 
     [layout.scrolling]
-    default_extent_fraction = 0.5
+    default_extent_fraction = 0.9
 
     [appearance]
     prefer_no_csd = true
