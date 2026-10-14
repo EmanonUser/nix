@@ -1,5 +1,5 @@
-# Disk layout shared by the Incus-hosted machines (nixos-vm, nixos-tests): a
-# single virtio disk with an ESP and a zpool/btrfs root. Kept next to
+# Disk layout for the Incus-hosted nixos-vm: a single virtio disk with an ESP
+# and a zpool/btrfs root. Kept next to
 # hosts/vm/common.nix rather than duplicated per host, since the layout is
 # dictated by the VM's device model, not by what each host runs.
 {

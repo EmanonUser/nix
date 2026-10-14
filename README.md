@@ -39,17 +39,13 @@ config reads as a short, explicit list of imports.
 | `sasurai-vm` | Incus VM | throwaway twin of `sasurai` (`vm = true`) |
 | `zoltraak-vm` | Incus VM | throwaway twin of `zoltraak` (`vm = true`) |
 | `nixos-vm` | Incus VM | **headless dev environment** — SSH in, edit, build |
-| `nixos-tests` | Incus VM | **headless smoke-test box** — `vm = true`, `vmtest` password |
 | `fern` | workstation | standalone Home Manager profile |
 
-The two `nixos-*` hosts are the ones you drive day to day. `nixos-vm` carries
-the toolchains (gcc/clang, cmake, ninja, go, rustup, python, nodejs, gdb,
-valgrind, nix tooling) in `configs/nixos-vm/nix-packages`, and reuses fern's
-home profile. `nixos-tests` stays deliberately lean — no desktop, no
-toolchains, barely a home profile — because its only job is to answer "does
-this config activate?", which keeps the smoke test fast. The twins
-(`sasurai-vm`, `zoltraak-vm`) are separate: they run the *real* desktop
-config, so they catch DE regressions that a headless box cannot.
+`nixos-vm` is the one you drive day to day. It carries the toolchains
+(gcc/clang, cmake, ninja, go, rustup, python, nodejs, gdb, valgrind, nix
+tooling) in `configs/nixos-vm/nix-packages`, and reuses fern's home profile.
+The twins (`sasurai-vm`, `zoltraak-vm`) are separate: they run the *real*
+desktop config, so they catch DE regressions that a headless box cannot.
 
 ## Repository layout
 
@@ -136,10 +132,7 @@ User (`modules/`): `zsh`, `starship`, `atuin`, `zoxide`, `direnv`, `neovim`,
 - **VM twins** — `sasurai-vm`, `zoltraak-vm` reuse the *same* host config with
   `vm = true` plus `hosts/vm/common.nix`; they skip bare-metal-only modules,
   get virtio storage, a serial console, a bundled wallpaper and a throwaway
-  password. `nixos-tests` reuses that same `vm = true` machinery as a
-  standalone host, so it also gets the throwaway password and skips the shared
-  `password.age` — which is why it carries its own key material under
-  `configs/nixos-tests/ssh/` and needs no passphrase to install.
+  password.
 - **Secrets hygiene** — `.gitignore` is an allowlist (ignore everything, then
   re-include `*.nix`, `*.age`, `*.pub`, …), so a new file can never be
   committed by accident.

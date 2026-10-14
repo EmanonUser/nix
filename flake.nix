@@ -178,13 +178,6 @@
         luks = false;
       };
 
-      nixos-tests = mkSystem {
-        hostname = "nixos-tests";
-        filesystem = "zfs";
-        luks = false;
-        vm = true;
-      };
-
       # fern runs nixos-26.05 (stable); every other host stays on unstable.
       fern = mkSystem {
         hostname = "fern";
