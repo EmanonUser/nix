@@ -24,8 +24,7 @@
     ]
     ++ lib.optional (!vm) ../../hosts/fern/disko.nix
     ++ lib.optional vm ../../hosts/fern-vm/disko.nix
-    ++ [./zfs/keys.nix]
-    ++ lib.optionals (!vm) [./backup.nix];
+    ++ [./zfs/keys.nix ./backup.nix];
 
   networking.hostName = hostname;
 
@@ -101,7 +100,7 @@
     };
   };
 
-  boot.zfs.extraPools = lib.mkIf (!vm) ["fern"];
+  boot.zfs.extraPools = ["fern"];
 
   # 8 GiB ARC, matching /etc/modprobe.d/zfs.conf on the live host.
   boot.extraModprobeConfig = ''
@@ -110,7 +109,7 @@
 
   # The encrypted children stay unmounted without this: nixpkgs masks the
   # OpenZFS-provided zfs-load-key.service to /dev/null.
-  systemd.services."fern-zfs-load-keys" = lib.mkIf (!vm) {
+  systemd.services."fern-zfs-load-keys" = {
     description = "Load encryption keys for the fern ZFS pool";
     unitConfig.DefaultDependencies = false;
     wantedBy = ["zfs.target"];

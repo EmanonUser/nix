@@ -1,9 +1,5 @@
-{
-  lib,
-  vm ? false,
-  ...
-}: {
-  services.zrepl = lib.mkIf (!vm) {
+{...}: {
+  services.zrepl = {
     enable = true;
     settings = {
       global = {

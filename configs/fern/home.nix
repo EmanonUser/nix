@@ -3,7 +3,6 @@
     ./home-packages/home-packages.nix
     ../../modules/atuin/atuin.nix
     ../../modules/direnv/direnv.nix
-    ../../modules/ghostty/ghostty.nix
     ../../modules/git/git.nix
     ../../modules/neovim/neovim.nix
     ../../modules/opencode/opencode.nix

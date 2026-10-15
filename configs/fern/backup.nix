@@ -1,11 +1,13 @@
 {
+  config,
+  lib,
   pkgs,
   backupdPkg,
   ...
 }: {
   imports = [../../modules/nixos/backupd/backupd.nix];
 
-  age.secrets = {
+  age.secrets = lib.mkIf config.services.backupd.enable {
     "backupd-restic-repo" = {
       file = ./backup/restic-repo.age;
       owner = "root";
@@ -29,7 +31,7 @@
   };
 
   services.backupd = {
-    enable = true;
+    enable = false;
     package = backupdPkg;
     configFile = ./backupd.kdl;
     environment = {
