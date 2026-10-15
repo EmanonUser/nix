@@ -15,6 +15,7 @@
       ../../modules/nixos/core/impermanence.nix
       ../../modules/nixos/services/services.nix
       ../../modules/nixos/ssh-server/ssh-server.nix
+      ./alerts.nix
       ./incus.nix
       ./monitoring.nix
       ./samba.nix
