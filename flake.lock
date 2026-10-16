@@ -21,18 +21,23 @@
       }
     },
     "backupd": {
-      "flake": false,
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "dirtyRev": "6681a301f2f86d8123f5e4704cb8be928e939e45-dirty",
-        "dirtyShortRev": "6681a30-dirty",
-        "lastModified": 1790851650,
-        "narHash": "sha256-jjhNYUnGzG+B7JAtFdguaiBqiV4UctEL0ylBguTbh1w=",
+        "lastModified": 1791377130,
+        "narHash": "sha256-Sq03brQSkBSO+kAyhLyGsothAV2TkOT3EzRZoeB8ksY=",
+        "ref": "refs/heads/main",
+        "rev": "845d3b08ca93ebc7d81e98b5a096c92a2b3dc019",
+        "revCount": 9,
         "type": "git",
-        "url": "file:///fern/emanonlab/dev/backupd"
+        "url": "ssh://git@github.com/EmanonUser/backupd"
       },
       "original": {
         "type": "git",
-        "url": "file:///fern/emanonlab/dev/backupd"
+        "url": "ssh://git@github.com/EmanonUser/backupd"
       }
     },
     "base16": {

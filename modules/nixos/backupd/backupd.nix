@@ -14,7 +14,7 @@
     runtimeInputs = [pkgs.coreutils cfg.package] ++ cfg.extraPackages;
     text = ''
       ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: "export ${name}=${lib.escapeShellArg value}") cfg.environment)}
-      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: file: "export ${name}=$(cat ${lib.escapeShellArg file})") cfg.secretFiles)}
+      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: file: "${name}=$(cat ${lib.escapeShellArg file})\nexport ${name}") cfg.secretFiles)}
       exec backupd --config /etc/backupd.kdl "$@"
     '';
   };
@@ -58,6 +58,8 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    environment.systemPackages = [cfg.package];
+
     environment.etc."backupd.kdl".source = cfg.configFile;
 
     systemd.timers.backupd = {

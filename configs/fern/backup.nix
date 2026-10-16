@@ -31,7 +31,7 @@
   };
 
   services.backupd = {
-    enable = false;
+    enable = true;
     package = backupdPkg;
     configFile = ./backupd.kdl;
     environment = {

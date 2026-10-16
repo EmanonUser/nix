@@ -43,13 +43,13 @@
       url = "github:noctalia-dev/noctalia";
     };
 
-    # fern's backup daemon. It has no remote yet, so this points at the local
-    # checkout; `git+file` (not `path`) keeps its 600 MB target/ out of the
-    # store. Switch to github:<owner>/backupd and run `nix flake update backupd`
-    # once it is pushed.
+    # fern's backup daemon, consumed as a flake (its packages.default is the
+    # daemon and its nixosModules.default is a superset of
+    # modules/nixos/backupd). Private repo, fetched over SSH: any machine
+    # whose key is registered on GitHub can fetch it, no token needed.
     backupd = {
-      url = "git+file:///fern/emanonlab/dev/backupd";
-      flake = false;
+      url = "git+ssh://git@github.com/EmanonUser/backupd";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     wrappers = {
       url = "github:nix-community/nix-wrapper-modules";
@@ -88,21 +88,11 @@
       config.allowUnfree = true;
     };
 
-    mkBackupd = p:
-      p.rustPlatform.buildRustPackage (finalAttrs: {
-        pname = "backupd";
-        version = (builtins.fromTOML (builtins.readFile (backupd + "/Cargo.toml"))).package.version;
-        src = backupd;
-        cargoLock.lockFile = backupd + "/Cargo.lock";
-        meta.mainProgram = "backupd";
-      });
-
     mkNeovim = p:
       wrappers.lib.evalPackage (lib.modules.importApply ./modules/neovim/wrapper.nix {
         systemPkgs = p;
       });
 
-    backupdPkg = mkBackupd pkgs;
     neovimPkg = mkNeovim pkgs;
 
     # Build a NixOS system. Setting `vm = true` produces a throwaway Incus-VM
@@ -126,7 +116,7 @@
           {
             inherit username system;
             inherit hostname;
-            backupdPkg = mkBackupd pkgsInput;
+            backupdPkg = backupd.packages.${system}.default;
           }
           // (lib.optionalAttrs (filesystem != null) {inherit filesystem;})
           // {inherit vm luks;}
