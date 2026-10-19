@@ -11,6 +11,9 @@
           }
         ];
       };
+      # Every job uses the same "zrepl_" prefix: each dataset belongs to exactly
+      # one job, so the prefix only scopes pruning (a single ^zrepl_.* does it),
+      # and a constant name lets Samba's shadow_copy2 use one shadow:format.
       jobs = [
         {
           name = "zrepl_default";
@@ -20,7 +23,7 @@
           };
           snapshotting = {
             type = "periodic";
-            prefix = "zrepl_default_";
+            prefix = "zrepl_";
             interval = "1h";
           };
           pruning = {
@@ -28,12 +31,12 @@
               {
                 type = "grid";
                 grid = "2x48h(keep=all) | 1x30d(keep=1) | 1x90d(keep=1)";
-                regex = "^zrepl_default_.*";
+                regex = "^zrepl_.*";
               }
               {
                 type = "regex";
                 negate = true;
-                regex = "^zrepl_default_.*";
+                regex = "^zrepl_.*";
               }
             ];
           };
@@ -49,7 +52,7 @@
           };
           snapshotting = {
             type = "periodic";
-            prefix = "zrepl_P2_";
+            prefix = "zrepl_";
             interval = "6h";
           };
           pruning = {
@@ -57,12 +60,38 @@
               {
                 type = "grid";
                 grid = "1x14d(keep=all) | 1x30d(keep=all) | 1x365d(keep=1)";
-                regex = "^zrepl_P2_.*";
+                regex = "^zrepl_.*";
               }
               {
                 type = "regex";
                 negate = true;
-                regex = "^zrepl_P2_.*";
+                regex = "^zrepl_.*";
+              }
+            ];
+          };
+        }
+        {
+          name = "zrepl_P3";
+          type = "snap";
+          filesystems = {
+            "fern/emanonlab/games_server" = true;
+          };
+          snapshotting = {
+            type = "periodic";
+            prefix = "zrepl_";
+            interval = "10m";
+          };
+          pruning = {
+            keep = [
+              {
+                type = "grid";
+                grid = "1x1h(keep=all) | 1x24h(keep=1)";
+                regex = "^zrepl_.*";
+              }
+              {
+                type = "regex";
+                negate = true;
+                regex = "^zrepl_.*";
               }
             ];
           };
