@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
     home-manager = {
@@ -117,6 +116,7 @@
             inherit username system;
             inherit hostname;
             backupdPkg = backupd.packages.${system}.default;
+            incusPkg = nixpkgs.legacyPackages.${system}.incus;
           }
           // (lib.optionalAttrs (filesystem != null) {inherit filesystem;})
           // {inherit vm luks;}

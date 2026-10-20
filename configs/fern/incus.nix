@@ -1,16 +1,14 @@
-{username, vm ? false, ...}: {
+{
+  username,
+  vm ? false,
+  incusPkg,
+  ...
+}: {
   users.users.${username}.extraGroups = ["incus-admin"];
 
-  # Host side only. The containers/VMs and profiles are Terraform resources
-  # (dev/incus), and incus-preseed re-applies on every boot, so only the
-  # storage pool and networks are declared here.
-  #
-  # On the VM the block below must NOT reuse 10.188.165.0/24: inside fern-vm
-  # that prefix is the incus-bridge profile NIC the VM is reached on, so a
-  # second interface on the same subnet (this incusbr0) wins the route to the
-  # gateway and the VM becomes unreachable. Use a distinct test subnet instead.
   virtualisation.incus = {
     enable = true;
+    package = incusPkg;
     preseed = {
       storage_pools = [
         {

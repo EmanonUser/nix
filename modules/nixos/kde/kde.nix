@@ -23,5 +23,4 @@ in {
     ++ lib.optional (config.services.niri.waylandSessionPackage or null != null)
     config.services.niri.waylandSessionPackage
   );
-  environment.plasma6.excludePackages = [pkgs.kdePackages.kwin-x11];
 }
