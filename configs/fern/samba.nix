@@ -1,6 +1,7 @@
-{...}: let
-  # Windows "Previous Versions" for one ZFS dataset. zrepl names every snapshot
-  # zrepl_%Y%m%d_%H%M%S_000 (UTC), so a single constant format works for all.
+{
+  config,
+  ...
+}: let
   shadowShare = path: {
     "path" = path;
     "browseable" = "yes";
@@ -32,10 +33,6 @@ in {
         "map to guest" = "bad user";
         "usershare allow guests" = "yes";
       };
-      # The pool root has no snapshots of its own and shadow_copy2's
-      # snapdirseverywhere can't reach the child datasets' hidden .zfs, so it
-      # stays a plain browsing share; Previous Versions comes from the
-      # per-dataset shares below.
       fern = {
         "comment" = "My manually managed ZFS dataset";
         "path" = "/fern";
@@ -53,5 +50,21 @@ in {
       secrets = shadowShare "/fern/emanonlab/secrets";
       games_server = shadowShare "/fern/emanonlab/games_server";
     };
+  };
+
+  age.secrets.smb-password.file = ../../users/emanon/smb-password.age;
+
+  systemd.services.samba-smb-user = {
+    description = "Set emanon's SMB password from the agenix secret";
+    wantedBy = ["multi-user.target"];
+    after = ["samba-smbd.service"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      pw=$(cat ${config.age.secrets.smb-password.path})
+      printf '%s\n%s\n' "$pw" "$pw" | ${config.services.samba.package}/bin/smbpasswd -a -s emanon
+    '';
   };
 }
