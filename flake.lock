@@ -27,11 +27,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791377130,
-        "narHash": "sha256-Sq03brQSkBSO+kAyhLyGsothAV2TkOT3EzRZoeB8ksY=",
+        "lastModified": 1792576809,
+        "narHash": "sha256-QdNhmTsscS0R2Im/0puKGCCvu9hcZ45efXiKzxN0Kfg=",
         "ref": "refs/heads/main",
-        "rev": "845d3b08ca93ebc7d81e98b5a096c92a2b3dc019",
-        "revCount": 9,
+        "rev": "6b338e2fdd14078823694e698fc129463a27a924",
+        "revCount": 10,
         "type": "git",
         "url": "ssh://git@github.com/EmanonUser/backupd"
       },

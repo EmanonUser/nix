@@ -50,3 +50,11 @@ dirs {
 postgres {
     pg "immich-postgres" db="immich" user="postgres" tag="incus" tag="immich"
 }
+
+// The Incus database (local + global) via `incus admin sql <db> .dump`. It
+// holds the volume/instance mapping and volatile state (image, MAC/IP, idmap,
+// snapshots) that the exports and the tofu config do not capture.
+sql {
+    db "local" tag="incus" tag="db"
+    db "global" tag="incus" tag="db"
+}
