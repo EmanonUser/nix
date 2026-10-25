@@ -17,6 +17,7 @@
   services.xserver.xkb = {
     layout = "fr";
     variant = "azerty";
+    options = "caps:digits_row";
   };
   console.keyMap = "fr";
 }

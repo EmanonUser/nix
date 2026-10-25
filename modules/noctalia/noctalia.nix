@@ -14,4 +14,15 @@
     X-GNOME-Autostart-enabled=true
     NoDisplay=true
   '';
+
+  xdg.dataFile."kglobalaccel/noctalia-launcher.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Noctalia Launcher
+    Comment=Toggle the Noctalia application launcher
+    Exec=noctalia msg panel-toggle launcher
+    Icon=noctalia
+    Terminal=false
+    X-KDE-Shortcuts=Alt
+  '';
 }

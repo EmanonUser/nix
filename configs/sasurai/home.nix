@@ -7,6 +7,7 @@
     ../../modules/git/git.nix
     ../../modules/gh/gh.nix
     ../../modules/grabit/grabit.nix
+    ../../modules/kde/kde.nix
     ../../modules/neovim/neovim.nix
     ../../modules/opencode/opencode.nix
     ../../modules/niri/niri.nix
