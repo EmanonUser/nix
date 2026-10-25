@@ -12,4 +12,9 @@
     mode = "0600";
     symlink = false;
   };
+
+  age.secrets."gh-token" = {
+    file = ../../users + "/${username}/gh-token.age";
+    mode = "0400";
+  };
 }

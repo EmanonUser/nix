@@ -1,9 +1,14 @@
 {pkgs, ...}: let
   gh = pkgs.gh;
   ghWithToken = pkgs.writeShellScriptBin "gh" ''
-    if [ -z "''${GH_TOKEN:-}" ] && [ -r /run/agenix/gh-token ]; then
-      GH_TOKEN="$(cat /run/agenix/gh-token)"
-      export GH_TOKEN
+    if [ -z "''${GH_TOKEN:-}" ]; then
+      for token in /run/agenix/gh-token "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/agenix/gh-token"; do
+        if [ -r "$token" ]; then
+          GH_TOKEN="$(cat "$token")"
+          export GH_TOKEN
+          break
+        fi
+      done
     fi
     exec ${gh}/bin/gh "$@"
   '';

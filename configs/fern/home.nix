@@ -6,6 +6,7 @@
     ../../modules/direnv/direnv.nix
     ../../modules/ghostty/ghostty.nix
     ../../modules/git/git.nix
+    ../../modules/gh/gh.nix
     ../../modules/neovim/neovim.nix
     ../../modules/opencode/opencode.nix
     ../../modules/settings/home-manager-settings.nix
