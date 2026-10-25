@@ -26,7 +26,7 @@
       ../../modules/nixos/gaming/gaming.nix
       ../../modules/nixos/stylix/stylix.nix
       ../../modules/nixos/niri/niri.nix
-      ../../modules/nixos/noctalia-desktop/noctalia-desktop.nix
+      ../../modules/nixos/noctalia/noctalia.nix
       ./nix-packages/nix-packages.nix
     ]
     # Bare-metal-only pieces (Secure Boot/lanzaboote, amdgpu, host incus/podman):
@@ -42,6 +42,19 @@
 
   services.niri.login = "none";
 
+  services.displayManager.defaultSession = lib.mkForce "plasma";
+
+  age.secrets.gh-token = lib.mkIf (!vm && builtins.pathExists (../../users + "/${username}/gh-token.age")) {
+    file = ../../users + "/${username}/gh-token.age";
+    owner = username;
+    mode = "0400";
+  };
+
+  systemd.user.services.plasma-plasmashell = {
+    overrideStrategy = "asDropin";
+    unitConfig.ConditionPathExists = "/run/plasmashell";
+  };
+
   # Impermanence: keep the Secure Boot PKI (keys live under /var/lib on tmpfs).
   environment.persistence."/persist".directories = [
     "/var/lib/sbctl"
@@ -50,6 +63,7 @@
   boot.initrd.luks.devices."crypt".crypttabExtraOpts = lib.mkIf (!vm) [
     "fido2-device=auto"
     "token-timeout=15"
+    "tries=0"
   ];
 
   home-manager = {
