@@ -15,11 +15,6 @@
     # the stable `pkgs.zfs` too makes the two collide over bin/zpool.
     zrepl
 
-    # Incus host management. Same story: virtualisation.incus.package
-    # (incus-lts) is added by the module; the non-LTS pkgs.incus must not be
-    # added alongside it.
-    incus-lts
-
     # Samba / file sharing
     samba
     cifs-utils
