@@ -54,7 +54,7 @@ NIXOS_VM := $(USER)@$(NIXOS_VM_IP)
 # deleted afterwards.
 LUKS_KEY ?= /tmp/disk-encryption.key
 
-.PHONY: help install install-zoltraak install-sasurai install-nixos-vm install-sasurai-vm install-zoltraak-vm install-fern-vm isasurai-vm \
+.PHONY: help install install-zoltraak install-sasurai install-fern install-nixos-vm install-sasurai-vm install-zoltraak-vm install-fern-vm isasurai-vm \
         deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-fern-vm \
         rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-fern-vm \
         push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-fern-vm \
@@ -153,6 +153,9 @@ install-zoltraak: ## Full reinstall of zoltraak (prompts for user/host, confirma
 
 install-sasurai: ## Full reinstall of sasurai (prompts for user/host, confirmation and LUKS passphrase)
 	$(call INSTALL_RECIPE,sasurai,luks)
+
+install-fern: ## Full reinstall of fern (unencrypted; prompts for user/host and confirmation)
+	$(call INSTALL_RECIPE,fern,,fern)
 
 install-nixos-vm: ## Full reinstall of the nixos-vm dev VM (unencrypted, no LUKS passphrase; prompts for user/host and confirmation)
 	$(call INSTALL_RECIPE,nixos-vm,)
