@@ -101,17 +101,22 @@
     };
   };
 
-  # Import the data pool ourselves rather than via boot.zfs.extraPools: the
-  # latter wires zfs-import@fern before local-fs.target, so a missing or
-  # unavailable pool blocks the boot. This runs after multi-user is up.
+  # Import the data pool ourselves rather than via boot.zfs.extraPools: that
+  # generates zfs-import@fern with a hard dependency, so a missing or
+  # unavailable pool blocks the boot. We import in the early zfs-import target
+  # (so the load-keys/mount ordering still works) but treat "pool absent"
+  # (zpool exit 1) as success, so boot continues and can be fixed in place.
   boot.zfs.extraPools = lib.mkForce [];
   systemd.services.fern-zfs-import = {
     description = "Import the fern ZFS data pool";
-    wantedBy = ["multi-user.target"];
+    wantedBy = ["zfs-import.target" "zfs.target"];
     after = ["systemd-udev-settle.service"];
+    before = ["fern-zfs-load-keys.service"];
+    unitConfig.DefaultDependencies = false;
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      SuccessExitStatus = "1";
       ExecStart = "${config.boot.zfs.package}/sbin/zpool import -N fern";
     };
   };
@@ -128,7 +133,7 @@
     description = "Load encryption keys for the fern ZFS pool";
     unitConfig.DefaultDependencies = false;
     wantedBy = ["zfs.target"];
-    after = ["zfs-import.target" "systemd-udev-settle.service" "fern-zfs-import.service"];
+    after = ["zfs-import.target" "systemd-udev-settle.service"];
     before = ["zfs-mount.service" "local-fs.target"];
     serviceConfig = {
       Type = "oneshot";
