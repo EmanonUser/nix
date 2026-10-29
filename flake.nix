@@ -139,6 +139,21 @@
 
     packages.x86_64-linux.neovim = neovimPkg;
 
+    devShells.x86_64-linux.default = pkgs-stable.mkShell {
+      packages = with pkgs-stable; [
+        age
+        (agenix.packages.${system}.default)
+        openssh
+        git
+        jq
+        rsync
+        curl
+        shellcheck
+        shfmt
+        alejandra
+      ];
+    };
+
     nixosConfigurations = {
       sasurai = mkSystem {
         hostname = "sasurai";
