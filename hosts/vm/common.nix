@@ -10,8 +10,10 @@
   netHostName,
   ...
 }: {
-  # Every VM sees its virtio disk as /dev/sda (overrides the bare-metal device).
-  disko.devices.disk.main.device = lib.mkForce "/dev/sda";
+  # Pin the root disk by its stable QEMU/incus id: virtio enumeration gives
+  # sda/sdb nondeterministically, and sda may be the separate ztest volume.
+  disko.devices.disk.main.device =
+    lib.mkForce "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_incus_root";
 
   # Don't advertise the bare-metal hostname on the LAN: this is a test box.
   networking.hostName = lib.mkForce netHostName;
