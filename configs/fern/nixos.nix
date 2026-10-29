@@ -115,7 +115,7 @@
       ExecStart = "${config.boot.zfs.package}/sbin/zpool import -N fern";
     };
   };
-  systemd.services."fern-zfs-load-keys".after = lib.mkAfter ["fern-zfs-import.service"];
+
 
   # 8 GiB ARC, matching /etc/modprobe.d/zfs.conf on the live host.
   boot.extraModprobeConfig = ''
@@ -128,7 +128,7 @@
     description = "Load encryption keys for the fern ZFS pool";
     unitConfig.DefaultDependencies = false;
     wantedBy = ["zfs.target"];
-    after = ["zfs-import.target" "systemd-udev-settle.service"];
+    after = ["zfs-import.target" "systemd-udev-settle.service" "fern-zfs-import.service"];
     before = ["zfs-mount.service" "local-fs.target"];
     serviceConfig = {
       Type = "oneshot";
