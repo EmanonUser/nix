@@ -115,7 +115,7 @@
       ExecStart = "${config.boot.zfs.package}/sbin/zpool import -N fern";
     };
   };
-  systemd.services."fern-zfs-load-keys".after = ["fern-zfs-import.service"];
+  systemd.services."fern-zfs-load-keys".after = lib.mkAfter ["fern-zfs-import.service"];
 
   # 8 GiB ARC, matching /etc/modprobe.d/zfs.conf on the live host.
   boot.extraModprobeConfig = ''
