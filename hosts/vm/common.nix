@@ -47,6 +47,20 @@
   # Incus agent so the VM host can run commands/exec inside the instance.
   virtualisation.incus.agent.enable = true;
 
+  # A throwaway VM has a single virtio NIC on incusbr0 (name varies). The host
+  # configs wire their real NICs (eno1/eno2 on fern) into br0; here DHCP the
+  # one interface directly and drop the bridge wiring so the VM gets a LAN IP.
+  systemd.network.networks = lib.mkForce {
+    "10-lan" = {
+      matchConfig.Name = "enp5s0";
+      networkConfig = {
+        DHCP = "yes";
+        IPv6AcceptRA = true;
+      };
+    };
+  };
+  systemd.network.netdevs = lib.mkForce {};
+
   # Throwaway test box conveniences.
   networking.firewall.enable = false;
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
