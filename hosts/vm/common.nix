@@ -51,7 +51,8 @@
 
   # A throwaway VM has a single virtio NIC on incusbr0 (name varies). The host
   # configs wire their real NICs (eno1/eno2 on fern) into br0; here DHCP the
-  # one interface directly and drop the bridge wiring so the VM gets a LAN IP.
+  # one interface directly. Keep br0 as an internal bridge (no port): Incus'
+  # br-lan network still needs its parent interface to exist.
   systemd.network.networks = lib.mkForce {
     "10-lan" = {
       matchConfig.Name = "enp5s0";
@@ -60,8 +61,15 @@
         IPv6AcceptRA = true;
       };
     };
+    "10-br0" = {
+      matchConfig.Name = "br0";
+      networkConfig = {
+        DHCP = "no";
+        IPv6AcceptRA = false;
+        LinkLocalAddressing = "no";
+      };
+    };
   };
-  systemd.network.netdevs = lib.mkForce {};
 
   # Throwaway test box conveniences.
   networking.firewall.enable = false;

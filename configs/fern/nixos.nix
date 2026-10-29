@@ -101,7 +101,21 @@
     };
   };
 
-  boot.zfs.extraPools = ["fern"];
+  # Import the data pool ourselves rather than via boot.zfs.extraPools: the
+  # latter wires zfs-import@fern before local-fs.target, so a missing or
+  # unavailable pool blocks the boot. This runs after multi-user is up.
+  boot.zfs.extraPools = lib.mkForce [];
+  systemd.services.fern-zfs-import = {
+    description = "Import the fern ZFS data pool";
+    wantedBy = ["multi-user.target"];
+    after = ["systemd-udev-settle.service"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${config.boot.zfs.package}/sbin/zpool import -N fern";
+    };
+  };
+  systemd.services."fern-zfs-load-keys".after = ["fern-zfs-import.service"];
 
   # 8 GiB ARC, matching /etc/modprobe.d/zfs.conf on the live host.
   boot.extraModprobeConfig = ''
