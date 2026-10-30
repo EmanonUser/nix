@@ -10,13 +10,8 @@
     neededForBoot = true;
   };
 
-  # /nix and /persist are declared by disko; make sure they're mounted
-  # in the initrd so impermanence bind mounts work early.
   fileSystems."/nix".neededForBoot = lib.mkForce true;
   fileSystems."/persist".neededForBoot = lib.mkForce true;
-
-  boot.initrd.systemd.enable = true;
-
   environment.persistence."/persist" = {
     hideMounts = true;
 

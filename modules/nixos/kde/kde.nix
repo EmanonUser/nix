@@ -25,7 +25,6 @@ in {
     config.programs.umbriel.package
   );
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
-    kwin-x11
     discover
     dolphin
     gwenview
