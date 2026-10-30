@@ -44,6 +44,7 @@
     blink-cmp
     luasnip
     vim-fugitive
+    gitsigns-nvim
 
     # colorschemes
     cyberdream-nvim
