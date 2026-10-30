@@ -7,6 +7,8 @@
     "browseable" = "yes";
     "read only" = "no";
     "valid users" = "emanon";
+    "create mask" = "0644";
+    "directory mask" = "0755";
     "vfs objects" = "shadow_copy2";
     "shadow:snapdir" = ".zfs/snapshot";
     "shadow:format" = "zrepl_%Y%m%d_%H%M%S_000";
@@ -40,7 +42,7 @@ in {
         "read only" = "no";
         "guest ok" = "no";
         "valid users" = "emanon";
-        "create mask" = "0755";
+        "create mask" = "0644";
         "directory mask" = "0755";
       };
       data = shadowShare "/fern/data";
