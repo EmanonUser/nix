@@ -20,10 +20,9 @@
       "$schema" = "https://opencode.ai/config.json";
     }
     // lib.optionalAttrs atuinEnabled {
-      mcp.atuin = {
+      mcp.servers.atuin = {
         type = "local";
         command = [(lib.getExe config.programs.atuin.package) "mcp"];
-        enabled = true;
       };
     };
 in {
@@ -33,6 +32,13 @@ in {
     force = true;
     text = builtins.toJSON opencodeConfig + "\n";
   };
+
+  home.activation.atuin-opencode-hook = lib.mkIf atuinEnabled (lib.hm.dag.entryAfter ["writeBoundary"] ''
+    (
+      export PATH=${lib.makeBinPath [pkgs.opencode]}:$PATH
+      run ${lib.getExe config.programs.atuin.package} hook install opencode >/dev/null 2>&1 || true
+    )
+  '');
 
   home.activation.opencode-auth = lib.hm.dag.entryAfter ["writeBoundary"] ''
     if [ -r /run/agenix/opencode-api-key ]; then
