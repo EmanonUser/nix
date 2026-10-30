@@ -12,6 +12,10 @@
         enabled = true;
         autostart = true;
       };
+      threads = {
+        capture = true;
+        capture_tools = true;
+      };
     };
   };
 
