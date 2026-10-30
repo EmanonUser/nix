@@ -1,4 +1,27 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: let
+  ageSecrets = config.age.secrets or {};
+  hmSecrets = (ageSecrets ? "atuin-key") && (ageSecrets ? "atuin-token");
+  keyPath =
+    if hmSecrets
+    then ageSecrets."atuin-key".path
+    else "/run/agenix/atuin-key";
+  tokenPath =
+    if hmSecrets
+    then ageSecrets."atuin-token".path
+    else "/run/agenix/atuin-token";
+  keyCondition =
+    if hmSecrets
+    then "%t/agenix/atuin-key"
+    else "/run/agenix/atuin-key";
+  tokenCondition =
+    if hmSecrets
+    then "%t/agenix/atuin-token"
+    else "/run/agenix/atuin-token";
+in {
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;
@@ -29,10 +52,8 @@
     Unit = {
       Description = "Seed the Atuin sync session token";
       Before = ["atuin-daemon.service"];
-      ConditionPathExists = [
-        "/run/agenix/atuin-key"
-        "/run/agenix/atuin-token"
-      ];
+      After = ["agenix.service"];
+      ConditionPathExists = [keyCondition tokenCondition];
     };
     Install.WantedBy = ["default.target"];
     Service = {
@@ -42,9 +63,9 @@
 
         data_dir="$HOME/.local/share/atuin"
         ${pkgs.coreutils}/bin/install -d -m 0700 "$data_dir"
-        ${pkgs.coreutils}/bin/install -m 0600 /run/agenix/atuin-key "$data_dir/key"
+        ${pkgs.coreutils}/bin/install -m 0600 "${keyPath}" "$data_dir/key"
 
-        token="$(< /run/agenix/atuin-token)"
+        token="$(< "${tokenPath}")"
         if [ -z "$token" ]; then
           echo "atuin-token secret is empty" >&2
           exit 1

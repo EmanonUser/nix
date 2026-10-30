@@ -1,4 +1,8 @@
-{username, ...}: {
+{
+  lib,
+  username,
+  ...
+}: {
   # This host's user SSH identity, sealed to its own host key
   # (configs/fern/ssh/ssh_host_ed25519_key.age).
   #
@@ -15,6 +19,18 @@
 
   age.secrets."gh-token" = {
     file = ../../users + "/${username}/gh-token.age";
+    mode = "0400";
+  };
+
+  # Atuin sync credentials, decrypted by the home-manager agenix service to
+  # $XDG_RUNTIME_DIR/agenix; modules/atuin/atuin.nix seeds the token from there.
+  age.secrets."atuin-key" = lib.mkIf (builtins.pathExists (../../users + "/${username}/atuin-key.age")) {
+    file = ../../users + "/${username}/atuin-key.age";
+    mode = "0400";
+  };
+
+  age.secrets."atuin-token" = lib.mkIf (builtins.pathExists (../../users + "/${username}/atuin-token.age")) {
+    file = ../../users + "/${username}/atuin-token.age";
     mode = "0400";
   };
 }
