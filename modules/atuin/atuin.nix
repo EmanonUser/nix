@@ -16,6 +16,12 @@
         capture = true;
         capture_tools = true;
       };
+      output = {
+        enabled = true;
+      };
+      pty_proxy = {
+        enabled = true;
+      };
     };
   };
 
