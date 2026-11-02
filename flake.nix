@@ -203,9 +203,5 @@
         pkgsInput = pkgs-stable;
       };
     };
-
-    # Standalone Home Manager profiles for non-NixOS machines.
-    # (fern moved to nixosConfigurations.fern - it is now a NixOS host.)
-    homeConfigurations = {};
   };
 }

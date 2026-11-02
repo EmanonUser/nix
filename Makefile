@@ -4,7 +4,6 @@
 #   make deploy-zoltraak      build locally + copy closure + switch zoltraak (no OOM)
 #   make deploy               build locally + switch every NixOS host
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
-#   make home-fern            rebuild + switch fern (home-manager only)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
 #   make install-nixos-vm     full reinstall of the nixos-vm dev VM via nixos-anywhere
 #   make install-sasurai-vm   full reinstall of the sasurai test VM via nixos-anywhere (LUKS)
@@ -22,8 +21,6 @@ FLAKE       := .
 
 # Hosts with full NixOS deployments.
 NIXOS_HOSTS := sasurai zoltraak
-# Standalone home-manager hosts (no NixOS system).
-HOME_HOSTS  := fern
 
 ZOLTRAAK_IP ?= 192.168.5.113
 SASURAI_IP  ?= sasurai
@@ -39,7 +36,6 @@ ZOLTRAAK_VM_IP ?= 192.168.122.3
 NIXOS_VM_IP ?= 192.168.5.1
 
 # Tools are run via `nix run` since they aren't installed on this machine.
-HOME_MANAGER   := nix run nixpkgs\#home-manager --
 ANYWHERE       := nix run github:nix-community/nixos-anywhere --
 NIXOS_REBUILD  := nix run nixpkgs\#nixos-rebuild --
 AGE            := nix run nixpkgs\#age --
@@ -58,7 +54,6 @@ LUKS_KEY ?= /tmp/disk-encryption.key
         deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-fern-vm \
         rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-fern-vm \
         push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-fern-vm \
-        home home-fern \
         print-cert-authority \
         update check fmt
 
@@ -247,16 +242,6 @@ rebuild-fern-vm: ## Rebuild + switch the fern VM on the machine itself (prompts 
 	@read -r -p "fern-vm IP: " ip; \
 	git archive --format=tar.gz HEAD | ssh $(USER)@$$ip 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'; \
 	ssh $(USER)@$$ip 'sudo -n nixos-rebuild switch --flake ~/nix#fern-vm'
-
-# ---------------------------------------------------------------------------
-# Home-manager rebuilds (standalone hosts only; NixOS hosts are covered by
-# the `rebuild-*` targets above via home-manager.nixosModule)
-# ---------------------------------------------------------------------------
-
-home: home-fern ## Rebuild + switch every home-manager-only host
-
-home-fern: ## Rebuild + switch fern
-	$(HOME_MANAGER) switch --flake $(FLAKE)#fern
 
 # ---------------------------------------------------------------------------
 # Host CA (client-side known_hosts entry)

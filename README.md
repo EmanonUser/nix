@@ -3,8 +3,8 @@
 Personal [NixOS](https://nixos.org) + [Home Manager](https://github.com/nix-community/home-manager)
 configuration, managed as a single flake.
 
-One flake builds several machines: full NixOS desktops, throwaway VM twins used
-for testing, and standalone Home Manager profiles. Hardware/disk definitions,
+One flake builds every machine: full NixOS desktops, a workstation/fileserver,
+and throwaway VM twins of each for testing. Hardware/disk definitions,
 per-machine choices and reusable modules are kept in separate layers so a host
 config reads as a short, explicit list of imports.
 
@@ -39,7 +39,8 @@ config reads as a short, explicit list of imports.
 | `sasurai-vm` | Incus VM | throwaway twin of `sasurai` (`vm = true`) |
 | `zoltraak-vm` | Incus VM | throwaway twin of `zoltraak` (`vm = true`) |
 | `nixos-vm` | Incus VM | **headless dev environment** — SSH in, edit, build |
-| `fern` | workstation | standalone Home Manager profile |
+| `fern` | bare metal | workstation/fileserver, NixOS 26.05 on ext4 |
+| `fern-vm` | Incus VM | throwaway twin of `fern` (`vm = true`) |
 
 `nixos-vm` is the one you drive day to day. It carries the toolchains
 (gcc/clang, cmake, ninja, go, rustup, python, nodejs, gdb, valgrind, nix
@@ -50,9 +51,9 @@ desktop config, so they catch DE regressions that a headless box cannot.
 ## Repository layout
 
 ```
-flake.nix              # inputs + nixosConfigurations / homeConfigurations
+flake.nix              # inputs + nixosConfigurations
 flake.lock             # pinned inputs
-Makefile               # install / deploy / rebuild / home / update targets
+Makefile               # install / deploy / rebuild / update targets
 README.md              # this file
 hosts/                 # LAYER 1 — what this *machine* is
   <host>/<host>.nix             # entry point pulled in by the flake
@@ -66,7 +67,6 @@ configs/                # LAYER 2 — what this host *runs*
   <host>/home.nix              # which home-manager modules it imports
   <host>/home-packages/        # per-user GUI/dev packages
   <host>/nix-packages/         # per-host system packages
-  <host>/agenix.nix            # host-specific secret declarations (standalone HM)
   <host>/ssh/                  # per-host key material (.age + public halves)
 modules/               # LAYER 3 — reusable, host-agnostic modules
   nixos/…                     # system-level modules (core, boot, hardware, DE…)
@@ -100,15 +100,14 @@ arg, so adding a user means adding a directory, not editing every host.
 
 ### How NixOS and Home Manager fit together
 
-- NixOS hosts declare `home-manager.users.${username}` in their
+- Every host declares `home-manager.users.${username}` in its
   `configs/<host>/nixos.nix`, importing `configs/<host>/home.nix` with
   `useGlobalPkgs = true`. One `nixos-rebuild` therefore updates system *and*
   user environment.
-- The standalone Home Manager host is declared as a
-  `homeConfigurations.<name>` in the flake, importing `configs/<name>/home.nix`
-  directly — the same file layout, without a NixOS system around it.
+- A `*-vm` twin reuses the same host config with `vm = true` plus
+  `hosts/vm/common.nix`, so it exercises the real desktop and service modules.
 - `configs/<host>/home.nix` is always just a list of `modules/*` imports plus
-  `home-packages`; the two are interchangeable between the two models.
+  `home-packages`, with no host-specific system code.
 
 ### Modules at a glance
 
@@ -145,7 +144,6 @@ User (`modules/`): `zsh`, `starship`, `atuin`, `zoxide`, `direnv`, `neovim`,
 make help            # every target, with descriptions
 make deploy          # build here, copy the closure, switch each NixOS host
 make rebuild         # rebuild on the machine itself (flake synced via git archive)
-make home            # home-manager-only hosts
 make install-<host>  # destructive reinstall via nixos-anywhere (LUKS, seeds host key)
 make update          # nix flake update
 make check           # nix flake check
