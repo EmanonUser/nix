@@ -3,10 +3,16 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager-stable = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
     impermanence = {
@@ -36,6 +42,14 @@
       url = "github:noctalia-dev/noctalia";
     };
 
+    # fern's backup daemon, consumed as a flake (its packages.default is the
+    # daemon and its nixosModules.default is a superset of
+    # modules/nixos/backupd). Private repo, fetched over SSH: any machine
+    # whose key is registered on GitHub can fetch it, no token needed.
+    backupd = {
+      url = "git+ssh://git@github.com/EmanonUser/backupd";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     wrappers = {
       url = "github:nix-community/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -44,31 +58,41 @@
 
   outputs = {
     nixpkgs,
+    nixpkgs-stable,
     home-manager,
+    home-manager-stable,
     impermanence,
     disko,
     stylix,
     agenix,
     lanzaboote,
     noctalia,
+    backupd,
     wrappers,
     ...
   } @ attrs: let
     system = "x86_64-linux";
     username = "emanon";
     lib = nixpkgs.lib;
-    # allowUnfree mirrors modules/nixos/core/settings.nix; needed here because
-    # the wrapped neovim is evaluated in this flake and presence.nvim is unfree.
+    # Mirrors modules/nixos/core/settings.nix (allowUnfree = true). Needed at
+    # the flake level too because the wrapped neovim is evaluated here and
+    # presence.nvim is unfree.
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
     };
 
-    neovimPkg = wrappers.lib.evalPackage (lib.modules.importApply ./modules/neovim/wrapper.nix {
-      systemPkgs = pkgs;
-    });
+    pkgs-stable = import nixpkgs-stable {
+      inherit system;
+      config.allowUnfree = true;
+    };
 
-    neovimOverlay = _final: _prev: {neovim = neovimPkg;};
+    mkNeovim = p:
+      wrappers.lib.evalPackage (lib.modules.importApply ./modules/neovim/wrapper.nix {
+        systemPkgs = p;
+      });
+
+    neovimPkg = mkNeovim pkgs;
 
     # Build a NixOS system. Setting `vm = true` produces a throwaway Incus-VM
     # twin of the *same* host config: same identity/hostname, but the
@@ -82,12 +106,17 @@
       filesystem ? null,
       luks ? true,
       extraModules ? [],
+      nixpkgsInput ? nixpkgs,
+      homeManagerInput ? home-manager,
+      pkgsInput ? pkgs,
     }:
-      lib.nixosSystem {
+      nixpkgsInput.lib.nixosSystem {
         specialArgs =
           {
             inherit username system;
             inherit hostname;
+            backupdPkg = backupd.packages.${system}.default;
+            incusPkg = nixpkgs.legacyPackages.${system}.incus;
           }
           // (lib.optionalAttrs (filesystem != null) {inherit filesystem;})
           // {inherit vm luks;}
@@ -96,10 +125,10 @@
         modules =
           [
             disko.nixosModules.disko
-            home-manager.nixosModules.home-manager
+            homeManagerInput.nixosModules.home-manager
             impermanence.nixosModules.impermanence
             agenix.nixosModules.default
-            {nixpkgs.overlays = [neovimOverlay];}
+            {nixpkgs.overlays = [(_final: _prev: {neovim = mkNeovim pkgsInput;})];}
             ./hosts/${hostname}/${hostname}.nix
           ]
           ++ lib.optionals vm [./hosts/vm/common.nix]
@@ -109,6 +138,21 @@
     formatter.x86_64-linux = pkgs.alejandra;
 
     packages.x86_64-linux.neovim = neovimPkg;
+
+    devShells.x86_64-linux.default = pkgs-stable.mkShell {
+      packages = with pkgs-stable; [
+        age
+        (agenix.packages.${system}.default)
+        openssh
+        git
+        jq
+        rsync
+        curl
+        shellcheck
+        shfmt
+        alejandra
+      ];
+    };
 
     nixosConfigurations = {
       sasurai = mkSystem {
@@ -139,29 +183,24 @@
         luks = false;
       };
 
-      nixos-tests = mkSystem {
-        hostname = "nixos-tests";
-        filesystem = "zfs";
+      # fern runs nixos-26.05 (stable); every other host stays on unstable.
+      fern = mkSystem {
+        hostname = "fern";
+        filesystem = "ext4";
+        luks = false;
+        nixpkgsInput = nixpkgs-stable;
+        homeManagerInput = home-manager-stable;
+        pkgsInput = pkgs-stable;
+      };
+
+      fern-vm = mkSystem {
+        hostname = "fern";
+        filesystem = "ext4";
         luks = false;
         vm = true;
-      };
-    };
-
-    homeConfigurations = {
-      fern = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-          overlays = [neovimOverlay];
-        };
-        extraSpecialArgs = {
-          inherit username;
-          hostname = "fern";
-        };
-        modules = [
-          agenix.homeManagerModules.age
-          ./configs/fern/home.nix
-        ];
+        nixpkgsInput = nixpkgs-stable;
+        homeManagerInput = home-manager-stable;
+        pkgsInput = pkgs-stable;
       };
     };
   };

@@ -10,8 +10,10 @@
   netHostName,
   ...
 }: {
-  # Every VM sees its virtio disk as /dev/sda (overrides the bare-metal device).
-  disko.devices.disk.main.device = lib.mkForce "/dev/sda";
+  # Pin the root disk by its stable QEMU/incus id: virtio enumeration gives
+  # sda/sdb nondeterministically, and sda may be the separate ztest volume.
+  disko.devices.disk.main.device =
+    lib.mkForce "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_incus_root";
 
   # Don't advertise the bare-metal hostname on the LAN: this is a test box.
   networking.hostName = lib.mkForce netHostName;
@@ -46,6 +48,28 @@
 
   # Incus agent so the VM host can run commands/exec inside the instance.
   virtualisation.incus.agent.enable = true;
+
+  # A throwaway VM has a single virtio NIC on incusbr0 (name varies). The host
+  # configs wire their real NICs (eno1/eno2 on fern) into br0; here DHCP the
+  # one interface directly. Keep br0 as an internal bridge (no port): Incus'
+  # br-lan network still needs its parent interface to exist.
+  systemd.network.networks = lib.mkForce {
+    "10-lan" = {
+      matchConfig.Name = "enp5s0";
+      networkConfig = {
+        DHCP = "yes";
+        IPv6AcceptRA = true;
+      };
+    };
+    "10-br0" = {
+      matchConfig.Name = "br0";
+      networkConfig = {
+        DHCP = "no";
+        IPv6AcceptRA = false;
+        LinkLocalAddressing = "no";
+      };
+    };
+  };
 
   # Throwaway test box conveniences.
   networking.firewall.enable = false;
