@@ -4,7 +4,11 @@
   stylix,
   vm ? false,
   ...
-}: {
+}: let
+  # The unmasked face is the OS-wide default; Ghostty opts into the masking
+  # feature (ss01) in its own config.
+  obelMono = pkgs.callPackage ../../../packages/obel-mono.nix {};
+in {
   imports = [
     stylix.nixosModules.stylix
   ];
@@ -26,12 +30,12 @@
 
   stylix.fonts = {
     monospace = {
-      package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
-      name = "JetBrainsMono Nerd Font Mono";
+      package = obelMono;
+      name = "Obel Mono";
     };
     sansSerif = {
-      package = pkgs.dejavu_fonts;
-      name = "DejaVu Sans";
+      package = obelMono;
+      name = "Obel Mono";
     };
     serif = {
       package = pkgs.dejavu_fonts;

@@ -1,1 +1,5 @@
+# Unmasked everywhere else; turn on the secret-masking stylistic set here.
+font-family = "Obel Mono"
+font-feature = ss01
+
 shell-integration-features = ssh-terminfo,ssh-env
