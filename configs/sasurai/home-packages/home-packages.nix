@@ -11,6 +11,7 @@
     fladder
     hyfetch
     zola
+    easyeffects
 
     # games and tool
     steam
