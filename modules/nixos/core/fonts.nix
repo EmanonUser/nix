@@ -8,8 +8,6 @@ in {
     obelMonoMasked
   ];
 
-  # OS-wide default. Ghostty overrides the family in its own config and turns
-  # on the masking feature (ss01) there.
   fonts.fontconfig.defaultFonts = {
     monospace = ["Obel Mono"];
     sansSerif = ["Obel Mono"];
