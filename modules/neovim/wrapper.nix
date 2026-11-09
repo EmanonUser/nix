@@ -1,12 +1,3 @@
-# Neovim built through nix-wrapper-modules.
-#
-# Replaces the old lazy.nvim setup: nixpkgs owns the plugin packages, so
-# versions are pinned by flake.lock and telescope/plenary/nvim-treesitter can
-# never skew out of compatibility. Everything loads at startup (no lazy
-# loading, no packadd, no lazy-lock.json, no runtime git).
-#
-# `attrs` is the flake's input set (see flake.nix importApply) and `systemPkgs`
-# is the target pkgs; both are bound by the caller.
 {systemPkgs}: {
   config,
   wlib,

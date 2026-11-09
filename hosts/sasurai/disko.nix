@@ -5,8 +5,6 @@
 }: {
   disko.devices.disk.main = {
     type = "disk";
-    # NixOS lives on this NVMe; Windows 11 is on a separate disk.
-    # The ESP is shared: both OSes put their bootloader here.
     device = "/dev/nvme0n1";
     content = {
       type = "gpt";
@@ -27,7 +25,6 @@
             type = "luks";
             name = "crypt";
             settings.allowDiscards = true;
-            # Passphrase supplied by nixos-anywhere --disk-encryption-keys
             passwordFile = "/tmp/disk-encryption.key";
             content =
               if filesystem == "zfs"
@@ -80,10 +77,6 @@
     };
   };
 
-  # ZFS-specific boot wiring (harmless no-ops on btrfs).
   networking.hostId = lib.mkIf (filesystem == "zfs") "3f7c9e21";
-  # Force-import the root pool: after a fresh install (and any unclean
-  # shutdown) the pool is still marked "in use" by the install environment,
-  # so a non-forced `zpool import` in the initrd would refuse and hang boot.
   boot.zfs.forceImportRoot = lib.mkIf (filesystem == "zfs") true;
 }

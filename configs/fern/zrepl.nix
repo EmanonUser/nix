@@ -11,9 +11,7 @@
           }
         ];
       };
-      # Every job uses the same "zrepl_" prefix: each dataset belongs to exactly
-      # one job, so the prefix only scopes pruning (a single ^zrepl_.* does it),
-      # and a constant name lets Samba's shadow_copy2 use one shadow:format.
+
       jobs = [
         {
           name = "zrepl_default";

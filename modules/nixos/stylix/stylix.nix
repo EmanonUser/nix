@@ -5,22 +5,12 @@
   vm ? false,
   ...
 }: let
-  # The unmasked face is the OS-wide default; Ghostty opts into the masking
-  # feature (ss01) in its own config.
   obelMono = pkgs.callPackage ../../../packages/obel-mono.nix {};
 in {
   imports = [
     stylix.nixosModules.stylix
   ];
 
-  # Serves the desktop twins only: sasurai-vm / zoltraak-vm run the real DE
-  # config and so need a theme, but the bare-metal wallpaper lives on the host's
-  # persistent storage and is absent from a throwaway VM - hence a bundled one.
-  # The headless VMs (nixos-vm, fern-vm) never import this module at all.
-  #
-  # This branch has to live here rather than in hosts/vm/common.nix: stylix is
-  # only an option on hosts that import it, and common.nix is imported by the
-  # headless VMs that do not.
   stylix.image =
     if vm
     then pkgs.nixos-artwork.wallpapers.nineish-dark-gray

@@ -25,18 +25,13 @@
       ../../modules/nixos/stylix/stylix.nix
       ./nix-packages/nix-packages.nix
     ]
-    # Bare-metal-only pieces (amdgpu, host incus/podman): skipped when running
-    # in a test VM (hosts/vm/common.nix takes over).
     ++ lib.optionals (!vm) [
       ../../modules/nixos/hardware/amd.nix
       ../../modules/nixos/virtualisation/incus.nix
       ../../modules/nixos/virtualisation/podman.nix
     ];
 
-  # Boot text splash: the closed NVIDIA driver can't drive a graphical
-  # plymouth from the initrd (no KMS), so render on the text console instead.
   boot.plymouth.theme = "text";
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

@@ -3,8 +3,6 @@
   lib,
   ...
 }: let
-  # KDE keeps its own fonts in kdeglobals; fontconfig defaults do not reach
-  # the Plasma shell or Qt/KDE apps. The fields are "family,pointSize,...".
   font = "Obel Mono,10,-1,5,50,0,0,0,0,0";
 in {
   home.activation = {

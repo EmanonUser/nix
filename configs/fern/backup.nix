@@ -32,9 +32,6 @@
   };
 
   services.backupd = {
-    # The twin has none of the host's Incus VMs (qbittorrent-vm, torrents-vm,
-    # caddy-vm), so its backupd would fail every night with "Instance not
-    # found". The real host keeps it enabled.
     enable = !vm;
     package = backupdPkg;
     configFile = ./backupd.kdl;

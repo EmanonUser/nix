@@ -1,11 +1,4 @@
-{
-  config,
-  ...
-}: {
-  # ProtonMail submission for system alerts. ZED (ZFS events) and smartd (disk
-  # health) both shell out to a sendmail-compatible binary; programs.msmtp
-  # installs /run/wrappers/bin/sendmail for exactly that, and its presence flips
-  # on the mail defaults in the ZED and smartd modules.
+{config, ...}: {
   programs.msmtp = {
     enable = true;
     defaults = {

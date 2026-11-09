@@ -83,9 +83,6 @@ in {
       };
     })
 
-    # External display manager (e.g. SDDM): don't manage login, but announce
-    # niri as a selectable Wayland session. niri ships
-    # share/wayland-sessions/niri.desktop.
     (lib.mkIf (cfg.login == "none") {
       services.niri.waylandSessionPackage =
         pkgs.niri

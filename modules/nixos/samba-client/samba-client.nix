@@ -3,7 +3,6 @@
   username,
   ...
 }: let
-  # SMB share exported by the fern NAS, mounted on demand under the user's home.
   server = "fern.home.arpa";
   share = "fern";
   mountPoint = "/home/${username}/fern";

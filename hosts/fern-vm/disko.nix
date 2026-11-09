@@ -1,6 +1,3 @@
-# Small-disk variant of fern's layout for the test VM: same ext4-on-LVM +
-# impermanence structure, but sized for a ~30G virtio disk. The device is
-# forced to /dev/sda by hosts/vm/common.nix.
 {lib, ...}: {
   disko.devices.disk.main = {
     type = "disk";

@@ -1,5 +1,3 @@
-# Host-level packages for fern (the NixOS server). Home-manager user packages
-# live in configs/fern/home-packages/home-packages.nix.
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     # Agent / infrastructure-as-code
@@ -9,13 +7,7 @@
     opentofu
     age
     restic
-
-    # ZFS operations. `zfs` itself is NOT listed: boot.zfs.package
-    # (zfs_unstable) is already put on PATH by the zfs module, and asking for
-    # the stable `pkgs.zfs` too makes the two collide over bin/zpool.
     zrepl
-
-    # Samba / file sharing
     samba
     cifs-utils
 

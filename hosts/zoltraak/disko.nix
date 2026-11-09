@@ -2,7 +2,6 @@
   disko.devices = {
     disk.main = {
       type = "disk";
-      # Adjust to your actual disk on the new laptop.
       device = "/dev/sda";
       content = {
         type = "gpt";
@@ -23,7 +22,6 @@
               type = "luks";
               name = "crypt";
               settings.allowDiscards = true;
-              # Passphrase supplied by nixos-anywhere --disk-encryption-keys
               passwordFile = "/tmp/disk-encryption.key";
               content = {
                 type = "zfs";

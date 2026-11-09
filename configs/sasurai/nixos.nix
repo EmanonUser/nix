@@ -29,8 +29,6 @@
       ../../modules/nixos/noctalia/noctalia.nix
       ./nix-packages/nix-packages.nix
     ]
-    # Bare-metal-only pieces (Secure Boot/lanzaboote, amdgpu, host incus/podman):
-    # skipped when running in a test VM (hosts/vm/common.nix takes over).
     ++ lib.optionals (!vm) [
       ../../modules/nixos/boot/secureboot.nix
       ../../modules/nixos/hardware/amd.nix
@@ -39,9 +37,7 @@
     ];
 
   boot.initrd.availableKernelModules = ["amdgpu"];
-
   services.niri.login = "none";
-
   services.displayManager.defaultSession = lib.mkForce "plasma";
 
   age.secrets.gh-token = lib.mkIf (!vm && builtins.pathExists (../../users + "/${username}/gh-token.age")) {
@@ -55,7 +51,6 @@
     unitConfig.ConditionPathExists = "/run/plasmashell";
   };
 
-  # Impermanence: keep the Secure Boot PKI (keys live under /var/lib on tmpfs).
   environment.persistence."/persist".directories = [
     "/var/lib/sbctl"
   ];

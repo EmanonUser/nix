@@ -11,13 +11,8 @@
   '';
   lanzaboote = config.boot ? lanzaboote && config.boot.lanzaboote.enable;
 in {
-  # Plain systemd-boot hosts: the upstream integration installs both the
-  # binary and the menu entry.
   boot.loader.systemd-boot.memtest86.enable = true;
 
-  # Lanzaboote replaces the systemd-boot module, so its extraFiles/extraEntries
-  # are never installed. Place Memtest86+ on the ESP ourselves and sign it with
-  # the Secure Boot db key so it still loads when Secure Boot is enforced.
   systemd.services.memtest86-esp = lib.mkIf lanzaboote {
     description = "Install Memtest86+ to the EFI System Partition";
     wantedBy = ["multi-user.target"];

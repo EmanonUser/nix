@@ -42,10 +42,6 @@
       url = "github:noctalia-dev/noctalia";
     };
 
-    # fern's backup daemon, consumed as a flake (its packages.default is the
-    # daemon and its nixosModules.default is a superset of
-    # modules/nixos/backupd). Private repo, fetched over SSH: any machine
-    # whose key is registered on GitHub can fetch it, no token needed.
     backupd = {
       url = "git+ssh://git@github.com/EmanonUser/backupd";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -74,9 +70,6 @@
     system = "x86_64-linux";
     username = "emanon";
     lib = nixpkgs.lib;
-    # Mirrors modules/nixos/core/settings.nix (allowUnfree = true). Needed at
-    # the flake level too because the wrapped neovim is evaluated here and
-    # presence.nvim is unfree.
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
@@ -94,12 +87,6 @@
 
     neovimPkg = mkNeovim pkgs;
 
-    # Build a NixOS system. Setting `vm = true` produces a throwaway Incus-VM
-    # twin of the *same* host config: same identity/hostname, but the
-    # bare-metal-only pieces are skipped in the host config itself
-    # (secureboot/lanzaboote, amdgpu, host incus/podman; see vm overs in the
-    # configs/*/nixos.nix files) and hosts/vm/common.nix wires up the virtio
-    # disk, serial console and incus agent.
     mkSystem = {
       hostname,
       vm ? false,
@@ -194,7 +181,6 @@
         luks = false;
       };
 
-      # fern runs nixos-26.05 (stable); every other host stays on unstable.
       fern = mkSystem {
         hostname = "fern";
         filesystem = "ext4";

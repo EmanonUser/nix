@@ -1,15 +1,15 @@
-{ lib, pkgs, hostname, ... }:
-let
+{
+  lib,
+  pkgs,
+  hostname,
+  ...
+}: let
   hostCa = builtins.readFile ./host_ca.pub;
   certAuthority =
     "@cert-authority \"*.home.arpa,*.emanon.dev\" "
     + lib.concatStringsSep " " (lib.take 2 (lib.splitString " " hostCa))
     + "\n";
 
-  # Per-host public half of the identity deployed via agenix
-  # (configs/${hostname}/ssh/id_ed25519.age). `.pub` ships to git's allowed_signers;
-  # `-cert.pub` is the host's roaming user cert, trusted by ssh-server via
-  # user_ca.pub.
   pub = ../../configs + "/${hostname}/ssh/id_ed25519.pub";
   cert = ../../configs + "/${hostname}/ssh/id_ed25519-cert.pub";
 in {
@@ -18,10 +18,7 @@ in {
     force = true;
   };
 
-  # known_hosts must stay a REAL, writable file: ssh appends freshly-verified
-  # host keys (TOFU) to it, which a managed nix-store symlink forbids. We only
-  # seed the cert-authority trust anchor and leave the rest alone.
-  home.activation.seedKnownHosts = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  home.activation.seedKnownHosts = lib.hm.dag.entryAfter ["linkGeneration"] ''
     f="$HOME/.ssh/known_hosts"
     ${pkgs.coreutils}/bin/install -d -m 700 "$HOME/.ssh"
     if [ -L "$f" ]; then
