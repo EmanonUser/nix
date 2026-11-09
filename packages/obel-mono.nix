@@ -15,11 +15,15 @@ in
     inherit pname version;
 
     src = fetchurl {
-      url = "https://typographic.systems/download/ObelMono${if masked then "Masked" else ""}-${version}-ttf.zip";
+      url = "https://typographic.systems/download/ObelMono${
+        if masked
+        then "Masked"
+        else ""
+      }-${version}-ttf.zip";
       hash =
         if masked
-        then "sha256-3+l28s2XXWZaWwdllO4sC5wPcTVPfcCbm3kmnBYZm9s="
-        else "sha256-051IC0tSrIzJIhuG+Iirexm+hXSzFeNP7BQUVzHgOE0=";
+        then "sha256-cZHPoWkFmK/yylz7UfMc00NxeVh/IL0v+ZuFIHi9DKI="
+        else "sha256-QHkdzeyxeetCoKhTzlxNBcXiDrXvGLZydcmu9vDsqB4=";
     };
 
     nativeBuildInputs = [unzip];

@@ -26,6 +26,5 @@
     strace
     ltrace
     postgresql
-    oha
   ];
 }

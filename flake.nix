@@ -128,7 +128,18 @@
             homeManagerInput.nixosModules.home-manager
             impermanence.nixosModules.impermanence
             agenix.nixosModules.default
-            {nixpkgs.overlays = [(_final: _prev: {neovim = mkNeovim pkgsInput;})];}
+            {
+              nixpkgs.overlays = [
+                (_final: _prev: {neovim = mkNeovim pkgsInput;})
+                # sqlx-cli 0.9.0 builds sqlite support but nixpkgs forgot the
+                # library, so linking fails with `cannot find -lsqlite3`.
+                (_final: prev: {
+                  sqlx-cli = prev.sqlx-cli.overrideAttrs (old: {
+                    buildInputs = (old.buildInputs or []) ++ [prev.sqlite];
+                  });
+                })
+              ];
+            }
             ./hosts/${hostname}/${hostname}.nix
           ]
           ++ lib.optionals vm [./hosts/vm/common.nix]
