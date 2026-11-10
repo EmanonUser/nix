@@ -12,7 +12,6 @@
       ../../modules/nixos/core/agenix.nix
       ../../modules/nixos/boot/bootloader.nix
       ../../modules/nixos/core/impermanence.nix
-      ../../modules/nixos/boot/plymouth.nix
       ../../modules/nixos/boot/memtest86.nix
       ../../hosts/zoltraak/disko.nix
       ../../modules/nixos/services/services.nix
@@ -31,7 +30,7 @@
       ../../modules/nixos/virtualisation/podman.nix
     ];
 
-  boot.plymouth.theme = "text";
+  services.bootvine.enable = true;
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

@@ -50,6 +50,10 @@
       url = "github:nix-community/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    bootvine = {
+      url = "git+https://codeberg.org/wvhulle/bootvine";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -65,6 +69,7 @@
     noctalia,
     backupd,
     wrappers,
+    bootvine,
     ...
   } @ attrs: let
     system = "x86_64-linux";
@@ -156,23 +161,31 @@
       sasurai = mkSystem {
         hostname = "sasurai";
         filesystem = "zfs";
-        extraModules = [lanzaboote.nixosModules.lanzaboote];
+        extraModules = [
+          lanzaboote.nixosModules.lanzaboote
+          bootvine.nixosModules.default
+        ];
       };
 
       sasurai-vm = mkSystem {
         hostname = "sasurai";
         filesystem = "zfs";
         vm = true;
+        extraModules = [bootvine.nixosModules.default];
       };
 
       zoltraak = mkSystem {
         hostname = "zoltraak";
-        extraModules = [lanzaboote.nixosModules.lanzaboote];
+        extraModules = [
+          lanzaboote.nixosModules.lanzaboote
+          bootvine.nixosModules.default
+        ];
       };
 
       zoltraak-vm = mkSystem {
         hostname = "zoltraak";
         vm = true;
+        extraModules = [bootvine.nixosModules.default];
       };
 
       nixos-vm = mkSystem {
