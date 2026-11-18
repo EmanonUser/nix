@@ -18,6 +18,9 @@
     vnstat
     powertop
     nvtopPackages.intel
+    intel-media-driver
+    vpl-gpu-rt
+    libva-utils
     btop
 
     # Networking
