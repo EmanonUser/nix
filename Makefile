@@ -50,11 +50,14 @@ NIXOS_VM := $(USER)@$(NIXOS_VM_IP)
 # deleted afterwards.
 LUKS_KEY ?= /tmp/disk-encryption.key
 
+HOST_CA_KEY ?= $(HOME)/certs/hosts_certificate_authority
+HOST_CA := $(subst ~,$(HOME),$(HOST_CA_KEY))
+
 .PHONY: help install install-zoltraak install-sasurai install-fern install-nixos-vm install-sasurai-vm install-zoltraak-vm install-fern-vm isasurai-vm \
         deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-fern-vm \
         rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-fern-vm \
         push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-fern-vm \
-        print-cert-authority \
+        print-cert-authority sign-fern-host-cert \
         update check fmt
 
 help: ## Show this help
@@ -105,6 +108,10 @@ define INSTALL_RECIPE
 	chmod 600 "$$fs/persist/etc/ssh/ssh_host_ed25519_key"; \
 	cp "configs/$${key_host}/ssh/ssh_host_ed25519_key.pub" "$$fs/persist/etc/ssh/"; \
 	chmod 644 "$$fs/persist/etc/ssh/ssh_host_ed25519_key.pub"; \
+	if [ -f "configs/$${key_host}/ssh/ssh_host_ed25519_key-cert.pub" ]; then \
+	  cp "configs/$${key_host}/ssh/ssh_host_ed25519_key-cert.pub" "$$fs/persist/etc/ssh/"; \
+	  chmod 644 "$$fs/persist/etc/ssh/ssh_host_ed25519_key-cert.pub"; \
+	fi; \
 	if [ -n "$$identity" ]; then \
 	  test -f "$$identity" || { echo "IDENTITY=$$identity does not exist." >&2; exit 1; }; \
 	  idflag="-i $$identity"; \
@@ -249,6 +256,13 @@ rebuild-fern-vm: ## Rebuild + switch the fern VM on the machine itself (prompts 
 
 print-cert-authority: ## Print the @cert-authority line clients need in ~/.ssh/known_hosts
 	@echo "@cert-authority \"*.home.arpa,*.emanon.dev\" $$(cut -d' ' -f1,2 modules/ssh/host_ca.pub)"
+
+sign-fern-host-cert: ## Sign fern's repo host key with the Host CA (prompts for the CA passphrase)
+	@test -f "$(HOST_CA)" || { echo "Host CA key not found: $(HOST_CA)"; exit 1; }
+	ssh-keygen -s "$(HOST_CA)" -I "fern host cert" -h \
+	  -n "fern,fern.home.arpa,fern.emanon.dev,fern.home.emanon.dev,192.168.5.30" \
+	  -V forever configs/fern/ssh/ssh_host_ed25519_key.pub
+	@echo "Wrote configs/fern/ssh/ssh_host_ed25519_key-cert.pub"
 
 # ---------------------------------------------------------------------------
 # Flake maintenance

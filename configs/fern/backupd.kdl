@@ -29,7 +29,7 @@ volumes {
 vms {
     vm "qbittorrent-vm" tag="incus" tag="qbittorrent" tag="vm"
     vm "torrents-vm" tag="incus" tag="torrents" tag="vm"
-    vm "caddy-vm" tag="incus" tag="caddy" tag="vm"
+    vm "caddy-nixos" tag="incus" tag="caddy" tag="vm"
 }
 
 dirs {

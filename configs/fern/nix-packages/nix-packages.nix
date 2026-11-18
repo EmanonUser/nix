@@ -17,7 +17,7 @@
     lm_sensors
     vnstat
     powertop
-    nvtopPackages.full
+    nvtopPackages.intel
     btop
 
     # Networking
