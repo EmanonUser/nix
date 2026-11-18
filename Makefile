@@ -261,7 +261,7 @@ sign-fern-host-cert: ## Sign fern's repo host key with the Host CA (prompts for 
 	@test -f "$(HOST_CA)" || { echo "Host CA key not found: $(HOST_CA)"; exit 1; }
 	ssh-keygen -s "$(HOST_CA)" -I "fern host cert" -h \
 	  -n "fern,fern.home.arpa,fern.emanon.dev,fern.home.emanon.dev,192.168.5.30" \
-	  -V forever configs/fern/ssh/ssh_host_ed25519_key.pub
+	  -V always:forever configs/fern/ssh/ssh_host_ed25519_key.pub
 	@echo "Wrote configs/fern/ssh/ssh_host_ed25519_key-cert.pub"
 
 # ---------------------------------------------------------------------------
