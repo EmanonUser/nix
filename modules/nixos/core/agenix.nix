@@ -28,9 +28,8 @@
     symlink = false;
   };
 
-  age.secrets."user-password" = lib.mkIf (!vm) {
-    file = ../../../users + "/${username}/password.age";
-  };
+  # password.age is sealed to fern's pre-NixOS host key; the account is
+  # key/certificate-only until it is re-sealed (set a password with `passwd`).
 
   age.secrets.home-assistant = lib.mkIf (!vm) {
     file = ../../../users + "/${username}/home-assistant.age";

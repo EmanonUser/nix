@@ -31,11 +31,8 @@
 
   age.secrets."user-ssh-id".enable = lib.mkIf vm false;
 
-  age.secrets.gh-token = lib.mkIf (!vm && builtins.pathExists (../../users + "/${username}/gh-token.age")) {
-    file = ../../users + "/${username}/gh-token.age";
-    owner = username;
-    mode = "0400";
-  };
+  # gh-token.age is sealed to fern's pre-NixOS host key and can no longer be
+  # decrypted; re-add once re-sealed to configs/fern/ssh/ssh_host_ed25519_key.pub.
 
   environment.persistence."/persist".directories = [
     "/var/lib/samba"
@@ -125,11 +122,9 @@
   };
 
   networking.nftables.enable = true;
-  # Bridge traffic from the LAN-attached VMs (br0) and the NAT bridge
-  # (incusbr0) must bypass the input filter and the reverse-path check,
-  # otherwise DHCP/DNS to Incus and all guest traffic are dropped.
-  networking.firewall.trustedInterfaces = ["br0" "incusbr0"];
-  networking.firewall.checkReversePath = "loose";
+  # Filtering is done upstream on holo; keep the host out of the way of
+  # bridged VM traffic and its DHCP/DNS.
+  networking.firewall.enable = false;
   networking.firewall.extraForwardRules = ''
     iifname "br0" accept
     oifname "br0" accept
