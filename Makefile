@@ -13,7 +13,7 @@
 # Override at the command line, e.g.:
 #   make rebuild-sasurai SASURAI_IP=192.168.5.99
 
-SHELL := /bin/bash
+SHELL := bash
 MAKEFLAGS += --no-print-directory
 
 USER        ?= emanon
