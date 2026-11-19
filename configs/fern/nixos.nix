@@ -125,6 +125,13 @@
   };
 
   networking.nftables.enable = true;
+  # Bridged VM traffic (br0) arrives on a different interface than the route
+  # to its source, so strict reverse-path filtering drops it.
+  networking.firewall.checkReversePath = "loose";
+  networking.firewall.extraForwardRules = ''
+    iifname "br0" accept
+    oifname "br0" accept
+  '';
 
   home-manager = {
     useGlobalPkgs = true;
