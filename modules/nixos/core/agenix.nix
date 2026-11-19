@@ -44,19 +44,10 @@
 
   # Atuin sync credentials: the encrypted history key and a long-lived Hub
   # access token. The token is seeded into Atuin's meta.db by the
-  # atuin-token user service in modules/atuin/atuin.nix; neither is used until
-  # the token file exists.
-  age.secrets.atuin-key = lib.mkIf (!vm && builtins.pathExists (../../../users + "/${username}/atuin-key.age")) {
-    file = ../../../users + "/${username}/atuin-key.age";
-    owner = username;
-    mode = "0400";
-  };
-
-  age.secrets.atuin-token = lib.mkIf (!vm && builtins.pathExists (../../../users + "/${username}/atuin-token.age")) {
-    file = ../../../users + "/${username}/atuin-token.age";
-    owner = username;
-    mode = "0400";
-  };
+  # atuin-key / atuin-token were sealed to fern's pre-NixOS host key, so they
+  # cannot be decrypted any more (age: "no identity matched any of the
+  # recipients") and made every activation fail. Re-add them once re-sealed to
+  # configs/fern/ssh/ssh_host_ed25519_key.pub.
 
   # agenix's activation script mkdirs ~/.ssh as root (0755) before any systemd
   # unit runs; home-manager - which runs as the user - then needs to write

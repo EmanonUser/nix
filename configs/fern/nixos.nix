@@ -125,8 +125,10 @@
   };
 
   networking.nftables.enable = true;
-  # Bridged VM traffic (br0) arrives on a different interface than the route
-  # to its source, so strict reverse-path filtering drops it.
+  # Bridge traffic from the LAN-attached VMs (br0) and the NAT bridge
+  # (incusbr0) must bypass the input filter and the reverse-path check,
+  # otherwise DHCP/DNS to Incus and all guest traffic are dropped.
+  networking.firewall.trustedInterfaces = ["br0" "incusbr0"];
   networking.firewall.checkReversePath = "loose";
   networking.firewall.extraForwardRules = ''
     iifname "br0" accept
