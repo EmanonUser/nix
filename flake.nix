@@ -107,7 +107,13 @@
           {
             inherit username system;
             inherit hostname;
-            backupdPkg = backupd.packages.${system}.default;
+            backupdPkg =
+              (backupd.packages.${system}.default).overrideAttrs (old: {
+                # aws-lc-sys 0.45 demands a system AWS-LC when it detects one;
+                # force the source build, and give sqlx-macros libsqlite3.
+                preBuild = (old.preBuild or "") + "\nexport AWS_LC_SYS_USE_SYSTEM=0\n";
+                buildInputs = (old.buildInputs or []) ++ [pkgs.sqlite];
+              });
             incusPkg = nixpkgs.legacyPackages.${system}.incus;
           }
           // (lib.optionalAttrs (filesystem != null) {inherit filesystem;})
