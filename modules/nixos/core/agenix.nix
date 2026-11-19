@@ -28,8 +28,25 @@
     symlink = false;
   };
 
-  # password.age is sealed to fern's pre-NixOS host key; the account is
-  # key/certificate-only until it is re-sealed (set a password with `passwd`).
+  age.secrets."user-password" = lib.mkIf (!vm) {
+    file = ../../../users + "/${username}/password.age";
+  };
+
+  # Atuin sync credentials: the encrypted history key and a long-lived Hub
+  # access token. The token is seeded into Atuin's meta.db by the
+  # atuin-token user service in modules/atuin/atuin.nix; neither is used until
+  # the token file exists.
+  age.secrets.atuin-key = lib.mkIf (!vm && builtins.pathExists (../../../users + "/${username}/atuin-key.age")) {
+    file = ../../../users + "/${username}/atuin-key.age";
+    owner = username;
+    mode = "0400";
+  };
+
+  age.secrets.atuin-token = lib.mkIf (!vm && builtins.pathExists (../../../users + "/${username}/atuin-token.age")) {
+    file = ../../../users + "/${username}/atuin-token.age";
+    owner = username;
+    mode = "0400";
+  };
 
   age.secrets.home-assistant = lib.mkIf (!vm) {
     file = ../../../users + "/${username}/home-assistant.age";

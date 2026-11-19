@@ -15,7 +15,7 @@
       extraGroups = ["wheel"];
     }
     // lib.optionalAttrs (!vm) {
-      hashedPassword = "!";
+      hashedPasswordFile = config.age.secrets.user-password.path;
     };
 
   programs.zsh.enable = true;

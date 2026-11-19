@@ -31,8 +31,11 @@
 
   age.secrets."user-ssh-id".enable = lib.mkIf vm false;
 
-  # gh-token.age is sealed to fern's pre-NixOS host key and can no longer be
-  # decrypted; re-add once re-sealed to configs/fern/ssh/ssh_host_ed25519_key.pub.
+  age.secrets.gh-token = lib.mkIf (!vm && builtins.pathExists (../../users + "/${username}/gh-token.age")) {
+    file = ../../users + "/${username}/gh-token.age";
+    owner = username;
+    mode = "0400";
+  };
 
   environment.persistence."/persist".directories = [
     "/var/lib/samba"
