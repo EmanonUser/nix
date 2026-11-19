@@ -129,7 +129,12 @@
   };
 
   systemd.services.incus-preseed = {
-    after = ["zfs-import.target" "zfs-mount.service" "fern-zfs-load-keys.service"];
-    wants = ["zfs-import.target" "zfs-mount.service" "fern-zfs-load-keys.service"];
+    after = ["zfs-import.target" "zfs-mount.service" "fern-zfs-import.service" "fern-zfs-load-keys.service"];
+    wants = ["zfs-import.target" "zfs-mount.service" "fern-zfs-import.service" "fern-zfs-load-keys.service"];
+  };
+
+  systemd.services.incus = {
+    after = ["fern-zfs-import.service" "fern-zfs-load-keys.service"];
+    wants = ["fern-zfs-import.service"];
   };
 }

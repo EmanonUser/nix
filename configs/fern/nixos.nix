@@ -92,14 +92,17 @@
   systemd.services.fern-zfs-import = {
     description = "Import the fern ZFS data pool";
     wantedBy = ["zfs-import.target" "zfs.target"];
-    after = ["systemd-udev-settle.service"];
+    wants = ["systemd-modules-load.service"];
+    after = ["systemd-modules-load.service" "systemd-udev-settle.service"];
     before = ["fern-zfs-load-keys.service"];
     unitConfig.DefaultDependencies = false;
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
       SuccessExitStatus = "1";
-      ExecStart = "${config.boot.zfs.package}/sbin/zpool import -N fern";
+      # -f: the pool records the exporting host's hostid, which differs from
+      # networking.hostId across reinstalls.
+      ExecStart = "${config.boot.zfs.package}/sbin/zpool import -N -f fern";
     };
   };
 
