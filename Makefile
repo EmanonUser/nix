@@ -135,6 +135,19 @@ define INSTALL_RECIPE
 	echo "The target disk will be re-partitioned and ALL its data will be lost."; \
 	read -r -p "Type YES to confirm, anything else to abort: " confirm; \
 	if [ "$$confirm" != "YES" ]; then echo "Aborted."; exit 1; fi; \
+	if [ -n "$$idflag" ] && [ -f "configs/$${key_host}/ssh/id_ed25519.pub" ]; then \
+	  echo "Seeding root authorized_keys on the target..."; \
+	  certflag=""; \
+	  [ -f "configs/$${key_host}/ssh/id_ed25519-cert.pub" ] && certflag="-o CertificateFile=configs/$${key_host}/ssh/id_ed25519-cert.pub"; \
+	  ssh_opts="-o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10"; \
+	  if [ "$$ssh_user" = "root" ]; then \
+	    ssh $$ssh_opts $${idflag} $$certflag "root@$${target_host}" 'mkdir -p /root/.ssh && chmod 700 /root/.ssh && cat >> /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys' < "configs/$${key_host}/ssh/id_ed25519.pub" \
+	      || { echo "Failed to seed /root/.ssh/authorized_keys on $${target_host}." >&2; exit 1; }; \
+	  else \
+	    ssh $$ssh_opts $${idflag} $$certflag "$${ssh_user}@$${target_host}" 'sudo -n sh -c "mkdir -p /root/.ssh && chmod 700 /root/.ssh && cat >> /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys"' < "configs/$${key_host}/ssh/id_ed25519.pub" \
+	      || { echo "Failed to seed /root/.ssh/authorized_keys on $${target_host}." >&2; exit 1; }; \
+	  fi; \
+	fi; \
 	if [ "$(2)" = "luks" ]; then \
 	  read -s -p "LUKS passphrase: " key1; echo; \
 	  read -s -p "Confirm LUKS passphrase: " key2; echo; \
