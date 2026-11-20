@@ -4,6 +4,7 @@
   config,
   username,
   hostname,
+  atuinPkg,
   vm ? false,
   ...
 }: {
@@ -137,7 +138,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit username;
+      inherit username atuinPkg;
       hostname = "fern";
     };
     users.${username} = import ./home.nix;

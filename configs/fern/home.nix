@@ -1,4 +1,4 @@
-{
+{atuinPkg, ...}: {
   imports = [
     ./home-packages/home-packages.nix
     ../../modules/atuin/atuin.nix
@@ -14,4 +14,6 @@
     ../../modules/zoxide/zoxide.nix
     ../../modules/zsh/zsh.nix
   ];
+
+  programs.atuin.package = atuinPkg;
 }

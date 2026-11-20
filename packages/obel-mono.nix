@@ -22,8 +22,8 @@ in
       }-${version}-ttf.zip";
       hash =
         if masked
-        then "sha256-cZHPoWkFmK/yylz7UfMc00NxeVh/IL0v+ZuFIHi9DKI="
-        else "sha256-QHkdzeyxeetCoKhTzlxNBcXiDrXvGLZydcmu9vDsqB4=";
+        then "sha256-lfZFxw1/6986dKsgunIhJ/l94lcMnDN2mIJ0lP4XpcM="
+        else "sha256-UvOQuxgdsKhH0Y7+n6nnmBSgFzed1bJRrUVvVJUlAh0=";
     };
 
     nativeBuildInputs = [unzip];

@@ -115,6 +115,7 @@
                 buildInputs = (old.buildInputs or []) ++ [pkgs.sqlite];
               });
             incusPkg = nixpkgs.legacyPackages.${system}.incus;
+            atuinPkg = pkgs.atuin;
           }
           // (lib.optionalAttrs (filesystem != null) {inherit filesystem;})
           // {inherit vm luks;}
