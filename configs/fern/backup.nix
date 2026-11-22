@@ -44,6 +44,6 @@
       AWS_ACCESS_KEY_ID = "/run/agenix/backupd-aws-access-key-id";
       AWS_SECRET_ACCESS_KEY = "/run/agenix/backupd-aws-secret-access-key";
     };
-    extraPackages = [pkgs.restic pkgs.incus-lts];
+    extraPackages = [pkgs.restic pkgs.incus-lts pkgs.msmtp];
   };
 }

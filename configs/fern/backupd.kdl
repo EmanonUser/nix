@@ -2,6 +2,8 @@ restic repo="" aws_access_key_id="" aws_secret_access_key="" password_file=""
 
 incus storage_pool="default"
 
+notify email="moemanon@pm.me" recap="weekly"
+
 volumes {
     vol "bazarr-config" tag="incus" tag="bazarr"
     vol "bitwarden-data" tag="incus" tag="bitwarden"
