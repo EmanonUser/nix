@@ -1,10 +1,9 @@
 {
   username,
-  lib,
   ...
 }: {
   nixpkgs.hostPlatform = "x86_64-linux";
-  networking.hostName = "nixos-vm";
+  networking.hostName = "flamme";
 
   boot.kernelParams = [
     "console=ttyS0"
@@ -13,8 +12,6 @@
     "loglevel=8"
     "ignore_loglevel"
   ];
-
-  services.getty.autologinUser = username;
 
   boot.initrd.availableKernelModules = [
     "virtio_pci"
@@ -33,10 +30,9 @@
   imports = [
     ../localization.nix
     ../../users/${username}/${username}.nix
-    ../../configs/nixos-vm/nixos.nix
+    ../../configs/flamme/nixos.nix
   ];
 
-  services.openssh.settings.PasswordAuthentication = lib.mkForce true;
   virtualisation.incus.agent.enable = true;
-  networking.firewall.enable = false;
+  programs.ssh.startAgent = true;
 }

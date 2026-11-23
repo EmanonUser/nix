@@ -5,9 +5,6 @@
 #   make deploy               build locally + switch every NixOS host
 #   make rebuild-zoltraak     sync flake + rebuild + switch zoltraak (on the machine)
 #   make install-zoltraak     full reinstall of zoltraak via nixos-anywhere (destructive!)
-#   make install-nixos-vm     full reinstall of the nixos-vm dev VM via nixos-anywhere
-#   make install-sasurai-vm   full reinstall of the sasurai test VM via nixos-anywhere (LUKS)
-#   make isasurai-vm          deploy the sasurai VM quickly (shortcut)
 #   make update               update flake lockfile
 #
 # Override at the command line, e.g.:
@@ -25,15 +22,7 @@ NIXOS_HOSTS := sasurai zoltraak
 ZOLTRAAK_IP ?= 192.168.5.113
 SASURAI_IP  ?= sasurai
 
-# sasurai-vm and zoltraak-vm live on another hypervisor, which hands out
-# 192.168.122.0/24, so these are fixed there.
-SASURAI_VM_IP ?= 192.168.122.2
-ZOLTRAAK_VM_IP ?= 192.168.122.3
-
-# nixos-vm lives on this Incus host (l2 bridge, real LAN, DHCP lease), so it
-# has no fixed address - look the lease up and pass it in, e.g.
-#   make rebuild-nixos-vm NIXOS_VM_IP=192.168.5.13
-NIXOS_VM_IP ?= 192.168.5.1
+FLAMME_IP ?= $(shell incus list flamme --format csv -c 4 2>/dev/null | head -n1 | sed -E 's/^"?([0-9.]+).*/\1/')
 
 # Tools are run via `nix run` since they aren't installed on this machine.
 ANYWHERE       := nix run github:nix-community/nixos-anywhere --
@@ -42,9 +31,7 @@ AGE            := nix run nixpkgs\#age --
 
 ZOLTRAAK := $(USER)@$(ZOLTRAAK_IP)
 SASURAI  := $(USER)@$(SASURAI_IP)
-SASURAI_VM  := $(USER)@$(SASURAI_VM_IP)
-ZOLTRAAK_VM := $(USER)@$(ZOLTRAAK_VM_IP)
-NIXOS_VM := $(USER)@$(NIXOS_VM_IP)
+FLAMME := $(USER)@$(FLAMME_IP)
 
 # Temporary file the LUKS passphrase is written to during installs and
 # deleted afterwards.
@@ -53,10 +40,10 @@ LUKS_KEY ?= /tmp/disk-encryption.key
 HOST_CA_KEY ?= $(HOME)/certs/hosts_certificate_authority
 HOST_CA := $(subst ~,$(HOME),$(HOST_CA_KEY))
 
-.PHONY: help install install-zoltraak install-sasurai install-fern install-nixos-vm install-sasurai-vm install-zoltraak-vm install-fern-vm isasurai-vm \
-        deploy deploy-sasurai deploy-zoltraak deploy-sasurai-vm deploy-zoltraak-vm deploy-nixos-vm deploy-fern-vm \
-        rebuild rebuild-sasurai rebuild-zoltraak rebuild-sasurai-vm rebuild-zoltraak-vm rebuild-nixos-vm rebuild-fern-vm \
-        push-sasurai push-zoltraak push-sasurai-vm push-zoltraak-vm push-nixos-vm push-fern-vm \
+.PHONY: help install install-zoltraak install-sasurai install-fern install-flamme \
+        deploy deploy-sasurai deploy-zoltraak deploy-flamme \
+        rebuild rebuild-sasurai rebuild-zoltraak rebuild-flamme \
+        push-sasurai push-zoltraak push-flamme \
         print-cert-authority sign-fern-host-cert \
         update check fmt
 
@@ -74,8 +61,7 @@ help: ## Show this help
 # nixos-anywhere on $(1), and always deletes the key file afterwards (also
 # on failure / Ctrl-C).
 #
-# $(3) is the identity host whose host key is seeded; it defaults to $(1) but
-# lets VM variants reuse another host's identity (e.g. sasurai-vm -> sasurai).
+# $(3) is the identity host whose host key is seeded; it defaults to $(1).
 #
 # nixos-anywhere is also passed -i so it logs in with the host's own identity
 # instead of generating a throwaway key and then demanding a password, which
@@ -172,20 +158,8 @@ install-sasurai: ## Full reinstall of sasurai (prompts for user/host, confirmati
 install-fern: ## Full reinstall of fern (unencrypted; prompts for user/host and confirmation)
 	$(call INSTALL_RECIPE,fern,,fern)
 
-install-nixos-vm: ## Full reinstall of the nixos-vm dev VM (unencrypted, no LUKS passphrase; prompts for user/host and confirmation)
-	$(call INSTALL_RECIPE,nixos-vm,)
-
-install-sasurai-vm: ## Full reinstall of the sasurai test VM (LUKS; reuses sasurai's identity; prompts for user/host, confirmation and LUKS passphrase)
-	$(call INSTALL_RECIPE,sasurai-vm,luks,sasurai)
-
-install-zoltraak-vm: ## Full reinstall of the zoltraak test VM (LUKS; reuses zoltraak's identity; prompts for user/host, confirmation and LUKS passphrase)
-	$(call INSTALL_RECIPE,zoltraak-vm,luks,zoltraak)
-
-install-fern-vm: ## Full reinstall of the fern test VM (unencrypted; reuses fern's identity; prompts for user/host and confirmation)
-	$(call INSTALL_RECIPE,fern-vm,,fern)
-
-# Shortcut for the common "just reinstall the sasurai VM" case.
-isasurai-vm: install-sasurai-vm ## Shortcut for install-sasurai-vm
+install-flamme: ## Full reinstall of the flamme dev VM (unencrypted; prompts for user/host, host-key passphrase and confirmation)
+	$(call INSTALL_RECIPE,flamme,)
 
 # ---------------------------------------------------------------------------
 # Local-build deploys: build on THIS machine, copy the closure to the target
@@ -203,18 +177,8 @@ deploy-sasurai: ## Build locally, copy to sasurai and switch
 deploy-zoltraak: ## Build locally, copy to zoltraak and switch
 	$(NIXOS_REBUILD) switch --flake $(FLAKE)#zoltraak --target-host $(ZOLTRAAK) --use-remote-sudo
 
-deploy-sasurai-vm: ## Build locally, copy to the sasurai VM and switch
-	$(NIXOS_REBUILD) switch --flake $(FLAKE)#sasurai-vm --target-host $(SASURAI_VM) --use-remote-sudo
-
-deploy-zoltraak-vm: ## Build locally, copy to the zoltraak VM and switch
-	$(NIXOS_REBUILD) switch --flake $(FLAKE)#zoltraak-vm --target-host $(ZOLTRAAK_VM) --use-remote-sudo
-
-deploy-nixos-vm: ## Build locally, copy to the nixos-vm dev VM and switch
-	$(NIXOS_REBUILD) switch --flake $(FLAKE)#nixos-vm --target-host $(NIXOS_VM) --use-remote-sudo
-
-deploy-fern-vm: ## Build locally, copy to the fern VM and switch (prompts for the VM IP)
-	@read -r -p "fern-vm IP: " ip; \
-	$(NIXOS_REBUILD) switch --flake $(FLAKE)#fern-vm --target-host $(USER)@$$ip --use-remote-sudo
+deploy-flamme: ## Build locally, copy to the flamme dev VM and switch
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#flamme --target-host $(FLAMME) --use-remote-sudo
 
 # ---------------------------------------------------------------------------
 # NixOS rebuild + switch (runs ON the machine itself). The committed flake is
@@ -236,32 +200,11 @@ rebuild-sasurai: push-sasurai ## Rebuild + switch sasurai on the machine itself
 rebuild-zoltraak: push-zoltraak ## Rebuild + switch zoltraak on the machine itself
 	@ssh $(ZOLTRAAK) 'sudo -n nixos-rebuild switch --flake ~/nix#zoltraak'
 
-push-sasurai-vm: ## Sync the committed flake to the sasurai VM (~/nix)
-	@git archive --format=tar.gz HEAD | ssh $(SASURAI_VM) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
+push-flamme: ## Sync the committed flake to the flamme dev VM (~/nix)
+	@git archive --format=tar.gz HEAD | ssh $(FLAMME) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
 
-rebuild-sasurai-vm: push-sasurai-vm ## Rebuild + switch the sasurai VM on the machine itself
-	@ssh $(SASURAI_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#sasurai-vm'
-
-push-zoltraak-vm: ## Sync the committed flake to the zoltraak VM (~/nix)
-	@git archive --format=tar.gz HEAD | ssh $(ZOLTRAAK_VM) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
-
-rebuild-zoltraak-vm: push-zoltraak-vm ## Rebuild + switch the zoltraak VM on the machine itself
-	@ssh $(ZOLTRAAK_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#zoltraak-vm'
-
-push-nixos-vm: ## Sync the committed flake to the nixos-vm dev VM (~/nix)
-	@git archive --format=tar.gz HEAD | ssh $(NIXOS_VM) 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
-
-rebuild-nixos-vm: push-nixos-vm ## Rebuild + switch the nixos-vm dev VM on the machine itself
-	@ssh $(NIXOS_VM) 'sudo -n nixos-rebuild switch --flake ~/nix#nixos-vm'
-
-push-fern-vm: ## Sync the committed flake to the fern VM (~/nix) (prompts for the VM IP)
-	@read -r -p "fern-vm IP: " ip; \
-	git archive --format=tar.gz HEAD | ssh $(USER)@$$ip 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'
-
-rebuild-fern-vm: ## Rebuild + switch the fern VM on the machine itself (prompts for the VM IP)
-	@read -r -p "fern-vm IP: " ip; \
-	git archive --format=tar.gz HEAD | ssh $(USER)@$$ip 'rm -rf ~/nix && mkdir -p ~/nix && tar -xzf - -C ~/nix'; \
-	ssh $(USER)@$$ip 'sudo -n nixos-rebuild switch --flake ~/nix#fern-vm'
+rebuild-flamme: push-flamme ## Rebuild + switch the flamme dev VM on the machine itself
+	@ssh $(FLAMME) 'sudo -n nixos-rebuild switch --flake ~/nix#flamme'
 
 # ---------------------------------------------------------------------------
 # Host CA (client-side known_hosts entry)

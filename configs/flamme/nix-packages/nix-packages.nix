@@ -1,4 +1,11 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  ...
+}: {
+  imports = [
+    ../../fern/nix-packages/nix-packages.nix
+  ];
+
   environment.systemPackages = with pkgs; [
     # nix tooling
     nix-index

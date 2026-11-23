@@ -24,9 +24,7 @@
       ./zrepl.nix
       ./nix-packages/nix-packages.nix
     ]
-    ++ lib.optional (!vm) ../../hosts/fern/disko.nix
-    ++ lib.optional vm ../../hosts/fern-vm/disko.nix
-    ++ [./zfs/keys.nix ./backup.nix];
+    ++ [../../hosts/fern/disko.nix ./zfs/keys.nix ./backup.nix];
 
   networking.hostName = hostname;
 

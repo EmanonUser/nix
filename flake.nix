@@ -94,7 +94,6 @@
 
     mkSystem = {
       hostname,
-      vm ? false,
       filesystem ? null,
       luks ? true,
       extraModules ? [],
@@ -118,8 +117,10 @@
             atuinPkg = pkgs.atuin;
           }
           // (lib.optionalAttrs (filesystem != null) {inherit filesystem;})
-          // {inherit vm luks;}
-          // (lib.optionalAttrs vm {netHostName = hostname + "-vm";})
+          // {
+            inherit luks;
+            vm = false;
+          }
           // attrs;
         modules =
           [
@@ -141,7 +142,6 @@
             }
             ./hosts/${hostname}/${hostname}.nix
           ]
-          ++ lib.optionals vm [./hosts/vm/common.nix]
           ++ extraModules;
       };
   in {
@@ -174,13 +174,6 @@
         ];
       };
 
-      sasurai-vm = mkSystem {
-        hostname = "sasurai";
-        filesystem = "zfs";
-        vm = true;
-        extraModules = [bootvine.nixosModules.default];
-      };
-
       zoltraak = mkSystem {
         hostname = "zoltraak";
         extraModules = [
@@ -189,15 +182,9 @@
         ];
       };
 
-      zoltraak-vm = mkSystem {
-        hostname = "zoltraak";
-        vm = true;
-        extraModules = [bootvine.nixosModules.default];
-      };
-
-      nixos-vm = mkSystem {
-        hostname = "nixos-vm";
-        filesystem = "zfs";
+      flamme = mkSystem {
+        hostname = "flamme";
+        filesystem = "ext4";
         luks = false;
       };
 
@@ -205,16 +192,6 @@
         hostname = "fern";
         filesystem = "ext4";
         luks = false;
-        nixpkgsInput = nixpkgs-stable;
-        homeManagerInput = home-manager-stable;
-        pkgsInput = pkgs-stable;
-      };
-
-      fern-vm = mkSystem {
-        hostname = "fern";
-        filesystem = "ext4";
-        luks = false;
-        vm = true;
         nixpkgsInput = nixpkgs-stable;
         homeManagerInput = home-manager-stable;
         pkgsInput = pkgs-stable;

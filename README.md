@@ -22,8 +22,6 @@ config reads as a short, explicit list of imports.
   certificates, and an immutable user whose password comes from an age secret.
 - **Encrypted root** — LUKS with a FIDO2 token fallback at boot, ZFS or
   btrfs on top, declared with [disko](https://github.com/nix-community/disko).
-- **Test before you ship** — every bare-metal host has a `*-vm` twin: the same
-  config, evaluated with `vm = true`, running in a throwaway Incus VM.
 - **Tooling** — Neovim (LSP + lazy plugins, native markdown preview via snacks),
   zsh + starship/atuin/zoxide, Ghostty, niri, zellij, direnv, grabit,
   PipeWire/RnNoise.
@@ -36,17 +34,12 @@ config reads as a short, explicit list of imports.
 | --- | --- | --- |
 | `sasurai` | bare metal | Plasma/niri desktop, ZFS on LUKS |
 | `zoltraak` | bare metal | Noctalia/niri desktop, btrfs on LUKS |
-| `sasurai-vm` | Incus VM | throwaway twin of `sasurai` (`vm = true`) |
-| `zoltraak-vm` | Incus VM | throwaway twin of `zoltraak` (`vm = true`) |
-| `nixos-vm` | Incus VM | **headless dev environment** — SSH in, edit, build |
+| `flamme` | Incus VM | **headless dev environment** with fern's CLI tools and the fern `dev` share mounted |
 | `fern` | bare metal | workstation/fileserver, NixOS 26.05 on ext4 |
-| `fern-vm` | Incus VM | throwaway twin of `fern` (`vm = true`) |
 
-`nixos-vm` is the one you drive day to day. It carries the toolchains
+`flamme` is the one you drive day to day. It carries the toolchains
 (gcc/clang, cmake, ninja, go, rustup, python, nodejs, gdb, valgrind, nix
-tooling) in `configs/nixos-vm/nix-packages`, and reuses fern's home profile.
-The twins (`sasurai-vm`, `zoltraak-vm`) are separate: they run the *real*
-desktop config, so they catch DE regressions that a headless box cannot.
+tooling) in `configs/flamme/nix-packages`, and reuses fern's home profile.
 
 ## Repository layout
 
@@ -59,8 +52,6 @@ hosts/                 # LAYER 1 — what this *machine* is
   <host>/<host>.nix             # entry point pulled in by the flake
   <host>/hardware-configuration.nix
   <host>/disko.nix             # disks, LUKS, filesystems, pools
-  vm/common.nix                # adaptations shared by every *-vm twin
-  vm/disko.nix                 # virtio disk layout shared by the Incus VMs
   localization.nix             # timezone, locale, keyboard (shared)
 configs/                # LAYER 2 — what this host *runs*
   <host>/nixos.nix             # host's module list + home-manager wiring
@@ -90,9 +81,8 @@ Three layers, evaluated in this order, each with a single responsibility:
 | `modules/` | *How is a capability implemented?* | one concern per file, reusable by any host | host names, disk layouts |
 
 `flake.nix` only names a host and a few flags; it never lists modules itself.
-Its `mkSystem` passes `hostname`, `username`, `system`, `vm`, `luks`,
-`filesystem` and `netHostName` through `specialArgs`, so a module can branch on
-`vm` (e.g. skip Secure Boot, amdgpu, incus/podman in a test VM) without
+Its `mkSystem` passes `hostname`, `username`, `system`, `luks` and `filesystem`
+through `specialArgs`, so a module can branch on the filesystem without
 duplicating the host config.
 
 `users/` sits beside the three: it is parameterised on the `username` special
@@ -104,8 +94,6 @@ arg, so adding a user means adding a directory, not editing every host.
   `configs/<host>/nixos.nix`, importing `configs/<host>/home.nix` with
   `useGlobalPkgs = true`. One `nixos-rebuild` therefore updates system *and*
   user environment.
-- A `*-vm` twin reuses the same host config with `vm = true` plus
-  `hosts/vm/common.nix`, so it exercises the real desktop and service modules.
 - `configs/<host>/home.nix` is always just a list of `modules/*` imports plus
   `home-packages`, with no host-specific system code.
 
@@ -128,10 +116,6 @@ User (`modules/`): `zsh`, `starship`, `atuin`, `zoxide`, `direnv`, `neovim`,
 - **Bootstrap identity** — each host's ed25519 host key is committed encrypted;
   the installer decrypts it once and seeds it into `/persist/etc/ssh`, so
   agenix can decrypt everything on the very first boot.
-- **VM twins** — `sasurai-vm`, `zoltraak-vm` reuse the *same* host config with
-  `vm = true` plus `hosts/vm/common.nix`; they skip bare-metal-only modules,
-  get virtio storage, a serial console, a bundled wallpaper and a throwaway
-  password.
 - **Secrets hygiene** — `.gitignore` is an allowlist (ignore everything, then
   re-include `*.nix`, `*.age`, `*.pub`, …), so a new file can never be
   committed by accident.
@@ -183,7 +167,7 @@ flake.nix
         ├── modules/nixos/stylix/stylix.nix
         ├── modules/nixos/niri/niri.nix
         ├── configs/<host>/nix-packages/nix-packages.nix
-        ├── …                        (if !vm: secureboot, amd, virtualisation)
+        ├── …                        (secureboot, amd, virtualisation)
         └── configs/<host>/home.nix
             ├── configs/<host>/home-packages/home-packages.nix
             ├── modules/atuin, direnv, ghostty, git, grabit, neovim,

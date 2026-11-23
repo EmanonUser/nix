@@ -1,6 +1,8 @@
 {
+  lib,
   pkgs,
   username,
+  atuinPkg,
   ...
 }: {
   imports = [
@@ -9,24 +11,30 @@
     ../../modules/nixos/core/agenix.nix
     ../../modules/nixos/boot/bootloader.nix
     ../../modules/nixos/core/impermanence.nix
-    ../../hosts/vm/disko.nix
+    ../../hosts/flamme/disko.nix
     ../../modules/nixos/ssh-server/ssh-server.nix
-    ../../modules/nixos/services/services.nix
     ../../modules/nixos/hardware/network.nix
     ./nix-packages/nix-packages.nix
+    ./samba.nix
   ];
+
+  users.users.${username}.shell = lib.mkForce pkgs.nushell;
+
+  age.secrets.gh-token = lib.mkIf (builtins.pathExists (../../users + "/${username}/gh-token.age")) {
+    file = ../../users + "/${username}/gh-token.age";
+    owner = username;
+    mode = "0400";
+  };
 
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit username;
-      hostname = "nixos-vm";
+      inherit username atuinPkg;
+      hostname = "flamme";
     };
     users.${username} = import ./home.nix;
   };
 
-  # With impermanence /home/emanon starts empty: home-manager refuses to run
-  # until its profile directory exists, so create it before every activation.
   systemd.services."home-manager-${username}".serviceConfig.ExecStartPre = ["${pkgs.coreutils}/bin/mkdir -p /home/${username}/.local/state/nix/profiles"];
 }

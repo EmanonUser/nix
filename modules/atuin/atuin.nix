@@ -22,6 +22,8 @@
     then "%t/agenix/atuin-token"
     else "/run/agenix/atuin-token";
 in {
+  home.sessionVariables.ATUIN_CONFIG_DIR = "${config.xdg.configHome}/atuin";
+
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;

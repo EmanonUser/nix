@@ -1,10 +1,15 @@
 {
+  atuinPkg,
+  ...
+}: {
   imports = [
-    ../../configs/fern/home-packages/home-packages.nix
+    ../fern/home-packages/home-packages.nix
     ../../modules/atuin/atuin.nix
     ../../modules/direnv/direnv.nix
     ../../modules/git/git.nix
+    ../../modules/gh/gh.nix
     ../../modules/neovim/neovim.nix
+    ../../modules/nushell/nushell.nix
     ../../modules/opencode/opencode.nix
     ../../modules/settings/home-manager-settings.nix
     ../../modules/ssh/ssh.nix
@@ -13,4 +18,6 @@
     ../../modules/zoxide/zoxide.nix
     ../../modules/zsh/zsh.nix
   ];
+
+  programs.atuin.package = atuinPkg;
 }
