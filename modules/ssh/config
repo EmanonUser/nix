@@ -44,6 +44,17 @@ Host sasurai
    Controlpath ~/.ssh/ssh-%r@%h:%p.sock
    ControlPersist 900
 
+ Host flamme
+   User emanon
+   Port 22
+   Hostname flamme.home.arpa
+   IdentitiesOnly yes
+   IdentityFile ~/.ssh/id_ed25519
+   CertificateFile ~/.ssh/id_ed25519-cert.pub
+   Controlmaster auto
+   Controlpath ~/.ssh/ssh-%r@%h:%p.sock
+   ControlPersist 900
+
  Host s1
    User emanon
    Port 22
