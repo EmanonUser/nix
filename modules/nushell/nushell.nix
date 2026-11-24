@@ -49,16 +49,21 @@
         $env.config.hooks.pre_prompt?
         | default []
         | append {||
-          let inside = (^git rev-parse --is-inside-work-tree | complete)
-          if $inside.exit_code == 0 {
-            let repo = (^git rev-parse --show-toplevel | str trim)
-            if $repo != ($env.LAST_GIT_FETCH_REPO? | default "") {
-              print "Git auto-fetch updates.."
-              ^git fetch --all out+err> /dev/null
-              $env.LAST_GIT_FETCH_REPO = $repo
+          let gitdir = (do -i { ^git rev-parse --absolute-git-dir } | complete)
+          if $gitdir.exit_code != 0 {
+            return
+          }
+          let stamp = ($gitdir.stdout | str trim | path join "nushell-autofetch")
+          let due = (
+            try {
+              ((date now) - (ls $stamp | get 0.modified)) > 5min
+            } catch {
+              true
             }
-          } else {
-            $env.LAST_GIT_FETCH_REPO = ""
+          )
+          if $due {
+            try { touch $stamp } catch {}
+            job spawn { ^git fetch --all --quiet } | ignore
           }
         }
       )
