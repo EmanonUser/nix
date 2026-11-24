@@ -35,4 +35,19 @@
 
   virtualisation.incus.agent.enable = true;
   programs.ssh.startAgent = true;
+
+  networking.networkmanager.ensureProfiles.profiles.flamme-wired = {
+    connection = {
+      id = "flamme-wired";
+      type = "ethernet";
+      interface-name = "enp5s0";
+      autoconnect = "true";
+    };
+    ipv4.method = "auto";
+    ipv6 = {
+      method = "auto";
+      addr-gen-mode = "eui64";
+      ip6-privacy = "0";
+    };
+  };
 }
